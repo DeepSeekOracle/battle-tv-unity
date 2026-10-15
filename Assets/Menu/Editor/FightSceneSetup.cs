@@ -91,7 +91,7 @@ namespace BattleTv.Menu.EditorTools
             result.fontSize = 36;
             result.resizeTextMaxSize = 42;
 
-            var menu = Button(canvasObject.transform, "MENU", new Vector2(0.016f, 0.02f), new Vector2(0.10f, 0.062f), buttonSkin);
+            var menu = Button(canvasObject.transform, "MENU", new Vector2(0.016f, 0.018f), new Vector2(0.112f, 0.072f), buttonSkin);
             var view = canvasObject.AddComponent<DuelView>();
             var so = new SerializedObject(view);
             so.FindProperty("plate").objectReferenceValue = plate;
@@ -185,11 +185,11 @@ namespace BattleTv.Menu.EditorTools
             plateImage.raycastTarget = false;
 
             var host = root.transform;
-            var title = Caption(host, "Title", new Vector2(0.02f, 0.82f), new Vector2(0.98f, 1f), TextAnchor.MiddleLeft);
-            title.resizeTextMaxSize = 16;
-            var cards = Caption(host, "Cards", new Vector2(0.02f, 0.72f), new Vector2(0.98f, 0.82f), TextAnchor.MiddleLeft);
-            cards.color = new Color(0.84f, 0.75f, 0.58f, 1f);
-            cards.resizeTextMaxSize = 11;
+            var title = Label(host, "Title", new Vector2(0.02f, 0.74f), new Vector2(0.98f, 0.98f), TextAnchor.MiddleLeft);
+            title.resizeTextForBestFit = false;
+            title.fontSize = 16;
+            title.horizontalOverflow = HorizontalWrapMode.Overflow;
+            title.verticalOverflow = VerticalWrapMode.Overflow;
             float barL = 0.02f;
             float barR = 0.98f;
             var health = Track(host, "Health", new Vector2(barL, 0.48f), new Vector2(barR, 0.70f), healthFill, bar);
@@ -227,7 +227,7 @@ namespace BattleTv.Menu.EditorTools
             so.FindProperty("block").objectReferenceValue = block;
             so.FindProperty("dash").objectReferenceValue = dash;
             so.FindProperty("title").objectReferenceValue = title;
-            so.FindProperty("cards").objectReferenceValue = cards;
+            so.FindProperty("cards").objectReferenceValue = null;
             so.FindProperty("healthNum").objectReferenceValue = healthNum;
             so.FindProperty("manaNum").objectReferenceValue = manaNum;
             so.FindProperty("blockNum").objectReferenceValue = blockNum;
@@ -340,10 +340,11 @@ namespace BattleTv.Menu.EditorTools
             label.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             label.fontStyle = FontStyle.Bold;
             label.alignment = TextAnchor.MiddleCenter;
-            label.color = new Color(0x1a / 255f, 0x12 / 255f, 0x06 / 255f, 1f);
-            label.resizeTextForBestFit = true;
-            label.resizeTextMinSize = 12;
-            label.resizeTextMaxSize = 22;
+            label.color = new Color(0xf6 / 255f, 0xe7 / 255f, 0xc1 / 255f, 1f);
+            label.resizeTextForBestFit = false;
+            label.fontSize = 14;
+            label.horizontalOverflow = HorizontalWrapMode.Overflow;
+            label.verticalOverflow = VerticalWrapMode.Overflow;
             label.raycastTarget = false;
             return button;
         }

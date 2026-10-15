@@ -42,9 +42,9 @@ namespace BattleTv.Fight
             Set(dash, dashRatio);
 
             if (title != null)
-                title.text = body.Name;
+                title.text = string.IsNullOrEmpty(body.Cards) ? body.Name : body.Name + "    " + body.Cards;
             if (cards != null)
-                cards.text = body.Cards;
+                cards.text = "";
             if (healthNum != null)
                 healthNum.text = Mathf.CeilToInt((float)body.Hp).ToString();
             if (manaNum != null)
