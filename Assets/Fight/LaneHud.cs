@@ -51,12 +51,12 @@ namespace BattleTv.Fight
                 manaNum.text = Mathf.CeilToInt((float)body.Mana).ToString();
             if (blockNum != null)
                 blockNum.text = body.Shield > 0.5
-                    ? "B " + Mathf.CeilToInt((float)body.Shield)
-                    : "BLOCK";
+                    ? Mathf.CeilToInt((float)body.Shield).ToString()
+                    : "BK";
             if (dashNum != null)
                 dashNum.text = body.StrideCd > 0.05
                     ? Mathf.CeilToInt((float)body.StrideCd).ToString()
-                    : "DASH";
+                    : "DA";
             if (block != null)
                 block.color = Color.white;
             if (dash != null)
@@ -79,8 +79,8 @@ namespace BattleTv.Fight
                 rect.anchorMin = Vector2.zero;
                 rect.anchorMax = new Vector2(ratio, 1f);
             }
-            rect.offsetMin = Vector2.zero;
-            rect.offsetMax = Vector2.zero;
+            rect.offsetMin = new Vector2(10f, 4f);
+            rect.offsetMax = new Vector2(-10f, -4f);
         }
     }
 }
