@@ -22,15 +22,9 @@ namespace BattleTv.Menu.EditorTools
             Configure(StagePath, false, false, Vector4.zero, true);
             Configure(ValePath, true);
             Configure(BrutePath, true);
-            var valeToss = new Sprite[8];
-            for (int i = 0; i < valeToss.Length; i++)
-            {
-                var tossPath = "Assets/Art/Duel/vale-toss/f" + i.ToString("00") + ".png";
-                ConfigureToss(tossPath);
-                valeToss[i] = AssetDatabase.LoadAssetAtPath<Sprite>(tossPath);
-                if (valeToss[i] == null)
-                    throw new FileNotFoundException("Vale toss frame did not import.", tossPath);
-            }
+            var valeToss = LoadClip("vale-toss", 8);
+            var valeBash = LoadClip("vale-bash", 6);
+            var valePunch = LoadClip("vale-punch", 6);
 
             var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
             RenderSettings.skybox = null;
@@ -111,10 +105,9 @@ namespace BattleTv.Menu.EditorTools
             so.FindProperty("clock").objectReferenceValue = clock;
             so.FindProperty("callout").objectReferenceValue = callout;
             so.FindProperty("result").objectReferenceValue = result;
-            var tossProp = so.FindProperty("valeToss");
-            tossProp.arraySize = valeToss.Length;
-            for (int i = 0; i < valeToss.Length; i++)
-                tossProp.GetArrayElementAtIndex(i).objectReferenceValue = valeToss[i];
+            AssignClip(so, "valeToss", valeToss);
+            AssignClip(so, "valeBash", valeBash);
+            AssignClip(so, "valePunch", valePunch);
             so.ApplyModifiedPropertiesWithoutUndo();
             UnityEventTools.AddPersistentListener(menu.onClick, view.BackToMenu);
 
@@ -161,6 +154,28 @@ namespace BattleTv.Menu.EditorTools
             importer.SaveAndReimport();
         }
 
+        static Sprite[] LoadClip(string folder, int count)
+        {
+            var frames = new Sprite[count];
+            for (int i = 0; i < count; i++)
+            {
+                var path = "Assets/Art/Duel/" + folder + "/f" + i.ToString("00") + ".png";
+                ConfigureToss(path);
+                frames[i] = AssetDatabase.LoadAssetAtPath<Sprite>(path);
+                if (frames[i] == null)
+                    throw new FileNotFoundException("Vale clip frame did not import.", path);
+            }
+            return frames;
+        }
+
+        static void AssignClip(SerializedObject so, string property, Sprite[] frames)
+        {
+            var prop = so.FindProperty(property);
+            prop.arraySize = frames.Length;
+            for (int i = 0; i < frames.Length; i++)
+                prop.GetArrayElementAtIndex(i).objectReferenceValue = frames[i];
+        }
+
         static void ConfigureToss(string path)
         {
             var importer = AssetImporter.GetAtPath(path) as TextureImporter;
@@ -172,7 +187,7 @@ namespace BattleTv.Menu.EditorTools
             importer.mipmapEnabled = false;
             importer.alphaIsTransparency = true;
             importer.textureCompression = TextureImporterCompression.CompressedHQ;
-            importer.maxTextureSize = 512;
+            importer.maxTextureSize = 384;
             importer.filterMode = FilterMode.Bilinear;
             var settings = new TextureImporterSettings();
             importer.ReadTextureSettings(settings);

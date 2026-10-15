@@ -50,6 +50,7 @@ namespace BattleTv.Fight
         public const double Lane = 18;
         public const double CloseCd = 30;
         public const double CloseCost = 8;
+        public const double ValeCharge = 1.15;
         const double ReachPad = 0.5;
         const double WallCost = 16.5;
         const double WardCost = 17.6;
@@ -244,14 +245,42 @@ namespace BattleTv.Fight
                 RaiseWall(self);
 
             dist = Math.Abs(self.X - other.X);
-            if (dist <= self.Range + ReachPad)
+            double reach = self.Range + ReachPad;
+            if (self.Name == "Vale" && dist <= reach + ValeCharge)
+            {
+                if (self.AtkCd > 0)
+                {
+                    if (dist > reach)
+                        self.X += Math.Sign(other.X - self.X) * self.Speed * dt;
+                    return;
+                }
+                bool bash = dist > reach;
+                if (bash)
+                {
+                    double dir = Math.Sign(other.X - self.X);
+                    if (dir == 0)
+                        dir = 1;
+                    self.X += dir * Math.Min(ValeCharge, dist - reach + 0.08);
+                    dist = Math.Abs(self.X - other.X);
+                }
+                if (dist <= reach + 0.12)
+                {
+                    bool crit = rng.NextDouble() < self.Crit;
+                    Hit(self, other, self.Dmg, true, crit, false, time);
+                }
+                self.AtkCd = 1.0 / Math.Max(0.15, self.Rate);
+                self.Callout = bash ? "Shield Bash" : "Punch";
+                self.Swing = bash ? 0.36 : 0.24;
+                return;
+            }
+            if (self.Name != "Vale" && dist <= reach)
             {
                 if (self.AtkCd > 0)
                     return;
                 bool crit = rng.NextDouble() < self.Crit;
                 Hit(self, other, self.Dmg, true, crit, false, time);
                 self.AtkCd = 1.0 / Math.Max(0.15, self.Rate);
-                self.Callout = self.Name == "Vale" ? "Cleave" : "Heavy Sweep";
+                self.Callout = "Heavy Sweep";
                 self.Swing = 0.22;
                 return;
             }

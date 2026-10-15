@@ -20,9 +20,15 @@ namespace BattleTv.Fight
         [SerializeField] Text callout;
         [SerializeField] Text result;
         [SerializeField] Sprite[] valeToss;
+        [SerializeField] Sprite[] valeBash;
+        [SerializeField] Sprite[] valePunch;
 
         const float TossTime = 0.5f;
+        const float BashTime = 0.4f;
+        const float PunchTime = 0.34f;
         const float TossPivot = 0.3f;
+        const float BashPivot = 0.39f;
+        const float PunchPivot = 0.37f;
 
         Body _vale;
         Body _brute;
@@ -32,7 +38,11 @@ namespace BattleTv.Fight
         int _appliedW = -1;
         int _appliedH = -1;
         string _lastLine = "";
-        float _tossT = -1f;
+        Sprite[] _clip;
+        float _clipT = -1f;
+        float _clipDur = 0.4f;
+        float _clipPivot = 0.5f;
+        float _prevSwing;
         Sprite _valeIdle;
 
         void Start()
@@ -57,11 +67,11 @@ namespace BattleTv.Fight
         void Update()
         {
             float frameDt = Mathf.Min(Time.unscaledDeltaTime, 0.05f);
-            if (_tossT >= 0f)
+            if (_clipT >= 0f)
             {
-                _tossT += frameDt;
-                if (_tossT >= TossTime)
-                    _tossT = -1f;
+                _clipT += frameDt;
+                if (_clipT >= _clipDur)
+                    _clipT = -1f;
             }
             Fit();
             if (!_over && _vale != null && _brute != null)
@@ -69,8 +79,9 @@ namespace BattleTv.Fight
                 double dt = frameDt;
                 _time += dt;
                 SideDuel.Step(_vale, _brute, dt, _rng, _time);
-                if (_vale.Callout == "Cleave" && _vale.Swing > 0.18f && _tossT < 0f)
-                    _tossT = 0f;
+                if (_vale.Swing > _prevSwing && _vale.Swing > 0.18f && _clipT < 0f)
+                    BeginValeClip(_vale.Callout);
+                _prevSwing = (float)_vale.Swing;
                 if (!_vale.Alive || !_brute.Alive)
                 {
                     _over = true;
@@ -133,31 +144,51 @@ namespace BattleTv.Fight
             float height = plate.rect.height;
             if (width < 2f || height < 2f)
                 return;
-            bool tossing = body.Name == "Vale" && _tossT >= 0f && valeToss != null && valeToss.Length > 0;
+            bool playing = body.Name == "Vale" && _clipT >= 0f && _clip != null && _clip.Length > 0;
             var image = rect.GetComponent<Image>();
             if (image != null && body.Name == "Vale")
             {
-                if (tossing)
+                if (playing)
                 {
-                    int frame = Mathf.Clamp(Mathf.FloorToInt(_tossT / TossTime * valeToss.Length), 0, valeToss.Length - 1);
-                    if (valeToss[frame] != null)
-                        image.sprite = valeToss[frame];
+                    int frame = Mathf.Clamp(Mathf.FloorToInt(_clipT / _clipDur * _clip.Length), 0, _clip.Length - 1);
+                    if (_clip[frame] != null)
+                        image.sprite = _clip[frame];
                 }
                 else if (_valeIdle != null)
                     image.sprite = _valeIdle;
             }
             float x = (float)(body.X / SideDuel.Lane) * width - width * 0.5f;
-            if (body.Swing > 0.08f && !tossing)
+            if (body.Swing > 0.08f && !playing)
                 x += facing * width * 0.012f;
             float feet = -height * 0.5f + height * Feet;
             rect.anchorMin = rect.anchorMax = new Vector2(0.5f, 0.5f);
-            rect.pivot = new Vector2(tossing ? TossPivot : 0.5f, 0f);
+            rect.pivot = new Vector2(playing ? _clipPivot : 0.5f, 0f);
             float spriteH = height * Band * (body.Name == "Brute" ? 0.56f : 0.5f);
             float aspect = 0.7f;
             if (image != null && image.sprite != null)
                 aspect = image.sprite.rect.width / image.sprite.rect.height;
             rect.sizeDelta = new Vector2(spriteH * aspect, spriteH);
             rect.anchoredPosition = new Vector2(x, feet);
+        }
+
+        void BeginValeClip(string callout)
+        {
+            if (callout == "Shield Bash")
+                Arm(valeBash, BashTime, BashPivot);
+            else if (callout == "Punch")
+                Arm(valePunch, PunchTime, PunchPivot);
+            else if (callout == "Aegis Cover")
+                Arm(valeToss, TossTime, TossPivot);
+        }
+
+        void Arm(Sprite[] frames, float duration, float pivot)
+        {
+            if (frames == null || frames.Length == 0)
+                return;
+            _clip = frames;
+            _clipDur = duration;
+            _clipPivot = pivot;
+            _clipT = 0f;
         }
 
         void Fit()
