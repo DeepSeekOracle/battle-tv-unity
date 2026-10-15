@@ -187,11 +187,15 @@
     audio.src = tracks[index].url;
     paint();
   }
+  var hopping = false;
   function next() {
+    if (hopping) return;
+    hopping = true;
     if (!bag.length) refill();
     var i = bag.pop();
     loadAt(i == null ? 0 : i);
-    if (playing) audio.play().catch(function () {});
+    hopping = false;
+    if (playing && audio && audio.src) audio.play().catch(function () {});
   }
   window.battleTvRadioPlaying = function () { return playing && !muted; };
   if (playBtn) playBtn.addEventListener("click", function () {
@@ -216,7 +220,7 @@
   });
   if (audio) {
     audio.addEventListener("ended", function () { playing = true; next(); });
-    audio.addEventListener("error", function () { if (playing) next(); });
+    audio.addEventListener("error", function () { if (playing && !hopping) next(); });
   }
   fetch("StreamingAssets/menu/radio.json").then(function (r) { return r.json(); }).then(function (data) {
     var raw = data.tracks || data;

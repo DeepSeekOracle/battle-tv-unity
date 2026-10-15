@@ -129,6 +129,7 @@ namespace BattleTv.Menu.EditorTools
                 html = html.Replace(shown, shown + "\n                if (window.battleTvStartIntro) window.battleTvStartIntro();");
             html = html.Replace("canvas.style.width = \"960px\";", "canvas.style.width = \"100vw\";");
             html = html.Replace("canvas.style.height = \"600px\";", "canvas.style.height = \"100vh\";");
+            html = StampBuildUrls(html, Path.GetDirectoryName(indexPath));
             if (!html.Contains("id=\"battle-tv-chrome\""))
             {
                 var chromePath = Path.GetFullPath(Path.Combine(Application.dataPath, "..", "tools", "page-chrome.html"));
@@ -138,6 +139,54 @@ namespace BattleTv.Menu.EditorTools
                 html = html.Replace(body, body + "\n" + chrome);
             }
             File.WriteAllText(indexPath, html);
+        }
+
+        /// <summary>
+        /// The loader keeps the last build in IndexedDB. A new wasm on the same
+        /// URL makes that cache throw "Maximum call stack size exceeded".
+        /// </summary>
+        static string StampBuildUrls(string html, string output)
+        {
+            if (html.Contains("var buildStamp"))
+                return html;
+            var build = Path.Combine(output, "Build");
+            long data = new FileInfo(Path.Combine(build, "docs.data.unityweb")).Length;
+            long framework = new FileInfo(Path.Combine(build, "docs.framework.js.unityweb")).Length;
+            long wasm = new FileInfo(Path.Combine(build, "docs.wasm.unityweb")).Length;
+            if (data < 1 || framework < 1 || wasm < 1)
+                throw new InvalidOperationException("WebGL build files are missing, so the page cannot be cache-stamped.");
+            var stamp = data + "-" + framework + "-" + wasm;
+            var stamped = html.Replace(
+                "var loaderUrl = buildUrl + \"/docs.loader.js\";",
+                "var buildStamp = \"" + stamp + "\";\n      var loaderUrl = buildUrl + \"/docs.loader.js?v=\" + buildStamp;");
+            stamped = stamped.Replace("buildUrl + \"/docs.data.unityweb\"", "buildUrl + \"/docs.data.unityweb?v=\" + buildStamp");
+            stamped = stamped.Replace("buildUrl + \"/docs.framework.js.unityweb\"", "buildUrl + \"/docs.framework.js.unityweb?v=\" + buildStamp");
+            stamped = stamped.Replace("buildUrl + \"/docs.wasm.unityweb\"", "buildUrl + \"/docs.wasm.unityweb?v=\" + buildStamp");
+            const string open = "script.onload = () => {\n        createUnityInstance(canvas, config, (progress) => {";
+            const string shut = "}).catch((message) => {\n                alert(message);\n              });\n            };";
+            if (!stamped.Contains("var buildStamp") || !stamped.Contains(open) || !stamped.Contains(shut))
+                throw new InvalidOperationException("index.html has no Unity loader lines to cache-stamp.");
+            const string fresh = @"function battleTvFreshCache() {
+        var key = ""battleTvBuild"";
+        var same = false;
+        try { same = localStorage.getItem(key) === buildStamp; } catch (e) {}
+        if (same) return Promise.resolve();
+        try { localStorage.setItem(key, buildStamp); } catch (e) {}
+        return new Promise(function (resolve) {
+          var done = false;
+          function finish() { if (!done) { done = true; resolve(); } }
+          setTimeout(finish, 1200);
+          try {
+            var req = indexedDB.deleteDatabase(""UnityCache"");
+            req.onsuccess = req.onerror = req.onblocked = finish;
+          } catch (e) { finish(); }
+        });
+      }
+
+      ";
+            stamped = stamped.Replace(open, fresh + "script.onload = () => {\n        battleTvFreshCache().then(function () {\n        createUnityInstance(canvas, config, (progress) => {");
+            stamped = stamped.Replace(shut, "}).catch((message) => {\n                alert(message);\n              });\n        });\n            };");
+            return stamped;
         }
 
         static void AssertIntroTrack(string output)

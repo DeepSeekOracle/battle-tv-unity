@@ -197,11 +197,15 @@
     audio.src = tracks[index].url;
     paint();
   }
+  var hopping = false;
   function next() {
+    if (hopping) return;
+    hopping = true;
     if (!bag.length) refill();
     var i = bag.pop();
     loadAt(i == null ? 0 : i);
-    if (playing) audio.play().catch(function () {});
+    hopping = false;
+    if (playing && audio && audio.src) audio.play().catch(function () {});
   }
   window.battleTvRadioPlaying = function () { return playing && !muted; };
   if (playBtn) playBtn.addEventListener("click", function () {
@@ -226,7 +230,7 @@
   });
   if (audio) {
     audio.addEventListener("ended", function () { playing = true; next(); });
-    audio.addEventListener("error", function () { if (playing) next(); });
+    audio.addEventListener("error", function () { if (playing && !hopping) next(); });
   }
   fetch("StreamingAssets/menu/radio.json").then(function (r) { return r.json(); }).then(function (data) {
     var raw = data.tracks || data;
@@ -316,12 +320,13 @@
       }
 
       var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/docs.loader.js";
+      var buildStamp = "10347249-72021-3890456";
+      var loaderUrl = buildUrl + "/docs.loader.js?v=" + buildStamp;
       var config = {
         arguments: [],
-        dataUrl: buildUrl + "/docs.data.unityweb",
-        frameworkUrl: buildUrl + "/docs.framework.js.unityweb",
-        codeUrl: buildUrl + "/docs.wasm.unityweb",
+        dataUrl: buildUrl + "/docs.data.unityweb?v=" + buildStamp,
+        frameworkUrl: buildUrl + "/docs.framework.js.unityweb?v=" + buildStamp,
+        codeUrl: buildUrl + "/docs.wasm.unityweb?v=" + buildStamp,
         streamingAssetsUrl: "StreamingAssets",
         companyName: "DeepSeekOracle",
         productName: "Battle TV",
@@ -374,9 +379,27 @@
 
       document.querySelector("#unity-loading-bar").style.display = "block";
 
+      function battleTvFreshCache() {
+        var key = "battleTvBuild";
+        var same = false;
+        try { same = localStorage.getItem(key) === buildStamp; } catch (e) {}
+        if (same) return Promise.resolve();
+        try { localStorage.setItem(key, buildStamp); } catch (e) {}
+        return new Promise(function (resolve) {
+          var done = false;
+          function finish() { if (!done) { done = true; resolve(); } }
+          setTimeout(finish, 1200);
+          try {
+            var req = indexedDB.deleteDatabase("UnityCache");
+            req.onsuccess = req.onerror = req.onblocked = finish;
+          } catch (e) { finish(); }
+        });
+      }
+
       var script = document.createElement("script");
       script.src = loaderUrl;
       script.onload = () => {
+        battleTvFreshCache().then(function () {
         createUnityInstance(canvas, config, (progress) => {
           document.querySelector("#unity-progress-bar-full").style.width = 100 * progress + "%";
               }).then((unityInstance) => {
@@ -389,6 +412,7 @@
               }).catch((message) => {
                 alert(message);
               });
+        });
             };
 
       document.body.appendChild(script);
