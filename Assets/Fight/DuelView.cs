@@ -12,10 +12,9 @@ namespace BattleTv.Fight
         [SerializeField] RectTransform plate;
         [SerializeField] RectTransform valeBody;
         [SerializeField] RectTransform bruteBody;
-        [SerializeField] Image valeFill;
-        [SerializeField] Image bruteFill;
-        [SerializeField] Text valeHp;
-        [SerializeField] Text bruteHp;
+        [SerializeField] LaneHud valeHud;
+        [SerializeField] LaneHud bruteHud;
+        [SerializeField] Text clock;
         [SerializeField] Text callout;
         [SerializeField] Text result;
 
@@ -71,8 +70,19 @@ namespace BattleTv.Fight
                 return;
             Place(_vale, valeBody, 1);
             Place(_brute, bruteBody, -1);
-            Write(valeFill, valeHp, _vale);
-            Write(bruteFill, bruteHp, _brute);
+            bool fists = _vale.Range <= 110.0 / 32.0 && _brute.Range <= 110.0 / 32.0;
+            if (valeHud != null)
+                valeHud.Show(_vale, fists);
+            if (bruteHud != null)
+                bruteHud.Show(_brute, fists);
+            if (clock != null)
+            {
+                int secs = Mathf.FloorToInt((float)_time);
+                clock.text = (secs / 60) + ":" + (secs % 60).ToString("00");
+                clock.color = _time >= SideDuel.SuddenAt
+                    ? new Color(0.98f, 0.75f, 0.14f, 1f)
+                    : new Color(0.965f, 0.906f, 0.757f, 1f);
+            }
             if (callout == null)
                 return;
             string line = "";
@@ -110,23 +120,6 @@ namespace BattleTv.Fight
                 aspect = image.sprite.rect.width / image.sprite.rect.height;
             rect.sizeDelta = new Vector2(spriteH * aspect, spriteH);
             rect.anchoredPosition = new Vector2(x, feet);
-        }
-
-        static void Write(Image fill, Text label, Body body)
-        {
-            float ratio = body.Max <= 0 ? 0f : (float)(body.Hp / body.Max);
-            if (fill != null)
-            {
-                var rect = fill.rectTransform;
-                rect.anchorMax = new Vector2(Mathf.Clamp01(ratio), 1f);
-                rect.offsetMin = Vector2.zero;
-                rect.offsetMax = Vector2.zero;
-            }
-            if (label != null)
-            {
-                string plate = body.Shield > 0.5 ? "    plate " + Mathf.CeilToInt((float)body.Shield) : "";
-                label.text = body.Name + "  " + Mathf.CeilToInt((float)body.Hp) + plate + "    " + body.Cards;
-            }
         }
 
         void Fit()
