@@ -6,8 +6,8 @@ namespace BattleTv.Menu
 {
     /// <summary>
     /// Fits the 1280×720 plate to the window. Wider than 16:9 crops the top and
-    /// bottom equally. Narrower than 16:9 letterboxes. The same rect is used for
-    /// the still and the clip.
+    /// bottom equally. Narrower than 16:9 letterboxes. The still, the resting
+    /// loop, and the one-shot clip share that rect.
     /// </summary>
     public sealed class MenuController : MonoBehaviour
     {
@@ -15,6 +15,7 @@ namespace BattleTv.Menu
         public const float PlateHeight = 720f;
         public const float FadeSeconds = 0.25f;
         public const string ClipFileName = "Vale-vs-Brute-push.mp4";
+        public const string RestFileName = "Vale-vs-Brute-rest.mp4";
 
         public readonly struct FitResult
         {
@@ -31,9 +32,12 @@ namespace BattleTv.Menu
         }
 
         [SerializeField] RectTransform plate;
+        [SerializeField] RawImage restImage;
+        [SerializeField] VideoPlayer rest;
         [SerializeField] RawImage videoImage;
         [SerializeField] VideoPlayer video;
 
+        RenderTexture _rest;
         RenderTexture _clip;
         bool _fading;
         float _fade;
@@ -91,30 +95,23 @@ namespace BattleTv.Menu
 
         public static string ClipUrl()
         {
-            return System.IO.Path.Combine(Application.streamingAssetsPath, "menu", ClipFileName);
+            return MediaUrl(ClipFileName);
+        }
+
+        public static string RestUrl()
+        {
+            return MediaUrl(RestFileName);
+        }
+
+        public static string MediaUrl(string fileName)
+        {
+            return System.IO.Path.Combine(Application.streamingAssetsPath, "menu", fileName);
         }
 
         void Awake()
         {
-            if (video != null)
-            {
-                _clip = new RenderTexture(1280, 720, 0, RenderTextureFormat.ARGB32);
-                _clip.Create();
-                video.source = VideoSource.Url;
-                video.url = ClipUrl();
-                video.isLooping = false;
-                video.playOnAwake = true;
-                video.audioOutputMode = VideoAudioOutputMode.None;
-                video.renderMode = VideoRenderMode.RenderTexture;
-                video.targetTexture = _clip;
-                video.loopPointReached += OnClipEnded;
-                video.errorReceived += OnVideoError;
-                if (videoImage != null)
-                {
-                    videoImage.texture = _clip;
-                    videoImage.uvRect = new Rect(0f, 0f, 1f, 1f);
-                }
-            }
+            _rest = Bind(rest, RestUrl(), true, restImage, false);
+            _clip = Bind(video, ClipUrl(), false, videoImage, true);
 
             var button = GetComponentInChildren<Button>(true);
             if (button != null && EventSystemsSelected() == null)
@@ -135,11 +132,54 @@ namespace BattleTv.Menu
                 video.errorReceived -= OnVideoError;
             }
 
-            if (_clip != null)
+            if (rest != null)
+                rest.errorReceived -= OnRestError;
+
+            Release(ref _clip);
+            Release(ref _rest);
+        }
+
+        RenderTexture Bind(VideoPlayer player, string url, bool looping, RawImage image, bool fadeOnEnd)
+        {
+            if (player == null)
+                return null;
+
+            var texture = new RenderTexture(1280, 720, 0, RenderTextureFormat.ARGB32);
+            texture.Create();
+            player.source = VideoSource.Url;
+            player.url = url;
+            player.isLooping = looping;
+            player.playOnAwake = true;
+            player.audioOutputMode = VideoAudioOutputMode.None;
+            player.renderMode = VideoRenderMode.RenderTexture;
+            player.aspectRatio = VideoAspectRatio.Stretch;
+            player.targetTexture = texture;
+            if (image != null)
             {
-                _clip.Release();
-                Destroy(_clip);
+                image.texture = texture;
+                image.uvRect = new Rect(0f, 0f, 1f, 1f);
             }
+
+            if (fadeOnEnd)
+            {
+                player.loopPointReached += OnClipEnded;
+                player.errorReceived += OnVideoError;
+            }
+            else
+            {
+                player.errorReceived += OnRestError;
+            }
+
+            return texture;
+        }
+
+        static void Release(ref RenderTexture texture)
+        {
+            if (texture == null)
+                return;
+            texture.Release();
+            Destroy(texture);
+            texture = null;
         }
 
         void Update()
@@ -186,6 +226,12 @@ namespace BattleTv.Menu
         void OnVideoError(VideoPlayer source, string message)
         {
             BeginFade();
+        }
+
+        void OnRestError(VideoPlayer source, string message)
+        {
+            if (restImage != null)
+                restImage.gameObject.SetActive(false);
         }
 
         void BeginFade()

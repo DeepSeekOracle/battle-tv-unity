@@ -110,19 +110,10 @@ namespace BattleTv.Menu.EditorTools
             if (still.sprite == null)
                 throw new FileNotFoundException("Menu plate sprite did not import.", PlatePath);
 
-            var clipObject = new GameObject("Clip", typeof(RectTransform), typeof(RawImage), typeof(VideoPlayer));
-            clipObject.transform.SetParent(plate, false);
-            Stretch(clipObject.GetComponent<RectTransform>());
-            var raw = clipObject.GetComponent<RawImage>();
-            raw.raycastTarget = false;
-            raw.color = Color.white;
-            var player = clipObject.GetComponent<VideoPlayer>();
-            player.source = VideoSource.Url;
-            player.isLooping = false;
-            player.playOnAwake = true;
-            player.audioOutputMode = VideoAudioOutputMode.None;
-            player.renderMode = VideoRenderMode.RenderTexture;
-            player.aspectRatio = VideoAspectRatio.Stretch;
+            var restPair = AddVideo(plate, "Rest", looping: true);
+            var clipPair = AddVideo(plate, "Clip", looping: false);
+            var raw = clipPair.image;
+            var player = clipPair.player;
 
             var buttonObject = new GameObject("BattleButton", typeof(RectTransform), typeof(Image), typeof(Button));
             buttonObject.transform.SetParent(plate, false);
@@ -180,6 +171,8 @@ namespace BattleTv.Menu.EditorTools
             var controller = canvasObject.AddComponent<MenuController>();
             var so = new SerializedObject(controller);
             so.FindProperty("plate").objectReferenceValue = plate;
+            so.FindProperty("restImage").objectReferenceValue = restPair.image;
+            so.FindProperty("rest").objectReferenceValue = restPair.player;
             so.FindProperty("videoImage").objectReferenceValue = raw;
             so.FindProperty("video").objectReferenceValue = player;
             so.ApplyModifiedPropertiesWithoutUndo();
@@ -213,6 +206,24 @@ namespace BattleTv.Menu.EditorTools
 
             if (AssetDatabase.LoadAssetAtPath<SceneAsset>("Assets/Scenes/SampleScene.unity") != null)
                 AssetDatabase.DeleteAsset("Assets/Scenes/SampleScene.unity");
+        }
+
+        public static (RawImage image, VideoPlayer player) AddVideo(Transform parent, string name, bool looping)
+        {
+            var clipObject = new GameObject(name, typeof(RectTransform), typeof(RawImage), typeof(VideoPlayer));
+            clipObject.transform.SetParent(parent, false);
+            Stretch(clipObject.GetComponent<RectTransform>());
+            var raw = clipObject.GetComponent<RawImage>();
+            raw.raycastTarget = false;
+            raw.color = Color.white;
+            var player = clipObject.GetComponent<VideoPlayer>();
+            player.source = VideoSource.Url;
+            player.isLooping = looping;
+            player.playOnAwake = true;
+            player.audioOutputMode = VideoAudioOutputMode.None;
+            player.renderMode = VideoRenderMode.RenderTexture;
+            player.aspectRatio = VideoAspectRatio.Stretch;
+            return (raw, player);
         }
 
         static void Stretch(RectTransform rect)

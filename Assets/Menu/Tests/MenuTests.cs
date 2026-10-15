@@ -4,6 +4,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Video;
 
 namespace BattleTv.Menu.Tests
 {
@@ -11,6 +12,7 @@ namespace BattleTv.Menu.Tests
     {
         const int PlateBytes = 282368;
         const int ClipBytes = 2145773;
+        const int RestBytes = 3216639;
 
         [Test]
         public void SixteenByNineFillsThePlate()
@@ -52,8 +54,10 @@ namespace BattleTv.Menu.Tests
         {
             string jpg = Path.Combine(Application.dataPath, "Art", "Menu", "Vale-vs-Brute.jpg");
             string mp4 = Path.Combine(Application.dataPath, "StreamingAssets", "menu", "Vale-vs-Brute-push.mp4");
+            string rest = Path.Combine(Application.dataPath, "StreamingAssets", "menu", "Vale-vs-Brute-rest.mp4");
             Assert.AreEqual(PlateBytes, new FileInfo(jpg).Length, jpg);
             Assert.AreEqual(ClipBytes, new FileInfo(mp4).Length, mp4);
+            Assert.AreEqual(RestBytes, new FileInfo(rest).Length, rest);
         }
 
         [Test]
@@ -76,6 +80,8 @@ namespace BattleTv.Menu.Tests
             var still = GameObject.Find("Still").GetComponent<Image>();
             Assert.IsFalse(still.preserveAspect);
             Assert.AreEqual("Vale-vs-Brute", still.sprite.name);
+            AssertLoop("Rest", looping: true);
+            AssertLoop("Clip", looping: false);
 
             var scenes = EditorBuildSettings.scenes;
             Assert.AreEqual(2, scenes.Length);
@@ -83,6 +89,26 @@ namespace BattleTv.Menu.Tests
             Assert.AreEqual("Assets/Menu/GameMenu.unity", scenes[1].path);
             Assert.IsTrue(scenes[0].enabled);
             Assert.IsTrue(scenes[1].enabled);
+        }
+
+        [Test]
+        public void GameMenuLoopsTheRestPlate()
+        {
+            var scene = EditorSceneManager.OpenScene("Assets/Menu/GameMenu.unity", OpenSceneMode.Single);
+            Assert.AreEqual("GameMenu", scene.name);
+            Assert.IsNull(GameObject.Find("Clip"));
+            AssertLoop("Rest", looping: true);
+            var buttons = Object.FindObjectsByType<Button>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            Assert.AreEqual(5, buttons.Length);
+        }
+
+        static void AssertLoop(string objectName, bool looping)
+        {
+            var player = GameObject.Find(objectName).GetComponent<VideoPlayer>();
+            Assert.NotNull(player);
+            Assert.AreEqual(looping, player.isLooping);
+            Assert.AreEqual(VideoAudioOutputMode.None, player.audioOutputMode);
+            Assert.IsFalse(player.GetComponent<RawImage>().raycastTarget);
         }
 
         static void AssertFighters(MenuController.FitResult fit)

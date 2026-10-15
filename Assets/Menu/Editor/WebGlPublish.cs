@@ -12,6 +12,7 @@ namespace BattleTv.Menu.EditorTools
     {
         const int PlateBytes = 282368;
         const int ClipBytes = 2145773;
+        const int RestBytes = 3216639;
         const long TargetBytes = 20L * 1024L * 1024L;
 
         public static void Publish()
@@ -42,6 +43,7 @@ namespace BattleTv.Menu.EditorTools
                 InjectIntroBed(indexPath);
                 AssertRelativePaths(indexPath);
                 AssertPublishedClip(output);
+                AssertPublishedRest(output);
                 AssertIntroTrack(output);
                 long bytes = WriteManifest(output);
                 Debug.Log("[WebGlPublish] docs bytes " + bytes + (bytes <= TargetBytes ? " within 20 MB target" : " OVER 20 MB target"));
@@ -58,10 +60,13 @@ namespace BattleTv.Menu.EditorTools
         {
             var jpg = new FileInfo(Path.Combine(Application.dataPath, "Art", "Menu", "Vale-vs-Brute.jpg"));
             var mp4 = new FileInfo(Path.Combine(Application.dataPath, "StreamingAssets", "menu", "Vale-vs-Brute-push.mp4"));
+            var rest = new FileInfo(Path.Combine(Application.dataPath, "StreamingAssets", "menu", "Vale-vs-Brute-rest.mp4"));
             if (jpg.Length != PlateBytes)
                 throw new InvalidOperationException("Plate bytes " + jpg.Length);
             if (mp4.Length != ClipBytes)
                 throw new InvalidOperationException("Clip bytes " + mp4.Length);
+            if (rest.Length != RestBytes)
+                throw new InvalidOperationException("Rest bytes " + rest.Length);
         }
 
         static void ApplyPlayerSettings()
@@ -138,6 +143,13 @@ namespace BattleTv.Menu.EditorTools
                 throw new InvalidOperationException("Published clip bytes " + (clip.Exists ? clip.Length : 0));
         }
 
+        static void AssertPublishedRest(string output)
+        {
+            var rest = new FileInfo(Path.Combine(output, "StreamingAssets", "menu", "Vale-vs-Brute-rest.mp4"));
+            if (!rest.Exists || rest.Length != RestBytes)
+                throw new InvalidOperationException("Published rest bytes " + (rest.Exists ? rest.Length : 0));
+        }
+
         static long WriteManifest(string output)
         {
             long bytes = Directory.GetFiles(output, "*", SearchOption.AllDirectories)
@@ -152,6 +164,7 @@ namespace BattleTv.Menu.EditorTools
                 + "  \"gitSha\": \"" + sha + "\",\n"
                 + "  \"plateBytes\": " + PlateBytes + ",\n"
                 + "  \"clipBytes\": " + ClipBytes + ",\n"
+                + "  \"restBytes\": " + RestBytes + ",\n"
                 + "  \"targetBytes\": " + TargetBytes + ",\n"
                 + "  \"withinTarget\": " + (bytes <= TargetBytes ? "true" : "false") + "\n"
                 + "}\n";

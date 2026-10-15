@@ -10,8 +10,10 @@ param(
 $ErrorActionPreference = "Stop"
 $plate = Join-Path $Project "Assets\Art\Menu\Vale-vs-Brute.jpg"
 $clip = Join-Path $Project "Assets\StreamingAssets\menu\Vale-vs-Brute-push.mp4"
+$rest = Join-Path $Project "Assets\StreamingAssets\menu\Vale-vs-Brute-rest.mp4"
 if ((Get-Item -LiteralPath $plate).Length -ne 282368) { throw "Plate is not 282368 bytes." }
 if ((Get-Item -LiteralPath $clip).Length -ne 2145773) { throw "Clip is not 2145773 bytes." }
+if ((Get-Item -LiteralPath $rest).Length -ne 3216639) { throw "Rest loop is not 3216639 bytes." }
 
 $sha = (git -C $Project rev-parse HEAD).Trim()
 if ($sha) { $env:BATTLETV_GIT_SHA = $sha }
@@ -44,5 +46,7 @@ if ($index -match '"/Build' -or $index -match "'/Build" -or $index -match '"/Str
 }
 $publishedClip = Join-Path $Project "docs\StreamingAssets\menu\Vale-vs-Brute-push.mp4"
 if ((Get-Item -LiteralPath $publishedClip).Length -ne 2145773) { throw "Published clip bytes changed." }
+$publishedRest = Join-Path $Project "docs\StreamingAssets\menu\Vale-vs-Brute-rest.mp4"
+if ((Get-Item -LiteralPath $publishedRest).Length -ne 3216639) { throw "Published rest loop bytes changed." }
 Write-Host "WebGL menu is in docs/. Manifest:"
 Get-Content -LiteralPath (Join-Path $Project "docs\build-manifest.json")

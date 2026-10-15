@@ -1,9 +1,10 @@
 {
   "editor": "6000.5.9f1",
-  "bytes": 16339870,
-  "gitSha": "a10e7d46d4d5b31183e712b1afc3d0e830d7cc5e",
+  "bytes": 19557278,
+  "gitSha": "32567e40066ef1b854d79e25c6cffc826c34c83a",
   "plateBytes": 282368,
   "clipBytes": 2145773,
+  "restBytes": 3216639,
   "targetBytes": 20971520,
   "withinTarget": true
 }
