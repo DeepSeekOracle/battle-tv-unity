@@ -48,5 +48,10 @@ $publishedClip = Join-Path $Project "docs\StreamingAssets\menu\Vale-vs-Brute-pus
 if ((Get-Item -LiteralPath $publishedClip).Length -ne 2145773) { throw "Published clip bytes changed." }
 $publishedRest = Join-Path $Project "docs\StreamingAssets\menu\Vale-vs-Brute-rest.mp4"
 if ((Get-Item -LiteralPath $publishedRest).Length -ne 3216639) { throw "Published rest loop bytes changed." }
+if ($index -notmatch "Created by Justin Helmer") { throw "Intro credit is missing." }
+if ($index -notmatch "https://chatagent.ca/games/lattice-arena/") { throw "Arena link is missing." }
+if ($index -notmatch "100vw") { throw "The page canvas is still the 960 template." }
+$radio = Join-Path $Project "docs\StreamingAssets\menu\radio.json"
+if ((Get-Item -LiteralPath $radio).Length -lt 1000) { throw "Radio list did not publish." }
 Write-Host "WebGL menu is in docs/. Manifest:"
 Get-Content -LiteralPath (Join-Path $Project "docs\build-manifest.json")

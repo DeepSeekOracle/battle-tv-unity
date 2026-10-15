@@ -48,6 +48,11 @@ namespace BattleTv.Menu.EditorTools
                 throw new FileNotFoundException("Menu plate sprite did not import.", PlatePath);
 
             var restPair = MenuSceneSetup.AddVideo(plate, "Rest", looping: true);
+            var chrome = canvasObject.AddComponent<PageChrome>();
+            var chromeObject = new SerializedObject(chrome);
+            chromeObject.FindProperty("screen").stringValue = "menu";
+            chromeObject.ApplyModifiedPropertiesWithoutUndo();
+
             var menu = canvasObject.AddComponent<GameMenuController>();
             var fit = canvasObject.AddComponent<MenuController>();
             var fitObject = new SerializedObject(fit);

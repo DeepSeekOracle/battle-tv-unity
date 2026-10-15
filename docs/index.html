@@ -8,6 +8,256 @@
     <link rel="stylesheet" href="TemplateData/style.css">
   </head>
   <body>
+<style>
+  #unity-footer { display: none !important; }
+  #battle-tv-chrome {
+    position: fixed;
+    inset: 0;
+    z-index: 30;
+    pointer-events: none;
+    font-family: "Segoe UI", Tahoma, sans-serif;
+    color: #f6e7c1;
+  }
+  #battle-tv-chrome .edge {
+    position: absolute;
+    left: 0;
+    right: 0;
+    display: none;
+    align-items: center;
+    gap: 10px;
+    box-sizing: border-box;
+    padding: 0 14px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-size: 11px;
+    font-weight: 700;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+  }
+  #battle-tv-chrome[data-screen="intro"] .edge[data-for~="intro"],
+  #battle-tv-chrome[data-screen="menu"] .edge[data-for~="menu"] { display: flex; }
+  #battle-tv-chrome .edge.top {
+    top: 0;
+    height: 36px;
+    justify-content: center;
+    background: linear-gradient(to bottom, rgba(8, 6, 4, 0.78), rgba(8, 6, 4, 0));
+  }
+  #battle-tv-chrome .edge.bottom {
+    bottom: 0;
+    height: 42px;
+    justify-content: space-between;
+    background: linear-gradient(to top, rgba(8, 6, 4, 0.82), rgba(8, 6, 4, 0));
+  }
+  #battle-tv-chrome a,
+  #battle-tv-chrome button {
+    pointer-events: auto;
+    color: #f6e7c1;
+    background: rgba(12, 9, 6, 0.62);
+    border: 1px solid rgba(245, 158, 11, 0.9);
+    border-radius: 2px;
+    font: inherit;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1;
+    padding: 5px 8px;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  #battle-tv-chrome a:hover,
+  #battle-tv-chrome button:hover { background: #f59e0b; color: #1a1206; }
+  #bt-options { position: absolute; top: 10px; left: 12px; display: none; }
+  #battle-tv-chrome[data-screen="menu"] #bt-options { display: block; }
+  #bt-options-panel {
+    display: none;
+    margin-top: 6px;
+    padding: 8px;
+    background: rgba(12, 9, 6, 0.9);
+    border: 1px solid rgba(245, 158, 11, 0.9);
+  }
+  #bt-options.open #bt-options-panel { display: block; }
+  #bt-options-panel button { display: block; width: 100%; margin-top: 6px; }
+  #bt-options-panel button:first-child { margin-top: 0; }
+  #bt-radio {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+  }
+  #bt-radio-title {
+    max-width: 26vw;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    letter-spacing: 0.04em;
+    text-transform: none;
+    font-weight: 600;
+    font-size: 11px;
+  }
+  #bt-radio-vol { pointer-events: auto; width: 68px; accent-color: #f59e0b; }
+  #bt-links { display: flex; gap: 6px; }
+</style>
+<div id="battle-tv-chrome" data-screen="intro">
+  <div class="edge top" data-for="intro"><span>Battle TV</span><span>·</span><span>LYGO Arena</span></div>
+  <div class="edge bottom" data-for="intro">
+    <span>Created by Justin Helmer</span>
+    <span>© <span id="bt-year"></span> Justin Helmer · Excavationpro · Eternal Haven · All rights reserved</span>
+  </div>
+  <div id="bt-options">
+    <button type="button" id="bt-options-btn">Options</button>
+    <div id="bt-options-panel">
+      <button type="button" id="bt-music">Music on</button>
+      <button type="button" id="bt-full">Full screen</button>
+    </div>
+  </div>
+  <div class="edge bottom" data-for="menu">
+    <a href="https://chatagent.ca/games/lattice-arena/">Lattice Arena</a>
+    <span id="bt-radio">
+      <button type="button" id="bt-radio-play">Play</button>
+      <button type="button" id="bt-radio-next">Next</button>
+      <button type="button" id="bt-radio-mute">Mute</button>
+      <input id="bt-radio-vol" type="range" min="0" max="100" value="55" aria-label="Radio volume">
+      <span id="bt-radio-title">Radio</span>
+    </span>
+    <span id="bt-links">
+      <a href="https://www.paypal.com/paypalme/ExcavationPro" target="_blank" rel="noopener">PayPal</a>
+      <a href="https://www.patreon.com/Excavationpro/posts/chatagent-ca-api-170485961" target="_blank" rel="noopener">Patreon</a>
+    </span>
+  </div>
+</div>
+<audio id="bt-radio-el" preload="none"></audio>
+<script>
+(function () {
+  var year = document.getElementById("bt-year");
+  if (year) year.textContent = String(new Date().getFullYear());
+  window.battleTvSetScreen = function (mode) {
+    var root = document.getElementById("battle-tv-chrome");
+    if (root) root.setAttribute("data-screen", mode || "intro");
+  };
+  var musicOff = false;
+  function bed() { return document.getElementById("intro-bed"); }
+  function applyBed() {
+    var node = bed();
+    if (!node) return;
+    var radioOn = window.battleTvRadioPlaying && window.battleTvRadioPlaying();
+    node.muted = musicOff || radioOn;
+    if (!node.muted && window.battleTvStartIntro) window.battleTvStartIntro();
+  }
+  var opt = document.getElementById("bt-options");
+  var optBtn = document.getElementById("bt-options-btn");
+  if (optBtn) optBtn.addEventListener("click", function () { opt.classList.toggle("open"); });
+  var musicBtn = document.getElementById("bt-music");
+  if (musicBtn) musicBtn.addEventListener("click", function () {
+    musicOff = !musicOff;
+    musicBtn.textContent = musicOff ? "Music off" : "Music on";
+    applyBed();
+  });
+  var full = document.getElementById("bt-full");
+  if (full) full.addEventListener("click", function () {
+    var native = document.getElementById("unity-fullscreen-button");
+    if (native) native.click();
+  });
+  var tracks = [];
+  var bag = [];
+  var index = 0;
+  var playing = false;
+  var muted = false;
+  var vol = 0.55;
+  try {
+    var saved = JSON.parse(localStorage.getItem("lygo_lattice_arena_radio") || "{}");
+    if (typeof saved.vol === "number") vol = Math.max(0, Math.min(1, saved.vol));
+    if (saved.muted) muted = true;
+  } catch (e) {}
+  function saveRadio() {
+    try { localStorage.setItem("lygo_lattice_arena_radio", JSON.stringify({ vol: vol, muted: muted })); } catch (e) {}
+  }
+  var audio = document.getElementById("bt-radio-el");
+  var title = document.getElementById("bt-radio-title");
+  var playBtn = document.getElementById("bt-radio-play");
+  var volInput = document.getElementById("bt-radio-vol");
+  function paint() {
+    var track = tracks[index];
+    if (title) title.textContent = track ? track.title : "Radio";
+    if (playBtn) playBtn.textContent = playing ? "Pause" : "Play";
+    var muteBtn = document.getElementById("bt-radio-mute");
+    if (muteBtn) muteBtn.textContent = muted ? "Unmute" : "Mute";
+    if (audio) { audio.volume = vol; audio.muted = muted; }
+    if (volInput && document.activeElement !== volInput) volInput.value = String(Math.round(vol * 100));
+  }
+  function refill() {
+    bag = tracks.map(function (_, i) { return i; });
+    for (var i = bag.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var swap = bag[i]; bag[i] = bag[j]; bag[j] = swap;
+    }
+  }
+  function loadAt(i) {
+    if (!tracks.length || !audio) return;
+    index = ((i % tracks.length) + tracks.length) % tracks.length;
+    audio.src = tracks[index].url;
+    paint();
+  }
+  function next() {
+    if (!bag.length) refill();
+    var i = bag.pop();
+    loadAt(i == null ? 0 : i);
+    if (playing) audio.play().catch(function () {});
+  }
+  window.battleTvRadioPlaying = function () { return playing && !muted; };
+  if (playBtn) playBtn.addEventListener("click", function () {
+    if (!tracks.length) return;
+    if (playing) { audio.pause(); playing = false; paint(); applyBed(); return; }
+    playing = true;
+    if (!audio.src) next();
+    applyBed();
+    audio.play().catch(function () { next(); });
+    paint();
+  });
+  var nextBtn = document.getElementById("bt-radio-next");
+  if (nextBtn) nextBtn.addEventListener("click", function () { playing = true; applyBed(); next(); });
+  var muteBtn = document.getElementById("bt-radio-mute");
+  if (muteBtn) muteBtn.addEventListener("click", function () {
+    muted = !muted; saveRadio(); paint(); applyBed();
+  });
+  if (volInput) volInput.addEventListener("input", function () {
+    vol = Number(volInput.value) / 100;
+    if (vol > 0 && muted) muted = false;
+    saveRadio(); paint(); applyBed();
+  });
+  if (audio) {
+    audio.addEventListener("ended", function () { playing = true; next(); });
+    audio.addEventListener("error", function () { if (playing) next(); });
+  }
+  fetch("StreamingAssets/menu/radio.json").then(function (r) { return r.json(); }).then(function (data) {
+    var raw = data.tracks || data;
+    tracks = raw.filter(function (t) { return t && (t.url || t.stream_url); }).map(function (t) {
+      return { title: t.title || t.name || "Untitled", url: t.url || t.stream_url };
+    });
+    refill();
+    paint();
+  }).catch(function () { if (title) title.textContent = "Radio offline"; });
+  paint();
+  function holdRest() {
+    if (document.visibilityState !== "visible") return;
+    var nodes = document.getElementsByTagName("video");
+    for (var i = 0; i < nodes.length; i++) {
+      var v = nodes[i];
+      var src = v.currentSrc || v.src || "";
+      if (src.indexOf("Vale-vs-Brute-push") !== -1) continue;
+      if (src.indexOf("Vale-vs-Brute-rest") === -1 && !v.loop) continue;
+      v.loop = true;
+      if (v.ended) v.currentTime = 0;
+      if (v.paused || v.ended) {
+        var attempt = v.play();
+        if (attempt && attempt.catch) attempt.catch(function () {});
+      }
+    }
+  }
+  document.addEventListener("visibilitychange", holdRest);
+  setInterval(holdRest, 1500);
+})();
+</script>
+
     <audio id="intro-bed" src="StreamingAssets/menu/Apex_Vanguard.mp3" loop autoplay preload="auto"></audio>
     <script>
       window.battleTvStartIntro = function () {
@@ -118,8 +368,8 @@
 
       } else {
         // Desktop style: Render the game canvas in a window that can be maximized to fullscreen:
-        canvas.style.width = "960px";
-        canvas.style.height = "600px";
+        canvas.style.width = "100vw";
+        canvas.style.height = "100vh";
       }
 
       document.querySelector("#unity-loading-bar").style.display = "block";

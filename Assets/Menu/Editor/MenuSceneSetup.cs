@@ -167,6 +167,11 @@ namespace BattleTv.Menu.EditorTools
             label.color = Hex(0x1a, 0x12, 0x06);
             label.raycastTarget = false;
 
+            var chrome = canvasObject.AddComponent<PageChrome>();
+            var chromeObject = new SerializedObject(chrome);
+            chromeObject.FindProperty("screen").stringValue = "intro";
+            chromeObject.ApplyModifiedPropertiesWithoutUndo();
+
             var gate = canvasObject.AddComponent<IntroGate>();
             var controller = canvasObject.AddComponent<MenuController>();
             var so = new SerializedObject(controller);

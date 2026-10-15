@@ -126,6 +126,16 @@ namespace BattleTv.Menu.EditorTools
                 html = html.Replace(body, body + bed);
             if (!html.Contains("battleTvStartIntro) window.battleTvStartIntro"))
                 html = html.Replace(shown, shown + "\n                if (window.battleTvStartIntro) window.battleTvStartIntro();");
+            html = html.Replace("canvas.style.width = \"960px\";", "canvas.style.width = \"100vw\";");
+            html = html.Replace("canvas.style.height = \"600px\";", "canvas.style.height = \"100vh\";");
+            if (!html.Contains("id=\"battle-tv-chrome\""))
+            {
+                var chromePath = Path.GetFullPath(Path.Combine(Application.dataPath, "..", "tools", "page-chrome.html"));
+                var chrome = File.ReadAllText(chromePath);
+                if (!chrome.Contains("Created by Justin Helmer") || !chrome.Contains("https://chatagent.ca/games/lattice-arena/"))
+                    throw new InvalidOperationException("Page chrome is missing the studio line or the arena link.");
+                html = html.Replace(body, body + "\n" + chrome);
+            }
             File.WriteAllText(indexPath, html);
         }
 

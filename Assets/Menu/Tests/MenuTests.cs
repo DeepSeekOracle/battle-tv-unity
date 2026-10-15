@@ -82,6 +82,7 @@ namespace BattleTv.Menu.Tests
             Assert.AreEqual("Vale-vs-Brute", still.sprite.name);
             AssertLoop("Rest", looping: true);
             AssertLoop("Clip", looping: false);
+            Assert.AreEqual("intro", Object.FindAnyObjectByType<PageChrome>().Screen);
 
             var scenes = EditorBuildSettings.scenes;
             Assert.AreEqual(2, scenes.Length);
@@ -98,6 +99,7 @@ namespace BattleTv.Menu.Tests
             Assert.AreEqual("GameMenu", scene.name);
             Assert.IsNull(GameObject.Find("Clip"));
             AssertLoop("Rest", looping: true);
+            Assert.AreEqual("menu", Object.FindAnyObjectByType<PageChrome>().Screen);
             var buttons = Object.FindObjectsByType<Button>(FindObjectsInactive.Include, FindObjectsSortMode.None);
             Assert.AreEqual(5, buttons.Length);
         }
@@ -109,6 +111,18 @@ namespace BattleTv.Menu.Tests
             Assert.AreEqual(looping, player.isLooping);
             Assert.AreEqual(VideoAudioOutputMode.None, player.audioOutputMode);
             Assert.IsFalse(player.GetComponent<RawImage>().raycastTarget);
+        }
+
+        [Test]
+        public void PageChromeNamesTheStudio()
+        {
+            string path = Path.GetFullPath(Path.Combine(Application.dataPath, "..", "tools", "page-chrome.html"));
+            string html = File.ReadAllText(path);
+            StringAssert.Contains("Created by Justin Helmer", html);
+            StringAssert.Contains("https://chatagent.ca/games/lattice-arena/", html);
+            StringAssert.Contains("https://www.paypal.com/paypalme/ExcavationPro", html);
+            StringAssert.Contains("https://www.patreon.com/Excavationpro/posts/chatagent-ca-api-170485961", html);
+            StringAssert.Contains(">Options<", html);
         }
 
         static void AssertFighters(MenuController.FitResult fit)

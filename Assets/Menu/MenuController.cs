@@ -133,7 +133,10 @@ namespace BattleTv.Menu
             }
 
             if (rest != null)
+            {
+                rest.loopPointReached -= OnRestEnded;
                 rest.errorReceived -= OnRestError;
+            }
 
             Release(ref _clip);
             Release(ref _rest);
@@ -167,6 +170,7 @@ namespace BattleTv.Menu
             }
             else
             {
+                player.loopPointReached += OnRestEnded;
                 player.errorReceived += OnRestError;
             }
 
@@ -226,6 +230,14 @@ namespace BattleTv.Menu
         void OnVideoError(VideoPlayer source, string message)
         {
             BeginFade();
+        }
+
+        void OnRestEnded(VideoPlayer source)
+        {
+            if (source == null)
+                return;
+            source.time = 0;
+            source.Play();
         }
 
         void OnRestError(VideoPlayer source, string message)

@@ -8,5 +8,9 @@ mergeInto(LibraryManager.library, {
     if (!bed) return;
     bed.muted = muted !== 0;
     if (muted === 0 && window.battleTvStartIntro) window.battleTvStartIntro();
+  },
+  BattleTvChrome: function (modePtr) {
+    if (!window.battleTvSetScreen) return;
+    window.battleTvSetScreen(UTF8ToString(modePtr));
   }
 });
