@@ -1,4 +1,5 @@
 using System.IO;
+using BattleTv.Fight;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -85,11 +86,13 @@ namespace BattleTv.Menu.Tests
             Assert.AreEqual("intro", Object.FindAnyObjectByType<PageChrome>().Screen);
 
             var scenes = EditorBuildSettings.scenes;
-            Assert.AreEqual(2, scenes.Length);
+            Assert.AreEqual(3, scenes.Length);
             Assert.AreEqual("Assets/Menu/Menu.unity", scenes[0].path);
             Assert.AreEqual("Assets/Menu/GameMenu.unity", scenes[1].path);
+            Assert.AreEqual("Assets/Fight/Duel.unity", scenes[2].path);
             Assert.IsTrue(scenes[0].enabled);
             Assert.IsTrue(scenes[1].enabled);
+            Assert.IsTrue(scenes[2].enabled);
         }
 
         [Test]
@@ -123,6 +126,24 @@ namespace BattleTv.Menu.Tests
             StringAssert.Contains("https://www.paypal.com/paypalme/ExcavationPro", html);
             StringAssert.Contains("https://www.patreon.com/Excavationpro/posts/chatagent-ca-api-170485961", html);
             StringAssert.Contains(">Options<", html);
+        }
+
+        [Test]
+        public void ValeAndBruteKeepTheRosterBuild()
+        {
+            var vale = SideDuel.Vale();
+            var brute = SideDuel.Brute();
+            Assert.AreEqual(1056, vale.Max);
+            Assert.AreEqual(1256, brute.Max);
+            Assert.AreEqual(12, vale.Armor);
+            Assert.AreEqual(9, brute.Armor);
+            Assert.AreEqual(20, SideDuel.Hit(vale, brute, vale.Dmg, true, false, false));
+            Assert.AreEqual(0, SideDuel.Hit(brute, vale, 5, true, false, false));
+            double plate = vale.Shield;
+            SideDuel.RaiseWall(vale);
+            plate = vale.Shield;
+            SideDuel.RaiseWall(vale);
+            Assert.AreEqual(plate, vale.Shield);
         }
 
         static void AssertFighters(MenuController.FitResult fit)

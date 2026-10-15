@@ -83,8 +83,8 @@ namespace BattleTv.Menu.EditorTools
             }
 
             var start = MakeButton(bar.transform, "BATTLE TV", new Vector2(0.22f, 0.08f), new Vector2(0.78f, 0.42f), true);
-            var launch = canvasObject.AddComponent<NoShow>();
-            UnityEventTools.AddPersistentListener(start.onClick, launch.RequestShow);
+            var gate = canvasObject.AddComponent<DuelGate>();
+            UnityEventTools.AddPersistentListener(start.onClick, gate.OpenCard);
 
             var menuObject = new SerializedObject(menu);
             menuObject.FindProperty("modes").arraySize = 4;

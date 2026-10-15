@@ -11,4 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Menu/GameMenu.unity
     guid: 10ce732289d044f47b0ee256fc6f2b13
+  - enabled: 1
+    path: Assets/Fight/Duel.unity
+    guid: 44452d42279ed7248916e21a110e08f1
   m_configObjects: {}

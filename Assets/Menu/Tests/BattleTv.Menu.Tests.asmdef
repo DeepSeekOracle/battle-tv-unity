@@ -4,6 +4,7 @@
     "references": [
         "BattleTv.Menu",
         "BattleTv.Contract",
+        "BattleTv.Fight",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"
     ],

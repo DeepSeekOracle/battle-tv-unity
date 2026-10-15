@@ -2,7 +2,8 @@
     "name": "BattleTv.Menu.Editor",
     "rootNamespace": "BattleTv.Menu.EditorTools",
     "references": [
-        "BattleTv.Menu"
+        "BattleTv.Menu",
+        "BattleTv.Fight"
     ],
     "includePlatforms": [
         "Editor"
