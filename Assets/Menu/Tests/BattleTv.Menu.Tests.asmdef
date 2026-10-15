@@ -1,0 +1,25 @@
+{
+    "name": "BattleTv.Menu.Tests",
+    "rootNamespace": "BattleTv.Menu.Tests",
+    "references": [
+        "BattleTv.Menu",
+        "BattleTv.Contract",
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
