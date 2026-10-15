@@ -37,6 +37,10 @@ namespace BattleTv.Fight
         public double StrideCd;
         public double Stun;
         public double Swing;
+        public double CoverCd;
+        public double BulwarkCd;
+        public double ArmorBuff;
+        public double ArmorBuffT;
         public bool Wall;
         public bool Pound;
         public bool Ward;
@@ -51,7 +55,12 @@ namespace BattleTv.Fight
         public const double CloseCd = 30;
         public const double CloseCost = 8;
         public const double ValeCharge = 1.15;
+        public static double DoorX;
+        public static double DoorT;
         const double ReachPad = 0.5;
+        const double CoverCost = 12.1;
+        const double BulwarkCost = 18.7;
+        const double DoorHalf = 0.48;
         const double WallCost = 16.5;
         const double WardCost = 17.6;
         const double PoundCost = 11;
@@ -144,7 +153,8 @@ namespace BattleTv.Fight
                 dmg *= SuddenScale(time);
             if (!reflect)
             {
-                dmg -= tgt.Armor * 1.1;
+                double armor = tgt.Armor + (tgt.ArmorBuffT > 0 ? tgt.ArmorBuff : 0);
+                dmg -= armor * 1.1;
                 if (dmg < 0.5)
                 {
                     tgt.Callout = "block";
@@ -187,12 +197,16 @@ namespace BattleTv.Fight
         {
             if (dt <= 0 || a == null || b == null)
                 return;
+            if (DoorT > 0)
+                DoorT = Math.Max(0, DoorT - dt);
+            double ax = a.X;
+            double bx = b.X;
             Tick(a, dt);
             Tick(b, dt);
             Act(a, b, dt, rng, time);
             Act(b, a, dt, rng, time);
-            a.X = Clamp(a.X);
-            b.X = Clamp(b.X);
+            a.X = Clamp(StopCrossing(ax, a.X));
+            b.X = Clamp(StopCrossing(bx, b.X));
         }
 
         static void Tick(Body body, double dt)
@@ -205,6 +219,9 @@ namespace BattleTv.Fight
             body.ThornsT = Math.Max(0, body.ThornsT - dt);
             body.Swing = Math.Max(0, body.Swing - dt);
             body.StrideCd = Math.Max(0, body.StrideCd - dt);
+            body.CoverCd = Math.Max(0, body.CoverCd - dt);
+            body.BulwarkCd = Math.Max(0, body.BulwarkCd - dt);
+            body.ArmorBuffT = Math.Max(0, body.ArmorBuffT - dt);
             body.Mana = Math.Min(body.ManaMax, body.Mana + body.ManaRegen * dt);
         }
 
@@ -216,7 +233,7 @@ namespace BattleTv.Fight
             bool stepped = TryClose(self, other);
             double dist = Math.Abs(self.X - other.X);
             bool close = dist < CastBand;
-            if (!stepped && self.Pound && self.PoundCd <= 0 && close && self.Mana >= PoundCost)
+            if (!stepped && self.Pound && self.PoundCd <= 0 && close && self.Mana >= PoundCost && !DoorBlocks(self.X, other.X))
             {
                 self.Mana -= PoundCost;
                 bool crit = rng.NextDouble() < self.Crit;
@@ -241,10 +258,32 @@ namespace BattleTv.Fight
                 self.Callout = "Ward Field";
                 self.Swing = 0.2;
             }
-            else if (!stepped && self.Wall && self.WallCd <= 0 && close)
+            else if (!stepped && self.Name == "Vale" && ThinkVale(self, other))
+                return;
+            else if (!stepped && self.Name != "Vale" && self.Wall && self.WallCd <= 0 && close)
                 RaiseWall(self);
 
             dist = Math.Abs(self.X - other.X);
+            if (DoorBlocks(self.X, other.X))
+            {
+                if (self.Name == "Vale")
+                {
+                    double away = Math.Sign(self.X - other.X);
+                    if (away == 0)
+                        away = -1;
+                    self.X += away * self.Speed * 0.7 * dt;
+                }
+                else if (dist <= self.Range + ReachPad)
+                {
+                    if (self.AtkCd <= 0)
+                    {
+                        self.AtkCd = 0.55;
+                        self.Callout = "block";
+                        self.Swing = 0.16;
+                    }
+                    return;
+                }
+            }
             double reach = self.Range + ReachPad;
             if (self.Name == "Vale" && dist <= reach + ValeCharge)
             {
@@ -287,6 +326,83 @@ namespace BattleTv.Fight
 
             double step = Math.Sign(other.X - self.X) * self.Speed * dt;
             self.X += step;
+        }
+
+        public static void ResetLane()
+        {
+            DoorT = 0;
+            DoorX = 0;
+        }
+
+        /// <summary>
+        /// Vale's kit, in the live order: Cover, Line Bulwark, then Aegis Wall.
+        /// The wall is the solid shield in the ground. It is not a second plate.
+        /// </summary>
+        static bool ThinkVale(Body self, Body other)
+        {
+            double dist = Math.Abs(self.X - other.X);
+            if (self.CoverCd <= 0 && self.Mana >= CoverCost && self.Shield <= 0 && self.Hp / self.Max < 0.8)
+            {
+                self.Mana -= CoverCost;
+                self.Shield += Math.Round(self.Max * 0.34);
+                self.CoverCd = 11 * self.CdMul;
+                self.Callout = "Aegis Cover";
+                self.Swing = 0.4;
+                return true;
+            }
+            if (self.BulwarkCd <= 0 && self.Mana >= BulwarkCost && self.ArmorBuffT <= 0 && (self.Hp / self.Max < 0.92 || dist < 5))
+            {
+                self.Mana -= BulwarkCost;
+                self.ArmorBuff = 3;
+                self.ArmorBuffT = 8;
+                self.BulwarkCd = 17 * self.CdMul;
+                self.Callout = "Line Bulwark";
+                self.Swing = 0.42;
+                return true;
+            }
+            if (self.WallCd <= 0 && DoorT <= 0 && self.Mana >= WallCost && dist < 2.8)
+            {
+                self.Mana -= WallCost;
+                if (!(self.Shield > 0))
+                    self.Shield += Math.Round(self.Max * 0.35);
+                self.WallCd = 30;
+                DoorX = (self.X + other.X) * 0.5;
+                DoorT = 3;
+                NudgeOffDoor(self);
+                NudgeOffDoor(other);
+                self.Callout = "Aegis Wall";
+                self.Swing = 0.45;
+                return true;
+            }
+            return false;
+        }
+
+        static bool DoorBlocks(double a, double b)
+        {
+            if (DoorT <= 0)
+                return false;
+            return (a - DoorX) * (b - DoorX) < 0;
+        }
+
+        static double StopCrossing(double from, double to)
+        {
+            if (DoorT <= 0)
+                return to;
+            if ((from - DoorX) * (to - DoorX) >= 0)
+                return to;
+            double side = Math.Sign(from - DoorX);
+            if (side == 0)
+                side = -1;
+            return DoorX + side * (DoorHalf + 0.06);
+        }
+
+        static void NudgeOffDoor(Body body)
+        {
+            double gap = body.X - DoorX;
+            if (Math.Abs(gap) >= DoorHalf + 0.08)
+                return;
+            double side = gap == 0 ? -1 : Math.Sign(gap);
+            body.X = DoorX + side * (DoorHalf + 0.08);
         }
 
         static double Clamp(double x)

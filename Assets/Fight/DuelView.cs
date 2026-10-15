@@ -22,13 +22,22 @@ namespace BattleTv.Fight
         [SerializeField] Sprite[] valeToss;
         [SerializeField] Sprite[] valeBash;
         [SerializeField] Sprite[] valePunch;
+        [SerializeField] Sprite[] valeLine;
+        [SerializeField] Sprite[] valePlant;
+        [SerializeField] Image valeDoor;
+        [SerializeField] Image valeRing;
+        [SerializeField] Sprite valeOpen;
 
         const float TossTime = 0.5f;
         const float BashTime = 0.4f;
         const float PunchTime = 0.34f;
+        const float LineTime = 0.5f;
+        const float PlantTime = 0.4f;
         const float TossPivot = 0.3f;
         const float BashPivot = 0.39f;
         const float PunchPivot = 0.37f;
+        const float LinePivot = 0.54f;
+        const float PlantPivot = 0.56f;
 
         Body _vale;
         Body _brute;
@@ -47,6 +56,7 @@ namespace BattleTv.Fight
 
         void Start()
         {
+            SideDuel.ResetLane();
             _vale = SideDuel.Vale();
             _brute = SideDuel.Brute();
             _rng = new System.Random();
@@ -105,6 +115,8 @@ namespace BattleTv.Fight
                 return;
             Place(_vale, valeBody, 1);
             Place(_brute, bruteBody, -1);
+            PlaceDoor();
+            PlaceRing();
             bool fists = _vale.Range <= 110.0 / 32.0 && _brute.Range <= 110.0 / 32.0;
             if (valeHud != null)
                 valeHud.Show(_vale, fists);
@@ -145,6 +157,7 @@ namespace BattleTv.Fight
             if (width < 2f || height < 2f)
                 return;
             bool playing = body.Name == "Vale" && _clipT >= 0f && _clip != null && _clip.Length > 0;
+            bool open = body.Name == "Vale" && !playing && SideDuel.DoorT > 0 && valeOpen != null;
             var image = rect.GetComponent<Image>();
             if (image != null && body.Name == "Vale")
             {
@@ -154,6 +167,8 @@ namespace BattleTv.Fight
                     if (_clip[frame] != null)
                         image.sprite = _clip[frame];
                 }
+                else if (open && valeOpen != null)
+                    image.sprite = valeOpen;
                 else if (_valeIdle != null)
                     image.sprite = _valeIdle;
             }
@@ -162,13 +177,58 @@ namespace BattleTv.Fight
                 x += facing * width * 0.012f;
             float feet = -height * 0.5f + height * Feet;
             rect.anchorMin = rect.anchorMax = new Vector2(0.5f, 0.5f);
-            rect.pivot = new Vector2(playing ? _clipPivot : 0.5f, 0f);
+            rect.pivot = new Vector2(playing ? _clipPivot : (open ? TossPivot : 0.5f), 0f);
             float spriteH = height * Band * (body.Name == "Brute" ? 0.56f : 0.5f);
             float aspect = 0.7f;
             if (image != null && image.sprite != null)
                 aspect = image.sprite.rect.width / image.sprite.rect.height;
             rect.sizeDelta = new Vector2(spriteH * aspect, spriteH);
             rect.anchoredPosition = new Vector2(x, feet);
+        }
+
+        void PlaceDoor()
+        {
+            if (valeDoor == null)
+                return;
+            bool up = SideDuel.DoorT > 0;
+            valeDoor.enabled = up;
+            if (!up || plate == null)
+                return;
+            float width = plate.rect.width;
+            float height = plate.rect.height;
+            if (width < 2f || height < 2f)
+                return;
+            float x = (float)(SideDuel.DoorX / SideDuel.Lane) * width - width * 0.5f;
+            float feet = -height * 0.5f + height * Feet;
+            var rect = valeDoor.rectTransform;
+            rect.anchorMin = rect.anchorMax = new Vector2(0.5f, 0.5f);
+            rect.pivot = new Vector2(0.5f, 0.08f);
+            float spriteH = height * Band * 0.30f;
+            float aspect = valeDoor.sprite != null ? valeDoor.sprite.rect.width / valeDoor.sprite.rect.height : 0.9f;
+            rect.sizeDelta = new Vector2(spriteH * aspect, spriteH);
+            rect.anchoredPosition = new Vector2(x, feet);
+        }
+
+        void PlaceRing()
+        {
+            if (valeRing == null)
+                return;
+            bool up = _vale != null && _vale.ArmorBuffT > 0.05 && plate != null;
+            valeRing.enabled = up;
+            if (!up)
+                return;
+            float width = plate.rect.width;
+            float height = plate.rect.height;
+            float x = (float)(_vale.X / SideDuel.Lane) * width - width * 0.5f;
+            float feet = -height * 0.5f + height * Feet;
+            var rect = valeRing.rectTransform;
+            rect.anchorMin = rect.anchorMax = new Vector2(0.5f, 0.5f);
+            rect.pivot = new Vector2(0.5f, 0.5f);
+            float span = height * Band * 0.78f;
+            rect.sizeDelta = new Vector2(span, span * 0.30f);
+            rect.anchoredPosition = new Vector2(x, feet + height * 0.012f);
+            float life = Mathf.Clamp01((float)(_vale.ArmorBuffT / 8.0));
+            valeRing.color = new Color(0.72f, 0.9f, 1f, 0.28f + 0.45f * life);
         }
 
         void BeginValeClip(string callout)
@@ -179,6 +239,10 @@ namespace BattleTv.Fight
                 Arm(valePunch, PunchTime, PunchPivot);
             else if (callout == "Aegis Cover")
                 Arm(valeToss, TossTime, TossPivot);
+            else if (callout == "Line Bulwark")
+                Arm(valeLine, LineTime, LinePivot);
+            else if (callout == "Aegis Wall")
+                Arm(valePlant, PlantTime, PlantPivot);
         }
 
         void Arm(Sprite[] frames, float duration, float pivot)

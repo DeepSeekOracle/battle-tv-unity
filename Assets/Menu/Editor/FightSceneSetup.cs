@@ -25,6 +25,13 @@ namespace BattleTv.Menu.EditorTools
             var valeToss = LoadClip("vale-toss", 8);
             var valeBash = LoadClip("vale-bash", 6);
             var valePunch = LoadClip("vale-punch", 6);
+            var valeLine = LoadClip("vale-line", 5);
+            var valePlant = LoadClip("vale-plant", 4);
+            ConfigureToss("Assets/Art/Duel/vale-door/shield.png");
+            ConfigureToss("Assets/Art/Duel/vale-door/ring.png");
+            var doorSprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Duel/vale-door/shield.png");
+            var ringSprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Duel/vale-door/ring.png");
+            var openHand = valeToss[7];
 
             var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
             RenderSettings.skybox = null;
@@ -108,6 +115,11 @@ namespace BattleTv.Menu.EditorTools
             AssignClip(so, "valeToss", valeToss);
             AssignClip(so, "valeBash", valeBash);
             AssignClip(so, "valePunch", valePunch);
+            AssignClip(so, "valeLine", valeLine);
+            AssignClip(so, "valePlant", valePlant);
+            so.FindProperty("valeDoor").objectReferenceValue = Mark(canvasObject.transform, "ValeDoor", doorSprite);
+            so.FindProperty("valeRing").objectReferenceValue = Mark(canvasObject.transform, "ValeRing", ringSprite);
+            so.FindProperty("valeOpen").objectReferenceValue = openHand;
             so.ApplyModifiedPropertiesWithoutUndo();
             UnityEventTools.AddPersistentListener(menu.onClick, view.BackToMenu);
 
@@ -152,6 +164,17 @@ namespace BattleTv.Menu.EditorTools
             settings.spriteMeshType = SpriteMeshType.FullRect;
             importer.SetTextureSettings(settings);
             importer.SaveAndReimport();
+        }
+
+        static Image Mark(Transform parent, string name, Sprite sprite)
+        {
+            var go = new GameObject(name, typeof(RectTransform), typeof(Image));
+            go.transform.SetParent(parent, false);
+            var image = go.GetComponent<Image>();
+            image.sprite = sprite;
+            image.raycastTarget = false;
+            image.enabled = false;
+            return image;
         }
 
         static Sprite[] LoadClip(string folder, int count)
