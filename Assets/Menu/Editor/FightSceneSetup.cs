@@ -71,9 +71,22 @@ namespace BattleTv.Menu.EditorTools
                 bar, pip, healthFill, manaFill, stamFill, blockFill, dashFill);
             var bruteHud = Hud(canvasObject.transform, "BruteHud", new Vector2(0.60f, 0.86f), new Vector2(0.988f, 0.985f), true,
                 bar, pip, healthFill, manaFill, stamFill, blockFill, dashFill);
-            var clock = Label(canvasObject.transform, "Clock", new Vector2(0.43f, 0.925f), new Vector2(0.57f, 0.985f), TextAnchor.MiddleCenter);
-            clock.resizeTextMaxSize = 22;
-            var callout = Label(canvasObject.transform, "Callout", new Vector2(0.28f, 0.80f), new Vector2(0.72f, 0.85f), TextAnchor.MiddleCenter);
+            var clockPlate = new GameObject("ClockPlate", typeof(RectTransform), typeof(Image));
+            clockPlate.transform.SetParent(canvasObject.transform, false);
+            var clockRect = clockPlate.GetComponent<RectTransform>();
+            clockRect.anchorMin = new Vector2(0.445f, 0.915f);
+            clockRect.anchorMax = new Vector2(0.555f, 0.965f);
+            clockRect.offsetMin = Vector2.zero;
+            clockRect.offsetMax = Vector2.zero;
+            var clockFace = clockPlate.GetComponent<Image>();
+            clockFace.sprite = bar;
+            clockFace.type = Image.Type.Sliced;
+            clockFace.color = Color.white;
+            clockFace.raycastTarget = false;
+            var clock = Label(clockPlate.transform, "Clock", Vector2.zero, Vector2.one, TextAnchor.MiddleCenter);
+            clock.resizeTextMaxSize = 14;
+            var callout = Label(canvasObject.transform, "Callout", new Vector2(0.42f, 0.872f), new Vector2(0.58f, 0.908f), TextAnchor.MiddleCenter);
+            callout.resizeTextMaxSize = 13;
             var result = Label(canvasObject.transform, "Result", new Vector2(0.2f, 0.46f), new Vector2(0.8f, 0.57f), TextAnchor.MiddleCenter);
             result.fontSize = 36;
             result.resizeTextMaxSize = 42;

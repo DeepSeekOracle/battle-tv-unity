@@ -27,6 +27,7 @@ namespace BattleTv.Fight
         bool _over;
         int _appliedW = -1;
         int _appliedH = -1;
+        string _lastLine = "";
 
         void Start()
         {
@@ -80,25 +81,27 @@ namespace BattleTv.Fight
             if (clock != null)
             {
                 int secs = Mathf.FloorToInt((float)_time);
-                clock.text = (secs / 60) + ":" + (secs % 60).ToString("00");
+                string face = (secs / 60) + ":" + (secs % 60).ToString("00");
+                if (_time >= SideDuel.SuddenAt)
+                {
+                    int pct = (int)System.Math.Round((SideDuel.SuddenScale(_time) - 1) * 100);
+                    face += "  +" + pct;
+                }
+                clock.text = face;
                 clock.color = _time >= SideDuel.SuddenAt
                     ? new Color(0.98f, 0.75f, 0.14f, 1f)
                     : new Color(0.965f, 0.906f, 0.757f, 1f);
             }
             if (callout == null)
                 return;
-            string line = "";
-            if (!string.IsNullOrEmpty(_vale.Callout))
-                line = _vale.Name + "  " + _vale.Callout;
-            if (!string.IsNullOrEmpty(_brute.Callout))
-                line = (line.Length == 0 ? "" : line + "    ") + _brute.Name + "  " + _brute.Callout;
-            if (_time >= SideDuel.SuddenAt)
-            {
-                int pct = (int)System.Math.Round((SideDuel.SuddenScale(_time) - 1) * 100);
-                string sudden = "Sudden death  +" + pct + "%";
-                line = line.Length == 0 ? sudden : sudden + "    " + line;
-            }
-            callout.text = line;
+            string fresh = null;
+            if (_brute.Swing > _vale.Swing && !string.IsNullOrEmpty(_brute.Callout))
+                fresh = _brute.Name + "  " + _brute.Callout;
+            else if (_vale.Swing > 0.02f && !string.IsNullOrEmpty(_vale.Callout))
+                fresh = _vale.Name + "  " + _vale.Callout;
+            if (!string.IsNullOrEmpty(fresh))
+                _lastLine = fresh;
+            callout.text = _lastLine;
         }
 
         void Place(Body body, RectTransform rect, int facing)
@@ -135,7 +138,7 @@ namespace BattleTv.Fight
             float aspect = StageWidth / StageHeight;
             float drawnW = w;
             float drawnH = w / aspect;
-            if (drawnH > h)
+            if (drawnH < h)
             {
                 drawnH = h;
                 drawnW = h * aspect;
