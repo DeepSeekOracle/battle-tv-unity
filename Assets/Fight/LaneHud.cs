@@ -42,7 +42,9 @@ namespace BattleTv.Fight
             Set(dash, dashRatio);
 
             if (title != null)
-                title.text = string.IsNullOrEmpty(body.Cards) ? body.Name : body.Name + "    " + body.Cards;
+                title.text = string.IsNullOrEmpty(body.Cards)
+                    ? "<size=18><b><color=#fff1c9>" + body.Name + "</color></b></size>"
+                    : "<size=18><b><color=#fff1c9>" + body.Name + "</color></b></size>    <size=13><color=#c4b48a>" + body.Cards + "</color></size>";
             if (cards != null)
                 cards.text = "";
             if (healthNum != null)

@@ -67,9 +67,9 @@ namespace BattleTv.Menu.EditorTools
             var stamFill = Skin("fill-stam.png", Vector4.zero);
             var blockFill = Skin("fill-block.png", Vector4.zero);
             var dashFill = Skin("fill-dash.png", Vector4.zero);
-            var valeHud = Hud(canvasObject.transform, "ValeHud", new Vector2(0.012f, 0.86f), new Vector2(0.40f, 0.985f), false,
+            var valeHud = Hud(canvasObject.transform, "ValeHud", new Vector2(0.012f, 0.825f), new Vector2(0.40f, 0.985f), false,
                 bar, pip, healthFill, manaFill, stamFill, blockFill, dashFill);
-            var bruteHud = Hud(canvasObject.transform, "BruteHud", new Vector2(0.60f, 0.86f), new Vector2(0.988f, 0.985f), true,
+            var bruteHud = Hud(canvasObject.transform, "BruteHud", new Vector2(0.60f, 0.825f), new Vector2(0.988f, 0.985f), true,
                 bar, pip, healthFill, manaFill, stamFill, blockFill, dashFill);
             var clockPlate = new GameObject("ClockPlate", typeof(RectTransform), typeof(Image));
             clockPlate.transform.SetParent(canvasObject.transform, false);
@@ -185,20 +185,22 @@ namespace BattleTv.Menu.EditorTools
             plateImage.raycastTarget = false;
 
             var host = root.transform;
-            var title = Label(host, "Title", new Vector2(0.02f, 0.74f), new Vector2(0.98f, 0.98f), TextAnchor.MiddleLeft);
+            var title = Label(host, "Title", new Vector2(0.02f, 0.02f), new Vector2(0.98f, 0.26f), TextAnchor.MiddleLeft);
+            title.fontStyle = FontStyle.Normal;
             title.resizeTextForBestFit = false;
-            title.fontSize = 16;
+            title.fontSize = 18;
+            title.supportRichText = true;
             title.horizontalOverflow = HorizontalWrapMode.Overflow;
             title.verticalOverflow = VerticalWrapMode.Overflow;
             float barL = 0.02f;
             float barR = 0.98f;
-            var health = Track(host, "Health", new Vector2(barL, 0.48f), new Vector2(barR, 0.70f), healthFill, bar);
-            var healthNum = Caption(host, "HealthNum", new Vector2(barL + 0.08f, 0.48f), new Vector2(barR - 0.02f, 0.70f), TextAnchor.MiddleRight);
-            var mana = Track(host, "Mana", new Vector2(barL, 0.28f), new Vector2(barR, 0.46f), manaFill, bar);
-            var manaNum = Caption(host, "ManaNum", new Vector2(barL + 0.08f, 0.28f), new Vector2(barR - 0.02f, 0.46f), TextAnchor.MiddleRight);
+            var health = Track(host, "Health", new Vector2(barL, 0.78f), new Vector2(barR, 0.98f), healthFill, bar);
+            var healthNum = Caption(host, "HealthNum", new Vector2(barL + 0.08f, 0.78f), new Vector2(barR - 0.02f, 0.98f), TextAnchor.MiddleRight);
+            var mana = Track(host, "Mana", new Vector2(barL, 0.56f), new Vector2(barR, 0.74f), manaFill, bar);
+            var manaNum = Caption(host, "ManaNum", new Vector2(barL + 0.08f, 0.56f), new Vector2(barR - 0.02f, 0.74f), TextAnchor.MiddleRight);
             manaNum.color = new Color(0.73f, 0.9f, 0.98f, 1f);
-            float pipY0 = 0.04f;
-            float pipY1 = 0.24f;
+            float pipY0 = 0.30f;
+            float pipY1 = 0.52f;
             float pipW = 0.2f;
             float pip0 = barL;
             float pip1 = barL + 0.22f;
@@ -206,10 +208,10 @@ namespace BattleTv.Menu.EditorTools
             var stam = Track(host, "Stam", new Vector2(pip0, pipY0), new Vector2(pip0 + pipW, pipY1), stamFill, pip);
             var block = Track(host, "Block", new Vector2(pip1, pipY0), new Vector2(pip1 + pipW, pipY1), blockFill, pip);
             var dash = Track(host, "Dash", new Vector2(pip2, pipY0), new Vector2(pip2 + pipW, pipY1), dashFill, pip);
-            var healthWord = Caption(host, "HealthWord", new Vector2(barL + 0.02f, 0.48f), new Vector2(barL + 0.16f, 0.70f), TextAnchor.MiddleLeft);
+            var healthWord = Caption(host, "HealthWord", new Vector2(barL + 0.02f, 0.78f), new Vector2(barL + 0.16f, 0.98f), TextAnchor.MiddleLeft);
             healthWord.text = "HP";
             healthWord.resizeTextMaxSize = 12;
-            var manaWord = Caption(host, "ManaWord", new Vector2(barL + 0.02f, 0.28f), new Vector2(barL + 0.16f, 0.46f), TextAnchor.MiddleLeft);
+            var manaWord = Caption(host, "ManaWord", new Vector2(barL + 0.02f, 0.56f), new Vector2(barL + 0.16f, 0.74f), TextAnchor.MiddleLeft);
             manaWord.text = "MP";
             manaWord.resizeTextMaxSize = 12;
             var stamWord = Caption(host, "StamWord", new Vector2(pip0, pipY0), new Vector2(pip0 + pipW, pipY1), TextAnchor.MiddleCenter);
