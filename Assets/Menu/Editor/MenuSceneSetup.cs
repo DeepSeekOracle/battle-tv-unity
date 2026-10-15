@@ -11,11 +11,14 @@ namespace BattleTv.Menu.EditorTools
     public static class MenuSceneSetup
     {
         const string PlatePath = "Assets/Art/Menu/Vale-vs-Brute.jpg";
+        const string IntroPath = "Assets/Audio/Intro/Apex_Vanguard-converted.wav";
+        const long IntroBytes = 32117804;
         const string ScenePath = "Assets/Menu/Menu.unity";
 
         public static void Build()
         {
             ConfigurePlate();
+            ConfigureIntro();
             BuildScene();
             AssetDatabase.SaveAssets();
             Debug.Log("[MenuSceneSetup] Menu scene saved.");
@@ -45,6 +48,29 @@ namespace BattleTv.Menu.EditorTools
             SetUncompressed(importer, "DefaultTexturePlatform", overridden: false);
             SetUncompressed(importer, "Standalone", overridden: true);
             SetUncompressed(importer, "WebGL", overridden: true);
+            importer.SaveAndReimport();
+        }
+
+        static void ConfigureIntro()
+        {
+            var file = new FileInfo(IntroPath);
+            if (!file.Exists || file.Length != IntroBytes)
+                throw new FileNotFoundException("Intro song is missing or the wrong size.", IntroPath);
+
+            var importer = AssetImporter.GetAtPath(IntroPath) as AudioImporter;
+            if (importer == null)
+                throw new FileNotFoundException("Intro song did not import.", IntroPath);
+
+            importer.forceToMono = false;
+            importer.loadInBackground = false;
+            importer.ambisonic = false;
+            var sample = importer.defaultSampleSettings;
+            sample.loadType = AudioClipLoadType.Streaming;
+            sample.compressionFormat = AudioCompressionFormat.Vorbis;
+            sample.quality = 0.6f;
+            sample.sampleRateSetting = AudioSampleRateSetting.PreserveSampleRate;
+            importer.defaultSampleSettings = sample;
+            importer.SetOverrideSampleSettings("WebGL", sample);
             importer.SaveAndReimport();
         }
 
@@ -163,6 +189,21 @@ namespace BattleTv.Menu.EditorTools
 
             var eventObject = new GameObject("EventSystem", typeof(EventSystem), typeof(StandaloneInputModule));
             eventObject.GetComponent<EventSystem>().SetSelectedGameObject(buttonObject);
+
+            var musicObject = new GameObject("IntroMusic");
+            var audio = musicObject.AddComponent<AudioSource>();
+            audio.clip = AssetDatabase.LoadAssetAtPath<AudioClip>(IntroPath);
+            if (audio.clip == null)
+                throw new FileNotFoundException("Intro clip did not import.", IntroPath);
+            audio.loop = true;
+            audio.volume = IntroMusic.IntroVolume;
+            audio.spatialBlend = 0f;
+            audio.playOnAwake = false;
+            audio.priority = 64;
+            var intro = musicObject.AddComponent<IntroMusic>();
+            var introObject = new SerializedObject(intro);
+            introObject.FindProperty("source").objectReferenceValue = audio;
+            introObject.ApplyModifiedPropertiesWithoutUndo();
 
             EditorSceneManager.SaveScene(scene, ScenePath);
             EditorBuildSettings.scenes = new[]
