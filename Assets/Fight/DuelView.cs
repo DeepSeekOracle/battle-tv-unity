@@ -7,7 +7,9 @@ namespace BattleTv.Fight
     public sealed class DuelView : MonoBehaviour
     {
         public const float StageWidth = 2048f;
-        public const float StageHeight = 720f;
+        public const float StageHeight = 1152f;
+        const float Band = 720f / 1152f;
+        const float Feet = (216f + 0.2f * 720f) / 1152f;
 
         [SerializeField] RectTransform plate;
         [SerializeField] RectTransform valeBody;
@@ -110,10 +112,10 @@ namespace BattleTv.Fight
             float x = (float)(body.X / SideDuel.Lane) * width - width * 0.5f;
             if (body.Swing > 0.08)
                 x += facing * width * 0.012f;
-            float feet = -height * 0.5f + height * 0.2f;
+            float feet = -height * 0.5f + height * Feet;
             rect.anchorMin = rect.anchorMax = new Vector2(0.5f, 0.5f);
             rect.pivot = new Vector2(0.5f, 0f);
-            float spriteH = height * (body.Name == "Brute" ? 0.56f : 0.5f);
+            float spriteH = height * Band * (body.Name == "Brute" ? 0.56f : 0.5f);
             var image = rect.GetComponent<Image>();
             float aspect = 0.7f;
             if (image != null && image.sprite != null)

@@ -19,7 +19,7 @@ namespace BattleTv.Menu.EditorTools
 
         public static void Build()
         {
-            Configure(StagePath, false);
+            Configure(StagePath, false, false, Vector4.zero, true);
             Configure(ValePath, true);
             Configure(BrutePath, true);
 
@@ -105,7 +105,7 @@ namespace BattleTv.Menu.EditorTools
             Debug.Log("[FightSceneSetup] Duel scene saved.");
         }
 
-        static void Configure(string path, bool alpha, bool ui = false, Vector4 border = default)
+        static void Configure(string path, bool alpha, bool ui = false, Vector4 border = default, bool photo = false)
         {
             var importer = AssetImporter.GetAtPath(path) as TextureImporter;
             if (importer == null)
@@ -121,6 +121,12 @@ namespace BattleTv.Menu.EditorTools
                 importer.textureCompression = TextureImporterCompression.Uncompressed;
                 importer.maxTextureSize = 256;
                 importer.filterMode = border == Vector4.zero ? FilterMode.Bilinear : FilterMode.Point;
+            }
+            else if (photo)
+            {
+                importer.textureCompression = TextureImporterCompression.CompressedHQ;
+                importer.maxTextureSize = 2048;
+                importer.filterMode = FilterMode.Bilinear;
             }
             var settings = new TextureImporterSettings();
             importer.ReadTextureSettings(settings);
@@ -166,32 +172,33 @@ namespace BattleTv.Menu.EditorTools
             plateImage.raycastTarget = false;
 
             var host = root.transform;
-            var word = fromRight ? TextAnchor.MiddleRight : TextAnchor.MiddleLeft;
-            var title = Caption(host, "Title", new Vector2(fromRight ? 0.34f : 0.02f, 0.82f), new Vector2(fromRight ? 0.98f : 0.66f, 1f), word);
-            title.resizeTextMaxSize = 18;
-            var cards = Caption(host, "Cards", new Vector2(0.02f, 0.70f), new Vector2(0.98f, 0.82f), word);
+            var title = Caption(host, "Title", new Vector2(0.02f, 0.82f), new Vector2(0.98f, 1f), TextAnchor.MiddleLeft);
+            title.resizeTextMaxSize = 16;
+            var cards = Caption(host, "Cards", new Vector2(0.02f, 0.72f), new Vector2(0.98f, 0.82f), TextAnchor.MiddleLeft);
             cards.color = new Color(0.84f, 0.75f, 0.58f, 1f);
             cards.resizeTextMaxSize = 11;
-            var healthNum = Caption(host, "HealthNum", new Vector2(fromRight ? 0.02f : 0.72f, 0.82f), new Vector2(fromRight ? 0.28f : 0.98f, 1f), fromRight ? TextAnchor.MiddleLeft : TextAnchor.MiddleRight);
-            float barL = fromRight ? 0.02f : 0.16f;
-            float barR = fromRight ? 0.84f : 0.98f;
-            var health = Track(host, "Health", new Vector2(barL, 0.46f), new Vector2(barR, 0.68f), healthFill, bar);
-            var manaNum = Caption(host, "ManaNum", new Vector2(fromRight ? 0.02f : 0.78f, 0.30f), new Vector2(fromRight ? 0.20f : 0.98f, 0.44f), fromRight ? TextAnchor.MiddleLeft : TextAnchor.MiddleRight);
+            float barL = 0.02f;
+            float barR = 0.98f;
+            var health = Track(host, "Health", new Vector2(barL, 0.48f), new Vector2(barR, 0.70f), healthFill, bar);
+            var healthNum = Caption(host, "HealthNum", new Vector2(barL + 0.08f, 0.48f), new Vector2(barR - 0.02f, 0.70f), TextAnchor.MiddleRight);
+            var mana = Track(host, "Mana", new Vector2(barL, 0.28f), new Vector2(barR, 0.46f), manaFill, bar);
+            var manaNum = Caption(host, "ManaNum", new Vector2(barL + 0.08f, 0.28f), new Vector2(barR - 0.02f, 0.46f), TextAnchor.MiddleRight);
             manaNum.color = new Color(0.73f, 0.9f, 0.98f, 1f);
-            var mana = Track(host, "Mana", new Vector2(barL, 0.30f), new Vector2(fromRight ? 0.70f : 0.76f, 0.44f), manaFill, bar);
-            float pipY0 = 0.05f;
-            float pipY1 = 0.26f;
-            float pipW = 0.16f;
+            float pipY0 = 0.04f;
+            float pipY1 = 0.24f;
+            float pipW = 0.2f;
             float pip0 = barL;
-            float pip1 = barL + 0.18f;
-            float pip2 = barL + 0.36f;
+            float pip1 = barL + 0.22f;
+            float pip2 = barL + 0.44f;
             var stam = Track(host, "Stam", new Vector2(pip0, pipY0), new Vector2(pip0 + pipW, pipY1), stamFill, pip);
             var block = Track(host, "Block", new Vector2(pip1, pipY0), new Vector2(pip1 + pipW, pipY1), blockFill, pip);
             var dash = Track(host, "Dash", new Vector2(pip2, pipY0), new Vector2(pip2 + pipW, pipY1), dashFill, pip);
-            var healthWord = Caption(host, "HealthWord", new Vector2(fromRight ? 0.84f : 0f, 0.46f), new Vector2(fromRight ? 1f : 0.15f, 0.68f), word);
+            var healthWord = Caption(host, "HealthWord", new Vector2(barL + 0.02f, 0.48f), new Vector2(barL + 0.16f, 0.70f), TextAnchor.MiddleLeft);
             healthWord.text = "HP";
-            var manaWord = Caption(host, "ManaWord", new Vector2(fromRight ? 0.72f : 0f, 0.30f), new Vector2(fromRight ? 1f : 0.15f, 0.44f), word);
+            healthWord.resizeTextMaxSize = 12;
+            var manaWord = Caption(host, "ManaWord", new Vector2(barL + 0.02f, 0.28f), new Vector2(barL + 0.16f, 0.46f), TextAnchor.MiddleLeft);
             manaWord.text = "MP";
+            manaWord.resizeTextMaxSize = 12;
             var stamWord = Caption(host, "StamWord", new Vector2(pip0, pipY0), new Vector2(pip0 + pipW, pipY1), TextAnchor.MiddleCenter);
             stamWord.text = "ST";
             var blockNum = Caption(host, "BlockNum", new Vector2(pip1, pipY0), new Vector2(pip1 + pipW, pipY1), TextAnchor.MiddleCenter);
