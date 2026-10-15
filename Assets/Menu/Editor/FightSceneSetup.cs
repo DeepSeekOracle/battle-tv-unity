@@ -59,18 +59,27 @@ namespace BattleTv.Menu.EditorTools
             var vale = Fighter(plate, "Vale", ValePath);
             var brute = Fighter(plate, "Brute", BrutePath);
 
-            var valeHud = Hud(canvasObject.transform, "ValeHud", new Vector2(0.018f, 0.735f), new Vector2(0.40f, 0.975f), false,
-                new Color(0.91f, 0.77f, 0.42f, 1f));
-            var bruteHud = Hud(canvasObject.transform, "BruteHud", new Vector2(0.60f, 0.735f), new Vector2(0.982f, 0.975f), true,
-                new Color(0.83f, 0.33f, 0.23f, 1f));
+            var bar = Skin("bar-frame.png");
+            var pip = Skin("pip-frame.png");
+            var plaque = Skin("plaque.png");
+            var buttonSkin = Skin("button.png");
+            var healthFill = Skin("fill-health.png");
+            var manaFill = Skin("fill-mana.png");
+            var stamFill = Skin("fill-stam.png");
+            var blockFill = Skin("fill-block.png");
+            var dashFill = Skin("fill-dash.png");
+            var valeHud = Hud(canvasObject.transform, "ValeHud", new Vector2(0.012f, 0.64f), new Vector2(0.40f, 0.985f), false,
+                plaque, bar, pip, healthFill, manaFill, stamFill, blockFill, dashFill);
+            var bruteHud = Hud(canvasObject.transform, "BruteHud", new Vector2(0.60f, 0.64f), new Vector2(0.988f, 0.985f), true,
+                plaque, bar, pip, healthFill, manaFill, stamFill, blockFill, dashFill);
             var clock = Label(canvasObject.transform, "Clock", new Vector2(0.42f, 0.90f), new Vector2(0.58f, 0.975f), TextAnchor.MiddleCenter);
             clock.resizeTextMaxSize = 28;
-            var callout = Label(canvasObject.transform, "Callout", new Vector2(0.22f, 0.675f), new Vector2(0.78f, 0.73f), TextAnchor.MiddleCenter);
-            var result = Label(canvasObject.transform, "Result", new Vector2(0.2f, 0.56f), new Vector2(0.8f, 0.68f), TextAnchor.MiddleCenter);
+            var callout = Label(canvasObject.transform, "Callout", new Vector2(0.28f, 0.575f), new Vector2(0.72f, 0.635f), TextAnchor.MiddleCenter);
+            var result = Label(canvasObject.transform, "Result", new Vector2(0.2f, 0.46f), new Vector2(0.8f, 0.57f), TextAnchor.MiddleCenter);
             result.fontSize = 36;
             result.resizeTextMaxSize = 42;
 
-            var menu = Button(canvasObject.transform, "MENU", new Vector2(0.02f, 0.02f), new Vector2(0.12f, 0.08f));
+            var menu = Button(canvasObject.transform, "MENU", new Vector2(0.016f, 0.02f), new Vector2(0.145f, 0.095f), buttonSkin);
             var view = canvasObject.AddComponent<DuelView>();
             var so = new SerializedObject(view);
             so.FindProperty("plate").objectReferenceValue = plate;
@@ -97,7 +106,7 @@ namespace BattleTv.Menu.EditorTools
             Debug.Log("[FightSceneSetup] Duel scene saved.");
         }
 
-        static void Configure(string path, bool alpha)
+        static void Configure(string path, bool alpha, bool ui = false)
         {
             var importer = AssetImporter.GetAtPath(path) as TextureImporter;
             if (importer == null)
@@ -107,6 +116,11 @@ namespace BattleTv.Menu.EditorTools
             importer.sRGBTexture = true;
             importer.mipmapEnabled = false;
             importer.alphaIsTransparency = alpha;
+            if (ui)
+            {
+                importer.textureCompression = TextureImporterCompression.CompressedHQ;
+                importer.maxTextureSize = 1024;
+            }
             var settings = new TextureImporterSettings();
             importer.ReadTextureSettings(settings);
             settings.spriteMeshType = SpriteMeshType.FullRect;
@@ -127,7 +141,17 @@ namespace BattleTv.Menu.EditorTools
             return go.GetComponent<RectTransform>();
         }
 
-        static LaneHud Hud(Transform parent, string name, Vector2 min, Vector2 max, bool fromRight, Color healthColor)
+        static Sprite Skin(string file)
+        {
+            var path = "Assets/Art/Duel/ui/" + file;
+            Configure(path, true, true);
+            var sprite = AssetDatabase.LoadAssetAtPath<Sprite>(path);
+            if (sprite == null)
+                throw new FileNotFoundException("HUD skin did not import.", path);
+            return sprite;
+        }
+
+        static LaneHud Hud(Transform parent, string name, Vector2 min, Vector2 max, bool fromRight, Sprite plaque, Sprite bar, Sprite pip, Sprite healthFill, Sprite manaFill, Sprite stamFill, Sprite blockFill, Sprite dashFill)
         {
             var root = new GameObject(name, typeof(RectTransform), typeof(Image));
             root.transform.SetParent(parent, false);
@@ -137,53 +161,34 @@ namespace BattleTv.Menu.EditorTools
             rootRect.offsetMin = Vector2.zero;
             rootRect.offsetMax = Vector2.zero;
             var plateImage = root.GetComponent<Image>();
-            plateImage.color = new Color(0.08f, 0.05f, 0.03f, 0.82f);
+            plateImage.sprite = plaque;
+            plateImage.type = Image.Type.Simple;
+            plateImage.color = Color.white;
             plateImage.raycastTarget = false;
 
-            var rim = new GameObject("Rim", typeof(RectTransform), typeof(Image));
-            rim.transform.SetParent(root.transform, false);
-            var rimRect = rim.GetComponent<RectTransform>();
-            rimRect.anchorMin = Vector2.zero;
-            rimRect.anchorMax = Vector2.one;
-            rimRect.offsetMin = new Vector2(1f, 1f);
-            rimRect.offsetMax = new Vector2(-1f, -1f);
-            var rimImage = rim.GetComponent<Image>();
-            rimImage.color = new Color(0xf5 / 255f, 0x9e / 255f, 0x0b / 255f, 0.95f);
-            rimImage.raycastTarget = false;
-            var well = new GameObject("Well", typeof(RectTransform), typeof(Image));
-            well.transform.SetParent(rim.transform, false);
-            var wellRect = well.GetComponent<RectTransform>();
-            wellRect.anchorMin = Vector2.zero;
-            wellRect.anchorMax = Vector2.one;
-            wellRect.offsetMin = new Vector2(2f, 2f);
-            wellRect.offsetMax = new Vector2(-2f, -2f);
-            var wellImage = well.GetComponent<Image>();
-            wellImage.color = new Color(0.07f, 0.05f, 0.03f, 0.94f);
-            wellImage.raycastTarget = false;
-
-            var host = well.transform;
-            var title = Caption(host, "Title", new Vector2(0.04f, 0.78f), new Vector2(0.62f, 0.96f), fromRight ? TextAnchor.MiddleRight : TextAnchor.MiddleLeft);
+            var host = root.transform;
+            var title = Caption(host, "Title", new Vector2(0.06f, 0.84f), new Vector2(0.62f, 0.98f), fromRight ? TextAnchor.MiddleRight : TextAnchor.MiddleLeft);
             title.resizeTextMaxSize = 26;
-            var cards = Caption(host, "Cards", new Vector2(0.04f, 0.64f), new Vector2(0.96f, 0.78f), fromRight ? TextAnchor.MiddleRight : TextAnchor.MiddleLeft);
+            var cards = Caption(host, "Cards", new Vector2(0.06f, 0.74f), new Vector2(0.94f, 0.84f), fromRight ? TextAnchor.MiddleRight : TextAnchor.MiddleLeft);
             cards.color = new Color(0.84f, 0.75f, 0.58f, 1f);
             cards.resizeTextMaxSize = 13;
-            var healthNum = Caption(host, "HealthNum", new Vector2(0.64f, 0.78f), new Vector2(0.96f, 0.96f), fromRight ? TextAnchor.MiddleLeft : TextAnchor.MiddleRight);
-            var health = Track(host, "Health", new Vector2(0.04f, 0.46f), new Vector2(0.96f, 0.62f), healthColor);
-            var manaNum = Caption(host, "ManaNum", new Vector2(0.78f, 0.30f), new Vector2(0.96f, 0.44f), fromRight ? TextAnchor.MiddleLeft : TextAnchor.MiddleRight);
-            manaNum.color = new Color(0.22f, 0.74f, 0.97f, 1f);
-            var mana = Track(host, "Mana", new Vector2(0.04f, 0.30f), new Vector2(0.76f, 0.44f), new Color(0.22f, 0.74f, 0.97f, 1f));
-            var stam = Track(host, "Stam", new Vector2(0.04f, 0.08f), new Vector2(0.34f, 0.26f), new Color(0.91f, 0.69f, 0.35f, 1f));
-            var block = Track(host, "Block", new Vector2(0.36f, 0.08f), new Vector2(0.64f, 0.26f), new Color(0.84f, 0.87f, 0.91f, 1f));
-            var dash = Track(host, "Dash", new Vector2(0.66f, 0.08f), new Vector2(0.96f, 0.26f), new Color(0.98f, 0.75f, 0.14f, 1f));
-            var healthWord = Caption(host, "HealthWord", new Vector2(0.05f, 0.46f), new Vector2(0.28f, 0.62f), TextAnchor.MiddleLeft);
+            var healthNum = Caption(host, "HealthNum", new Vector2(0.64f, 0.84f), new Vector2(0.94f, 0.98f), fromRight ? TextAnchor.MiddleLeft : TextAnchor.MiddleRight);
+            var health = Track(host, "Health", new Vector2(0.045f, 0.52f), new Vector2(0.955f, 0.72f), healthFill, bar);
+            var manaNum = Caption(host, "ManaNum", new Vector2(0.78f, 0.36f), new Vector2(0.96f, 0.50f), fromRight ? TextAnchor.MiddleLeft : TextAnchor.MiddleRight);
+            manaNum.color = new Color(0.73f, 0.9f, 0.98f, 1f);
+            var mana = Track(host, "Mana", new Vector2(0.045f, 0.36f), new Vector2(0.76f, 0.50f), manaFill, bar);
+            var stam = Track(host, "Stam", new Vector2(0.05f, 0.05f), new Vector2(0.195f, 0.34f), stamFill, pip);
+            var block = Track(host, "Block", new Vector2(0.40f, 0.05f), new Vector2(0.545f, 0.34f), blockFill, pip);
+            var dash = Track(host, "Dash", new Vector2(0.78f, 0.05f), new Vector2(0.925f, 0.34f), dashFill, pip);
+            var healthWord = Caption(host, "HealthWord", new Vector2(0.07f, 0.52f), new Vector2(0.28f, 0.72f), TextAnchor.MiddleLeft);
             healthWord.text = "HEALTH";
-            var manaWord = Caption(host, "ManaWord", new Vector2(0.05f, 0.30f), new Vector2(0.24f, 0.44f), TextAnchor.MiddleLeft);
+            var manaWord = Caption(host, "ManaWord", new Vector2(0.07f, 0.36f), new Vector2(0.26f, 0.50f), TextAnchor.MiddleLeft);
             manaWord.text = "MANA";
-            var stamWord = Caption(host, "StamWord", new Vector2(0.04f, 0.08f), new Vector2(0.34f, 0.26f), TextAnchor.MiddleCenter);
+            var stamWord = Caption(host, "StamWord", new Vector2(0.05f, 0.05f), new Vector2(0.195f, 0.34f), TextAnchor.MiddleCenter);
             stamWord.text = "STAM";
-            var blockNum = Caption(host, "BlockNum", new Vector2(0.36f, 0.08f), new Vector2(0.64f, 0.26f), TextAnchor.MiddleCenter);
+            var blockNum = Caption(host, "BlockNum", new Vector2(0.40f, 0.05f), new Vector2(0.545f, 0.34f), TextAnchor.MiddleCenter);
             blockNum.text = "BLOCK";
-            var dashNum = Caption(host, "DashNum", new Vector2(0.66f, 0.08f), new Vector2(0.96f, 0.26f), TextAnchor.MiddleCenter);
+            var dashNum = Caption(host, "DashNum", new Vector2(0.78f, 0.05f), new Vector2(0.925f, 0.34f), TextAnchor.MiddleCenter);
             dashNum.text = "DASH";
 
             var hud = root.AddComponent<LaneHud>();
@@ -204,7 +209,7 @@ namespace BattleTv.Menu.EditorTools
             return hud;
         }
 
-        static Image Track(Transform parent, string name, Vector2 min, Vector2 max, Color fillColor)
+        static Image Track(Transform parent, string name, Vector2 min, Vector2 max, Sprite fillSprite, Sprite frame)
         {
             var track = new GameObject(name, typeof(RectTransform), typeof(Image));
             track.transform.SetParent(parent, false);
@@ -214,23 +219,28 @@ namespace BattleTv.Menu.EditorTools
             trackRect.offsetMin = Vector2.zero;
             trackRect.offsetMax = Vector2.zero;
             var back = track.GetComponent<Image>();
-            back.color = new Color(0.03f, 0.02f, 0.015f, 1f);
+            back.color = new Color(0.04f, 0.03f, 0.02f, 0.92f);
             back.raycastTarget = false;
             var fillObject = new GameObject("Fill", typeof(RectTransform), typeof(Image));
             fillObject.transform.SetParent(track.transform, false);
             var fill = fillObject.GetComponent<Image>();
-            fill.color = fillColor;
+            fill.sprite = fillSprite;
+            fill.type = Image.Type.Simple;
+            fill.color = Color.white;
             fill.raycastTarget = false;
-            var glossObject = new GameObject("Gloss", typeof(RectTransform), typeof(Image));
-            glossObject.transform.SetParent(fillObject.transform, false);
-            var glossRect = glossObject.GetComponent<RectTransform>();
-            glossRect.anchorMin = new Vector2(0f, 0.55f);
-            glossRect.anchorMax = Vector2.one;
-            glossRect.offsetMin = Vector2.zero;
-            glossRect.offsetMax = Vector2.zero;
-            var gloss = glossObject.GetComponent<Image>();
-            gloss.color = new Color(1f, 0.95f, 0.82f, 0.28f);
-            gloss.raycastTarget = false;
+            var coverObject = new GameObject("Cover", typeof(RectTransform), typeof(Image));
+            coverObject.transform.SetParent(track.transform, false);
+            var coverRect = coverObject.GetComponent<RectTransform>();
+            coverRect.anchorMin = Vector2.zero;
+            coverRect.anchorMax = Vector2.one;
+            coverRect.offsetMin = Vector2.zero;
+            coverRect.offsetMax = Vector2.zero;
+            var cover = coverObject.GetComponent<Image>();
+            cover.sprite = frame;
+            cover.type = Image.Type.Simple;
+            cover.preserveAspect = false;
+            cover.color = Color.white;
+            cover.raycastTarget = false;
             return fill;
         }
 
@@ -269,7 +279,7 @@ namespace BattleTv.Menu.EditorTools
             return text;
         }
 
-        static Button Button(Transform parent, string caption, Vector2 min, Vector2 max)
+        static Button Button(Transform parent, string caption, Vector2 min, Vector2 max, Sprite skin)
         {
             var go = new GameObject(caption, typeof(RectTransform), typeof(Image), typeof(Button));
             go.transform.SetParent(parent, false);
@@ -279,12 +289,14 @@ namespace BattleTv.Menu.EditorTools
             rect.offsetMin = Vector2.zero;
             rect.offsetMax = Vector2.zero;
             var face = go.GetComponent<Image>();
+            face.sprite = skin;
+            face.type = Image.Type.Simple;
             face.color = Color.white;
             var button = go.GetComponent<Button>();
             var colors = button.colors;
-            colors.normalColor = new Color(0xf5 / 255f, 0x9e / 255f, 0x0b / 255f, 1f);
-            colors.highlightedColor = new Color(1f, 0.72f, 0.18f, 1f);
-            colors.pressedColor = new Color(0xc4 / 255f, 0x74 / 255f, 0x08 / 255f, 1f);
+            colors.normalColor = Color.white;
+            colors.highlightedColor = new Color(1f, 0.94f, 0.82f, 1f);
+            colors.pressedColor = new Color(0.75f, 0.68f, 0.55f, 1f);
             colors.selectedColor = colors.normalColor;
             button.colors = colors;
             var labelGo = new GameObject("Label", typeof(RectTransform), typeof(Text));

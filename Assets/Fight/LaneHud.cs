@@ -23,10 +23,7 @@ namespace BattleTv.Fight
         [SerializeField] Text dashNum;
         [SerializeField] bool fromRight;
 
-        static readonly Color BlockLit = new Color(0.84f, 0.87f, 0.91f, 1f);
-        static readonly Color BlockDim = new Color(0.45f, 0.48f, 0.52f, 1f);
-        static readonly Color DashReady = new Color(0.98f, 0.75f, 0.14f, 1f);
-        static readonly Color DashHeld = new Color(0.55f, 0.42f, 0.16f, 1f);
+        static readonly Color DashHeld = new Color(0.55f, 0.48f, 0.32f, 1f);
 
         public void Show(Body body, bool dashHeld)
         {
@@ -61,9 +58,9 @@ namespace BattleTv.Fight
                     ? Mathf.CeilToInt((float)body.StrideCd).ToString()
                     : "DASH";
             if (block != null)
-                block.color = body.Shield > 0.5 || body.Callout == "block" ? BlockLit : BlockDim;
+                block.color = Color.white;
             if (dash != null)
-                dash.color = body.StrideCd > 0.05 ? DashReady : (dashHeld ? DashHeld : DashReady);
+                dash.color = dashHeld && body.StrideCd <= 0.05 ? DashHeld : Color.white;
         }
 
         void Set(Image fill, float ratio)
