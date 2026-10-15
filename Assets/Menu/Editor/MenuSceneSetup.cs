@@ -176,7 +176,7 @@ namespace BattleTv.Menu.EditorTools
             label.color = Hex(0x1a, 0x12, 0x06);
             label.raycastTarget = false;
 
-            var launch = canvasObject.AddComponent<NoShow>();
+            var gate = canvasObject.AddComponent<IntroGate>();
             var controller = canvasObject.AddComponent<MenuController>();
             var so = new SerializedObject(controller);
             so.FindProperty("plate").objectReferenceValue = plate;
@@ -184,7 +184,7 @@ namespace BattleTv.Menu.EditorTools
             so.FindProperty("video").objectReferenceValue = player;
             so.ApplyModifiedPropertiesWithoutUndo();
 
-            var click = new UnityEngine.Events.UnityAction(launch.RequestShow);
+            var click = new UnityEngine.Events.UnityAction(gate.EnterMenu);
             UnityEditor.Events.UnityEventTools.AddPersistentListener(button.onClick, click);
 
             var eventObject = new GameObject("EventSystem", typeof(EventSystem), typeof(StandaloneInputModule));

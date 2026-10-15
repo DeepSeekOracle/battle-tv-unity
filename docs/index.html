@@ -8,6 +8,20 @@
     <link rel="stylesheet" href="TemplateData/style.css">
   </head>
   <body>
+    <audio id="intro-bed" src="StreamingAssets/menu/Apex_Vanguard.mp3" loop autoplay preload="auto"></audio>
+    <script>
+      window.battleTvStartIntro = function () {
+        var bed = document.getElementById("intro-bed");
+        if (!bed) return;
+        bed.volume = 0.25;
+        bed.loop = true;
+        var play = bed.play();
+        if (play && play.catch) play.catch(function () {});
+      };
+      window.battleTvStartIntro();
+      document.addEventListener("pointerdown", window.battleTvStartIntro, true);
+      document.addEventListener("keydown", window.battleTvStartIntro, true);
+    </script>
     <div id="unity-container" class="unity-desktop">
       <canvas id="unity-canvas" width=960 height=600 tabindex="-1"></canvas>
       <div id="unity-loading-bar">
@@ -117,6 +131,7 @@
           document.querySelector("#unity-progress-bar-full").style.width = 100 * progress + "%";
               }).then((unityInstance) => {
                 document.querySelector("#unity-loading-bar").style.display = "none";
+                if (window.battleTvStartIntro) window.battleTvStartIntro();
                 document.querySelector("#unity-fullscreen-button").onclick = () => {
                   unityInstance.SetFullscreen(1);
                 };

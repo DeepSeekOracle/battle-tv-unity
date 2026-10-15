@@ -20,6 +20,7 @@ namespace BattleTv.Menu.EditorTools
             {
                 AssertSourceBytes();
                 MenuSceneSetup.Build();
+                GameMenuSetup.Build();
                 ApplyPlayerSettings();
                 var output = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "docs"));
                 if (Directory.Exists(output))
@@ -28,7 +29,7 @@ namespace BattleTv.Menu.EditorTools
 
                 var report = BuildPipeline.BuildPlayer(new BuildPlayerOptions
                 {
-                    scenes = new[] { "Assets/Menu/Menu.unity" },
+                    scenes = new[] { "Assets/Menu/Menu.unity", "Assets/Menu/GameMenu.unity" },
                     locationPathName = output,
                     target = BuildTarget.WebGL,
                     options = BuildOptions.None
@@ -37,8 +38,11 @@ namespace BattleTv.Menu.EditorTools
                 if (report.summary.result != BuildResult.Succeeded)
                     throw new InvalidOperationException("WebGL build failed: " + report.summary.result);
 
-                AssertRelativePaths(Path.Combine(output, "index.html"));
+                var indexPath = Path.Combine(output, "index.html");
+                InjectIntroBed(indexPath);
+                AssertRelativePaths(indexPath);
                 AssertPublishedClip(output);
+                AssertIntroTrack(output);
                 long bytes = WriteManifest(output);
                 Debug.Log("[WebGlPublish] docs bytes " + bytes + (bytes <= TargetBytes ? " within 20 MB target" : " OVER 20 MB target"));
                 EditorApplication.Exit(bytes >= 0 ? 0 : 1);
@@ -87,6 +91,44 @@ namespace BattleTv.Menu.EditorTools
             var html = File.ReadAllText(indexPath);
             if (html.Contains("\"/Build") || html.Contains("'/Build") || html.Contains("\"/StreamingAssets") || html.Contains("'/StreamingAssets"))
                 throw new InvalidOperationException("index.html uses a root-absolute /Build or /StreamingAssets path.");
+        }
+
+        const long IntroMp3Bytes = 4375885;
+
+        static void InjectIntroBed(string indexPath)
+        {
+            var html = File.ReadAllText(indexPath);
+            const string bed = @"
+    <audio id=""intro-bed"" src=""StreamingAssets/menu/Apex_Vanguard.mp3"" loop autoplay preload=""auto""></audio>
+    <script>
+      window.battleTvStartIntro = function () {
+        var bed = document.getElementById(""intro-bed"");
+        if (!bed) return;
+        bed.volume = 0.25;
+        bed.loop = true;
+        var play = bed.play();
+        if (play && play.catch) play.catch(function () {});
+      };
+      window.battleTvStartIntro();
+      document.addEventListener(""pointerdown"", window.battleTvStartIntro, true);
+      document.addEventListener(""keydown"", window.battleTvStartIntro, true);
+    </script>";
+            const string body = "<body>";
+            const string shown = "document.querySelector(\"#unity-loading-bar\").style.display = \"none\";";
+            if (!html.Contains(body) || !html.Contains(shown))
+                throw new InvalidOperationException("index.html has no place for the intro song.");
+            if (!html.Contains("id=\"intro-bed\""))
+                html = html.Replace(body, body + bed);
+            if (!html.Contains("battleTvStartIntro) window.battleTvStartIntro"))
+                html = html.Replace(shown, shown + "\n                if (window.battleTvStartIntro) window.battleTvStartIntro();");
+            File.WriteAllText(indexPath, html);
+        }
+
+        static void AssertIntroTrack(string output)
+        {
+            var mp3 = new FileInfo(Path.Combine(output, "StreamingAssets", "menu", "Apex_Vanguard.mp3"));
+            if (!mp3.Exists || mp3.Length != IntroMp3Bytes)
+                throw new InvalidOperationException("Published intro mp3 bytes " + (mp3.Exists ? mp3.Length : 0));
         }
 
         static void AssertPublishedClip(string output)

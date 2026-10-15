@@ -67,7 +67,7 @@ namespace BattleTv.Menu.Tests
             var label = buttons[0].GetComponentInChildren<Text>(true);
             Assert.NotNull(label);
             Assert.AreEqual("BATTLE TV", label.text);
-            Assert.AreEqual(nameof(NoShow.RequestShow), buttons[0].onClick.GetPersistentMethodName(0));
+            Assert.AreEqual(nameof(IntroGate.EnterMenu), buttons[0].onClick.GetPersistentMethodName(0));
             Assert.AreEqual(1, buttons[0].onClick.GetPersistentEventCount());
 
             var selectables = Object.FindObjectsByType<Selectable>(FindObjectsInactive.Include, FindObjectsSortMode.None);
@@ -78,9 +78,11 @@ namespace BattleTv.Menu.Tests
             Assert.AreEqual("Vale-vs-Brute", still.sprite.name);
 
             var scenes = EditorBuildSettings.scenes;
-            Assert.AreEqual(1, scenes.Length);
+            Assert.AreEqual(2, scenes.Length);
             Assert.AreEqual("Assets/Menu/Menu.unity", scenes[0].path);
+            Assert.AreEqual("Assets/Menu/GameMenu.unity", scenes[1].path);
             Assert.IsTrue(scenes[0].enabled);
+            Assert.IsTrue(scenes[1].enabled);
         }
 
         static void AssertFighters(MenuController.FitResult fit)

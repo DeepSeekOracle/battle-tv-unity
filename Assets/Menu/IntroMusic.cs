@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using UnityEngine;
 
 namespace BattleTv.Menu
@@ -11,6 +12,11 @@ namespace BattleTv.Menu
         public const float IntroVolume = 0.25f;
 
         public static IntroMusic Current { get; private set; }
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+        [DllImport("__Internal")] static extern void IntroBedPlay();
+        [DllImport("__Internal")] static extern void IntroBedSetMuted(int muted);
+#endif
 
         [SerializeField] AudioSource source;
 
@@ -44,16 +50,24 @@ namespace BattleTv.Menu
 
         void Start()
         {
+#if UNITY_WEBGL && !UNITY_EDITOR
+            IntroBedPlay();
+#else
             PlayIntro();
+#endif
         }
 
         void Update()
         {
+#if UNITY_WEBGL && !UNITY_EDITOR
+            return;
+#else
             if (source == null || source.mute || source.isPlaying)
                 return;
             if (!Input.anyKeyDown && !Input.GetMouseButtonDown(0))
                 return;
             PlayIntro();
+#endif
         }
 
         public void PlayIntro()
@@ -68,6 +82,10 @@ namespace BattleTv.Menu
 
         public void SetMuted(bool muted)
         {
+#if UNITY_WEBGL && !UNITY_EDITOR
+            IntroBedSetMuted(muted ? 1 : 0);
+            return;
+#endif
             if (source == null)
                 return;
             source.mute = muted;
