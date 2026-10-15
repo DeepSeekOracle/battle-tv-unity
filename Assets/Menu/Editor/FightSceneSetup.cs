@@ -22,6 +22,15 @@ namespace BattleTv.Menu.EditorTools
             Configure(StagePath, false, false, Vector4.zero, true);
             Configure(ValePath, true);
             Configure(BrutePath, true);
+            var valeToss = new Sprite[8];
+            for (int i = 0; i < valeToss.Length; i++)
+            {
+                var tossPath = "Assets/Art/Duel/vale-toss/f" + i.ToString("00") + ".png";
+                ConfigureToss(tossPath);
+                valeToss[i] = AssetDatabase.LoadAssetAtPath<Sprite>(tossPath);
+                if (valeToss[i] == null)
+                    throw new FileNotFoundException("Vale toss frame did not import.", tossPath);
+            }
 
             var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
             RenderSettings.skybox = null;
@@ -102,6 +111,10 @@ namespace BattleTv.Menu.EditorTools
             so.FindProperty("clock").objectReferenceValue = clock;
             so.FindProperty("callout").objectReferenceValue = callout;
             so.FindProperty("result").objectReferenceValue = result;
+            var tossProp = so.FindProperty("valeToss");
+            tossProp.arraySize = valeToss.Length;
+            for (int i = 0; i < valeToss.Length; i++)
+                tossProp.GetArrayElementAtIndex(i).objectReferenceValue = valeToss[i];
             so.ApplyModifiedPropertiesWithoutUndo();
             UnityEventTools.AddPersistentListener(menu.onClick, view.BackToMenu);
 
@@ -141,6 +154,26 @@ namespace BattleTv.Menu.EditorTools
                 importer.maxTextureSize = 2048;
                 importer.filterMode = FilterMode.Bilinear;
             }
+            var settings = new TextureImporterSettings();
+            importer.ReadTextureSettings(settings);
+            settings.spriteMeshType = SpriteMeshType.FullRect;
+            importer.SetTextureSettings(settings);
+            importer.SaveAndReimport();
+        }
+
+        static void ConfigureToss(string path)
+        {
+            var importer = AssetImporter.GetAtPath(path) as TextureImporter;
+            if (importer == null)
+                throw new FileNotFoundException("Vale toss frame is missing.", path);
+            importer.textureType = TextureImporterType.Sprite;
+            importer.spriteImportMode = SpriteImportMode.Single;
+            importer.sRGBTexture = true;
+            importer.mipmapEnabled = false;
+            importer.alphaIsTransparency = true;
+            importer.textureCompression = TextureImporterCompression.CompressedHQ;
+            importer.maxTextureSize = 512;
+            importer.filterMode = FilterMode.Bilinear;
             var settings = new TextureImporterSettings();
             importer.ReadTextureSettings(settings);
             settings.spriteMeshType = SpriteMeshType.FullRect;
