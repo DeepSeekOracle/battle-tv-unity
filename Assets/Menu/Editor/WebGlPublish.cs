@@ -19,6 +19,7 @@ namespace BattleTv.Menu.EditorTools
             try
             {
                 AssertSourceBytes();
+                MenuSceneSetup.Build();
                 ApplyPlayerSettings();
                 var output = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "docs"));
                 if (Directory.Exists(output))

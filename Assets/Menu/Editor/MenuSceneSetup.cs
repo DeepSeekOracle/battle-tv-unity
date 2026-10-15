@@ -104,12 +104,13 @@ namespace BattleTv.Menu.EditorTools
             // Lower centre of the sand. Sized as a fraction of the plate so it
             // stays off the kite, the club, and both faces, and stays on screen
             // when a 21:9 window crops the top and bottom.
-            buttonRect.anchorMin = new Vector2(0.414f, 0.125f);
-            buttonRect.anchorMax = new Vector2(0.586f, 0.203f);
+            buttonRect.anchorMin = new Vector2(0.36f, 0.118f);
+            buttonRect.anchorMax = new Vector2(0.64f, 0.21f);
             buttonRect.pivot = new Vector2(0.5f, 0.5f);
             buttonRect.sizeDelta = Vector2.zero;
             buttonRect.anchoredPosition = Vector2.zero;
             var face = buttonObject.GetComponent<Image>();
+            face.type = Image.Type.Simple;
             face.color = Color.white;
             face.raycastTarget = true;
             var button = buttonObject.GetComponent<Button>();
@@ -129,7 +130,12 @@ namespace BattleTv.Menu.EditorTools
 
             var labelObject = new GameObject("Label", typeof(RectTransform), typeof(Text));
             labelObject.transform.SetParent(buttonObject.transform, false);
-            Stretch(labelObject.GetComponent<RectTransform>());
+            var labelRect = labelObject.GetComponent<RectTransform>();
+            labelRect.anchorMin = new Vector2(0.06f, 0.12f);
+            labelRect.anchorMax = new Vector2(0.94f, 0.88f);
+            labelRect.offsetMin = Vector2.zero;
+            labelRect.offsetMax = Vector2.zero;
+            labelRect.pivot = new Vector2(0.5f, 0.5f);
             var label = labelObject.GetComponent<Text>();
             label.text = "BATTLE TV";
             label.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
@@ -137,12 +143,12 @@ namespace BattleTv.Menu.EditorTools
             label.fontStyle = FontStyle.Bold;
             label.alignment = TextAnchor.MiddleCenter;
             label.resizeTextForBestFit = true;
-            label.resizeTextMinSize = 18;
-            label.resizeTextMaxSize = 64;
+            label.resizeTextMinSize = 14;
+            label.resizeTextMaxSize = 48;
+            label.horizontalOverflow = HorizontalWrapMode.Wrap;
+            label.verticalOverflow = VerticalWrapMode.Truncate;
             label.color = Hex(0x1a, 0x12, 0x06);
             label.raycastTarget = false;
-            label.horizontalOverflow = HorizontalWrapMode.Overflow;
-            label.verticalOverflow = VerticalWrapMode.Overflow;
 
             var launch = canvasObject.AddComponent<NoShow>();
             var controller = canvasObject.AddComponent<MenuController>();

@@ -13,6 +13,8 @@ $clip = Join-Path $Project "Assets\StreamingAssets\menu\Vale-vs-Brute-push.mp4"
 if ((Get-Item -LiteralPath $plate).Length -ne 282368) { throw "Plate is not 282368 bytes." }
 if ((Get-Item -LiteralPath $clip).Length -ne 2145773) { throw "Clip is not 2145773 bytes." }
 
+$sha = (git -C $Project rev-parse HEAD).Trim()
+if ($sha) { $env:BATTLETV_GIT_SHA = $sha }
 $log = Join-Path $env:TEMP "battle-tv-webgl.log"
 if (Test-Path -LiteralPath $log) { Remove-Item -LiteralPath $log -Force }
 Start-Process -FilePath $Editor -ArgumentList @(
