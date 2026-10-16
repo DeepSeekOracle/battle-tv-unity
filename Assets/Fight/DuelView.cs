@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.Video;
 
 namespace BattleTv.Fight
 {
@@ -38,6 +39,8 @@ namespace BattleTv.Fight
         [SerializeField] Image poundLine;
         [SerializeField] Image gripRocks;
         [SerializeField] Image dashDust;
+        [SerializeField] RawImage stageFilm;
+        [SerializeField] VideoPlayer stagePlayer;
 
         const float TossTime = 0.5f;
         const float BashTime = 0.4f;
@@ -88,6 +91,7 @@ namespace BattleTv.Fight
         float _prevBruteAtk;
         float _lineT = -1f;
         float _dashT = -1f;
+        RenderTexture _stageTex;
         float _wardPulse;
         bool _wardHold;
         Sprite _valeIdle;
@@ -116,10 +120,51 @@ namespace BattleTv.Fight
             _voice = gameObject.AddComponent<AudioSource>();
             _voice.playOnAwake = false;
             _voice.spatialBlend = 0f;
+            BindStageFilm();
             Paint(0f);
             if (BattleTv.Menu.IntroMusic.Current != null)
                 BattleTv.Menu.IntroMusic.Current.SetMuted(true);
             Play("fight", 0.5f);
+        }
+
+        void OnDestroy()
+        {
+            if (stagePlayer != null)
+            {
+                stagePlayer.errorReceived -= OnStageError;
+                stagePlayer.targetTexture = null;
+            }
+            if (_stageTex != null)
+            {
+                _stageTex.Release();
+                Destroy(_stageTex);
+            }
+        }
+
+        void BindStageFilm()
+        {
+            if (stagePlayer == null || stageFilm == null)
+                return;
+            _stageTex = new RenderTexture(1280, 720, 0, RenderTextureFormat.ARGB32);
+            _stageTex.Create();
+            stagePlayer.source = VideoSource.Url;
+            stagePlayer.url = System.IO.Path.Combine(Application.streamingAssetsPath, "duel", "lane-rest.mp4");
+            stagePlayer.isLooping = true;
+            stagePlayer.playOnAwake = true;
+            stagePlayer.audioOutputMode = VideoAudioOutputMode.None;
+            stagePlayer.renderMode = VideoRenderMode.RenderTexture;
+            stagePlayer.aspectRatio = VideoAspectRatio.Stretch;
+            stagePlayer.targetTexture = _stageTex;
+            stageFilm.texture = _stageTex;
+            stageFilm.uvRect = new Rect(0f, 0f, 1f, 1f);
+            stagePlayer.errorReceived += OnStageError;
+            stagePlayer.Play();
+        }
+
+        void OnStageError(VideoPlayer player, string message)
+        {
+            if (stageFilm != null)
+                stageFilm.enabled = false;
         }
 
         public void BackToMenu()
@@ -171,7 +216,8 @@ namespace BattleTv.Fight
                 _prevSwing = (float)_vale.Swing;
                 float batk = (float)_brute.AtkCd;
                 if (batk > _prevBruteAtk + 0.05f && _brute.Callout == "Heavy Sweep")
-                    ArmBrute(bruteSweep, 1.25f);
+                    // The pictures play a little slower. The swing cooldown stays.
+                    ArmBrute(bruteSweep, 1.42f);
                 else if (_brute.Swing > _prevBruteSwing + 0.02f && _brute.Swing > 0.18f)
                 {
                     if (_brute.Callout == "Brute Pound")
@@ -220,6 +266,7 @@ namespace BattleTv.Fight
                 ReleaseBlows(dt);
             ApplyWeight();
             CloseThePunch();
+            KeepOnStage();
             PlaceDoor();
             PlaceRing();
             PlacePoundLine();
@@ -393,6 +440,36 @@ namespace BattleTv.Fight
                 return;
             float pull = Mathf.Min(air - want, SpanX(valeBody) * 0.85f);
             valeBody.anchoredPosition += new Vector2(valeOnLeft ? pull : -pull, 0f);
+        }
+
+        void KeepOnStage()
+        {
+            HoldInside(valeBody);
+            HoldInside(bruteBody);
+        }
+
+        void HoldInside(RectTransform rect)
+        {
+            if (rect == null || plate == null)
+                return;
+            float half = plate.rect.width * 0.5f;
+            float width = Mathf.Abs(rect.sizeDelta.x * rect.localScale.x);
+            if (width < 1f || half < 2f)
+                return;
+            float pivot = rect.pivot.x;
+            bool flipped = rect.localScale.x < 0f;
+            float leftOff = flipped ? -(1f - pivot) * width : -pivot * width;
+            float rightOff = flipped ? pivot * width : (1f - pivot) * width;
+            float left = rect.anchoredPosition.x + leftOff;
+            float right = rect.anchoredPosition.x + rightOff;
+            const float pad = 2f;
+            float dx = 0f;
+            if (left < -half + pad)
+                dx = (-half + pad) - left;
+            if (right + dx > half - pad)
+                dx = (half - pad) - right;
+            if (Mathf.Abs(dx) > 0.01f)
+                rect.anchoredPosition += new Vector2(dx, 0f);
         }
 
         static float SpanX(RectTransform rect)

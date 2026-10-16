@@ -69,6 +69,9 @@ namespace BattleTv.Fight
     public static class SideDuel
     {
         public const double Lane = 18;
+        // The foot point sits in from the plate edge so the painted body
+        // stays on the sand, against the side stones.
+        public const double Wall = 2.8;
         public const double CloseCd = 30;
         public const double CloseCost = 8;
         public const double ValeCharge = 1.15;
@@ -147,7 +150,9 @@ namespace BattleTv.Fight
         /// <summary>
         /// Close is a thirty-second step. Vale uses it only onto a gun that is
         /// still outside her swing. Brute uses it onto whoever is in front of
-        /// him. The clock ignores cdMul. It does not cross the planted kite.
+        /// him. A body pinned on the side stones leaps past the other fighter
+        /// instead, so a corner is a way out. The clock ignores cdMul.
+        /// It does not cross the planted kite.
         /// </summary>
         public static bool TryClose(Body self, Body other)
         {
@@ -162,6 +167,8 @@ namespace BattleTv.Fight
             if (DoorBlocks(self.X, other.X))
                 return false;
             double dist = Math.Abs(self.X - other.X);
+            if (Pinned(self) && dist <= self.Range + 1.5 && LeapPast(self, other))
+                return true;
             double reach = 7 + self.Range;
             if (dist <= self.Range + 1.5 || dist > reach)
                 return false;
@@ -169,6 +176,36 @@ namespace BattleTv.Fight
             if (dir == 0)
                 dir = 1;
             self.X = other.X - dir * (self.Range + 0.25);
+            self.Mana -= CloseCost;
+            self.StrideCd = CloseCd;
+            self.Callout = "Close";
+            self.Swing = 0.4;
+            return true;
+        }
+
+        static bool Pinned(Body self)
+        {
+            return self.X <= Wall + 0.45 || self.X >= Lane - Wall - 0.45;
+        }
+
+        static bool LeapPast(Body self, Body other)
+        {
+            bool onLeft = self.X <= Wall + 0.45;
+            if (onLeft && other.X < self.X - 0.05)
+                return false;
+            if (!onLeft && other.X > self.X + 0.05)
+                return false;
+            double side = Math.Sign(self.X - other.X);
+            if (side == 0)
+                side = onLeft ? -1 : 1;
+            double land = other.X - side * (Math.Max(self.Range, other.Range) + 0.85);
+            if (DoorBlocks(self.X, land) || DoorBlocks(land, other.X))
+                return false;
+            land = Clamp(land);
+            double crossed = Math.Sign(land - other.X);
+            if (crossed == 0 || crossed == side)
+                return false;
+            self.X = land;
             self.Mana -= CloseCost;
             self.StrideCd = CloseCd;
             self.Callout = "Close";
@@ -530,10 +567,10 @@ namespace BattleTv.Fight
 
         static double Clamp(double x)
         {
-            if (x < 0.8)
-                return 0.8;
-            if (x > Lane - 0.8)
-                return Lane - 0.8;
+            if (x < Wall)
+                return Wall;
+            if (x > Lane - Wall)
+                return Lane - Wall;
             return x;
         }
 

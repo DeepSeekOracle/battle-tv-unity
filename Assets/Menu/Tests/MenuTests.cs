@@ -165,6 +165,15 @@ namespace BattleTv.Menu.Tests
             Assert.IsTrue(SideDuel.TryClose(bruteHome, valeFar));
             Assert.AreEqual(30, bruteHome.StrideCd);
             Assert.AreEqual(32, bruteHome.Mana);
+
+            var pinned = SideDuel.Brute();
+            var corner = SideDuel.Vale();
+            pinned.X = SideDuel.Wall;
+            corner.X = 4.2;
+            Assert.IsTrue(SideDuel.TryClose(pinned, corner));
+            Assert.Greater(pinned.X, corner.X);
+            Assert.AreEqual(30, pinned.StrideCd);
+            Assert.AreEqual(32, pinned.Mana);
         }
 
         [Test]
