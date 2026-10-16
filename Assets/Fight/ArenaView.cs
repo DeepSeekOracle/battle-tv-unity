@@ -27,6 +27,14 @@ namespace BattleTv.Fight
         [SerializeField] Sprite valeStill;
         [SerializeField] Sprite bruteStill;
         [SerializeField] Sprite mark;
+        [SerializeField] Sprite barFrame;
+        [SerializeField] Sprite pipFrame;
+        [SerializeField] Sprite buttonSkin;
+        [SerializeField] Sprite fillHealth;
+        [SerializeField] Sprite fillMana;
+        [SerializeField] Sprite fillStam;
+        [SerializeField] Sprite fillBlock;
+        [SerializeField] Sprite fillDash;
 
         Font _font;
         readonly List<Actor> _actors = new List<Actor>(10);
@@ -50,8 +58,7 @@ namespace BattleTv.Fight
             public Image Image;
             public Image Shadow;
             public Text Name;
-            public Image Bar;
-            public Text Hp;
+            public LaneHud Hud;
             public double Heard;
         }
 
@@ -122,10 +129,7 @@ namespace BattleTv.Fight
                 label.alignment = TextAnchor.MiddleCenter;
                 label.color = Paper;
                 actor.Name = label;
-                var host = body.Team == 0 ? LeftHud(TeamIndex(body)) : RightHud(TeamIndex(body));
-                actor.Bar = host.bar;
-                actor.Hp = host.hp;
-                host.hp.text = body.Name;
+                actor.Hud = Column(TeamIndex(body), body.Team == 0);
                 _actors.Add(actor);
             }
         }
@@ -194,8 +198,11 @@ namespace BattleTv.Fight
                 name.pivot = new Vector2(0.5f, 0f);
                 name.sizeDelta = new Vector2(160f, 18f);
                 name.anchoredPosition = point + new Vector2(0f, spriteH + 2f);
-                if (actor.Bar != null)
-                    actor.Bar.fillAmount = body.Max <= 0 ? 0f : (float)(body.Hp / body.Max);
+                if (actor.Hud != null)
+                {
+                    var held = body.StrideCd <= 0.05 && body.Mana < SideDuel.CloseCost;
+                    actor.Hud.ShowPools(body.Name, body.Cards, body.Hp, body.Max, body.Mana, body.ManaMax, body.AtkCd, body.Rate, body.Shield, body.StrideCd, held);
+                }
             }
             PaintBolts(width, height);
             if (_clock != null)
@@ -305,8 +312,8 @@ namespace BattleTv.Fight
             _clock.fontSize = 22;
             _callout = Words(transform, "Colosseum  ·  swept sand");
             var call = _callout.rectTransform;
-            call.anchorMin = new Vector2(0.28f, 0.845f);
-            call.anchorMax = new Vector2(0.72f, 0.90f);
+            call.anchorMin = new Vector2(0.30f, 0.845f);
+            call.anchorMax = new Vector2(0.70f, 0.90f);
             call.offsetMin = call.offsetMax = Vector2.zero;
             _callout.alignment = TextAnchor.MiddleCenter;
             _callout.fontSize = 16;
@@ -347,47 +354,15 @@ namespace BattleTv.Fight
             _board.SetActive(false);
         }
 
-        (Image bar, Text hp) LeftHud(int index)
+        LaneHud Column(int index, bool left)
         {
-            return Hud(index, true);
-        }
-
-        (Image bar, Text hp) RightHud(int index)
-        {
-            return Hud(index, false);
-        }
-
-        (Image bar, Text hp) Hud(int index, bool left)
-        {
-            var y1 = 0.78f - (index % 5) * 0.07f;
-            var y0 = y1 - 0.055f;
-            var x0 = left ? 0.016f : 0.80f;
-            var x1 = left ? 0.20f : 0.984f;
-            var track = new GameObject(left ? "L" + index : "R" + index, typeof(RectTransform), typeof(Image));
-            track.transform.SetParent(transform, false);
-            var rect = track.GetComponent<RectTransform>();
-            rect.anchorMin = new Vector2(x0, y0);
-            rect.anchorMax = new Vector2(x1, y1);
-            rect.offsetMin = rect.offsetMax = Vector2.zero;
-            track.GetComponent<Image>().color = new Color(0.08f, 0.06f, 0.04f, 0.72f);
-            var fillGo = new GameObject("Fill", typeof(RectTransform), typeof(Image));
-            fillGo.transform.SetParent(track.transform, false);
-            var fillRect = fillGo.GetComponent<RectTransform>();
-            fillRect.anchorMin = Vector2.zero;
-            fillRect.anchorMax = Vector2.one;
-            fillRect.offsetMin = new Vector2(3f, 3f);
-            fillRect.offsetMax = new Vector2(-3f, -3f);
-            var fill = fillGo.GetComponent<Image>();
-            fill.color = left ? Gold : new Color(0.85f, 0.35f, 0.28f, 1f);
-            fill.type = Image.Type.Filled;
-            fill.fillMethod = Image.FillMethod.Horizontal;
-            fill.fillOrigin = (int)Image.OriginHorizontal.Left;
-            var label = Words(track.transform, "");
-            Stretch(label.rectTransform);
-            label.alignment = left ? TextAnchor.MiddleLeft : TextAnchor.MiddleRight;
-            label.fontSize = 13;
-            label.color = Paper;
-            return (fill, label);
+            var row = index % 5;
+            var y1 = 0.88f - row * 0.15f;
+            var y0 = y1 - 0.14f;
+            var min = new Vector2(left ? 0.012f : 0.77f, y0);
+            var max = new Vector2(left ? 0.23f : 0.988f, y1);
+            return LaneHud.Create(transform, (left ? "L" : "R") + row, min, max, !left,
+                barFrame, pipFrame, fillHealth, fillMana, fillStam, fillBlock, fillDash);
         }
 
         void ShowBoard()
@@ -482,8 +457,22 @@ namespace BattleTv.Fight
             rect.anchorMin = min;
             rect.anchorMax = max;
             rect.offsetMin = rect.offsetMax = Vector2.zero;
-            node.GetComponent<Image>().color = new Color(0.09f, 0.07f, 0.05f, 0.92f);
+            var face = node.GetComponent<Image>();
+            if (buttonSkin != null)
+            {
+                face.sprite = buttonSkin;
+                face.type = Image.Type.Sliced;
+                face.color = Color.white;
+            }
+            else
+                face.color = new Color(0.09f, 0.07f, 0.05f, 0.92f);
             var button = node.GetComponent<Button>();
+            var colors = button.colors;
+            colors.normalColor = Color.white;
+            colors.highlightedColor = new Color(1f, 0.94f, 0.82f, 1f);
+            colors.pressedColor = new Color(0.75f, 0.68f, 0.55f, 1f);
+            colors.selectedColor = colors.normalColor;
+            button.colors = colors;
             var label = Words(node.transform, text);
             Stretch(label.rectTransform);
             label.alignment = TextAnchor.MiddleCenter;

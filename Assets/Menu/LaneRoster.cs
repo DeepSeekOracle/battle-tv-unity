@@ -220,6 +220,47 @@ namespace BattleTv.Menu
             return text ?? "";
         }
 
+        public static double ManaRegen(string id)
+        {
+            switch (id)
+            {
+                case "kael": return 5;
+                case "vale": return 4;
+                case "orin": return 12;
+                case "nia": return 6;
+                case "lyra": return 11;
+                case "arkos": return 6;
+                case "d9ra": return 4;
+                case "srath": return 7;
+                case "kairos": return 13;
+                case "justicae": return 6;
+                case "seidon": return 10;
+                case "sancora": return 13;
+                case "lightfather": return 10;
+                case "wraith": return 7;
+                case "brute": return 3;
+                case "imp": return 8;
+                case "hurler": return 6;
+                case "shade": return 7;
+                case "thief": return 6;
+                case "drain": return 8;
+                case "gate": return 5;
+                case "crown": return 9;
+                case "smith": return 8;
+                case "heartboss": return 7;
+                case "levi": return 9;
+                case "tithe": return 8;
+                case "unnamer": return 10;
+                case "lock": return 8;
+                case "wolf": return 4;
+                case "lion": return 5;
+                case "bear": return 4;
+                case "elephant": return 4;
+                case "scorpion": return 6;
+                default: return 4;
+            }
+        }
+
         static Kit[] Build()
         {
             Move("rend", "Rend", "Tear the nearest foe and leave it bleeding.");

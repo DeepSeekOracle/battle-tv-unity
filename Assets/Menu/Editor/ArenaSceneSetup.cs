@@ -51,6 +51,14 @@ namespace BattleTv.Menu.EditorTools
             so.FindProperty("valeStill").objectReferenceValue = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Duel/vale.png");
             so.FindProperty("bruteStill").objectReferenceValue = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Duel/brute.png");
             so.FindProperty("mark").objectReferenceValue = AssetDatabase.LoadAssetAtPath<Sprite>(MarkPath);
+            so.FindProperty("barFrame").objectReferenceValue = HudSkin("bar-frame.png");
+            so.FindProperty("pipFrame").objectReferenceValue = HudSkin("pip-frame.png");
+            so.FindProperty("buttonSkin").objectReferenceValue = HudSkin("button.png");
+            so.FindProperty("fillHealth").objectReferenceValue = HudSkin("fill-health.png");
+            so.FindProperty("fillMana").objectReferenceValue = HudSkin("fill-mana.png");
+            so.FindProperty("fillStam").objectReferenceValue = HudSkin("fill-stam.png");
+            so.FindProperty("fillBlock").objectReferenceValue = HudSkin("fill-block.png");
+            so.FindProperty("fillDash").objectReferenceValue = HudSkin("fill-dash.png");
             so.ApplyModifiedPropertiesWithoutUndo();
 
             new GameObject("EventSystem", typeof(EventSystem), typeof(StandaloneInputModule));
@@ -66,6 +74,15 @@ namespace BattleTv.Menu.EditorTools
             };
             AssetDatabase.SaveAssets();
             Debug.Log("[ArenaSceneSetup] Arena scene saved.");
+        }
+
+        static Sprite HudSkin(string file)
+        {
+            var path = "Assets/Art/Duel/ui/" + file;
+            var sprite = AssetDatabase.LoadAssetAtPath<Sprite>(path);
+            if (sprite == null)
+                throw new FileNotFoundException("HUD skin did not import.", path);
+            return sprite;
         }
 
         static void Configure(string path, bool alpha, int max)

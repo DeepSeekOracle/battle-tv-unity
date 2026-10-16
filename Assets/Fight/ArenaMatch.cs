@@ -22,6 +22,12 @@ namespace BattleTv.Fight
         public double Range;
         public double AtkCd;
         public double Swing;
+        public double Mana;
+        public double ManaMax;
+        public double ManaRegen;
+        public double Shield;
+        public double StrideCd;
+        public string Cards = "";
         public string Callout = "";
         public bool Alive = true;
     }
@@ -113,15 +119,36 @@ namespace BattleTv.Fight
                     continue;
                 body.Swing = Math.Max(0, body.Swing - dt);
                 body.AtkCd = Math.Max(0, body.AtkCd - dt);
+                body.StrideCd = Math.Max(0, body.StrideCd - dt);
                 var foe = Nearest(body);
                 if (foe == null)
+                {
+                    body.Mana = Math.Min(body.ManaMax, body.Mana + body.ManaRegen * dt);
                     continue;
+                }
                 var dx = foe.X - body.X;
                 var dy = foe.Y - body.Y;
                 var dist = Math.Sqrt(dx * dx + dy * dy);
                 if (dist < 0.001)
                     dist = 0.001;
                 var stop = Math.Max(Tile * 0.9, body.Range * Tile);
+                if (body.StrideCd <= 0 && body.Mana >= SideDuel.CloseCost && dist > stop + Tile * 2.2)
+                {
+                    var gap = dist - (stop + 18);
+                    body.X += dx / dist * gap;
+                    body.Y += dy / dist * gap;
+                    body.Mana -= SideDuel.CloseCost;
+                    body.StrideCd = SideDuel.CloseCd;
+                    body.Callout = "Close";
+                    body.Swing = 0.28;
+                    Hold(body);
+                    dx = foe.X - body.X;
+                    dy = foe.Y - body.Y;
+                    dist = Math.Sqrt(dx * dx + dy * dy);
+                    if (dist < 0.001)
+                        dist = 0.001;
+                }
+                body.Mana = Math.Min(body.ManaMax, body.Mana + body.ManaRegen * dt);
                 if (dist > stop)
                 {
                     var step = body.Speed * Tile * dt;
@@ -192,10 +219,33 @@ namespace BattleTv.Fight
                     Rate = kit.Rate,
                     Speed = Math.Max(0.4, kit.Speed),
                     Armor = kit.Armor,
-                    Range = Math.Max(0.8, kit.Range)
+                    Range = Math.Max(0.8, kit.Range),
+                    Mana = kit.Mana,
+                    ManaMax = kit.Mana,
+                    ManaRegen = LaneRoster.ManaRegen(kit.Id),
+                    Shield = 0,
+                    StrideCd = 0,
+                    Cards = Tags(kit)
                 };
                 Bodies.Add(body);
             }
+        }
+
+        static string Tags(Kit kit)
+        {
+            if (kit.Cards == null || kit.Cards.Length == 0)
+                return "";
+            var line = "";
+            for (var i = 0; i < kit.Cards.Length; i++)
+            {
+                var tag = LaneRoster.CardTag(kit.Cards[i]);
+                if (string.IsNullOrEmpty(tag))
+                    continue;
+                if (line.Length > 0)
+                    line += " · ";
+                line += tag;
+            }
+            return line;
         }
 
         static int[] Slots(int count)

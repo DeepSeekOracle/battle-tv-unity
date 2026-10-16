@@ -363,6 +363,9 @@ namespace BattleTv.Menu.Tests
 
             ArenaMatch.Begin(ShowPick.Yours, ShowPick.Foes, 3);
             Assert.AreEqual(4, ArenaMatch.Bodies.Count);
+            Assert.AreEqual(4, LaneRoster.ManaRegen("vale"), 0.01);
+            Assert.AreEqual(12, LaneRoster.ManaRegen("orin"), 0.01);
+            Assert.AreEqual(3, LaneRoster.ManaRegen("brute"), 0.01);
             double hp = 0;
             for (var i = 0; i < ArenaMatch.Bodies.Count; i++)
             {
@@ -370,7 +373,20 @@ namespace BattleTv.Menu.Tests
                 Assert.GreaterOrEqual(ArenaMatch.Bodies[i].X, ArenaMatch.Inset - 0.01);
                 Assert.LessOrEqual(ArenaMatch.Bodies[i].X, ArenaMatch.WorldW - ArenaMatch.Inset + 0.01);
             }
-            for (var step = 0; step < 500; step++)
+            for (var step = 0; step < 30; step++)
+                ArenaMatch.Step(0.05);
+            var closed = false;
+            for (var i = 0; i < ArenaMatch.Bodies.Count; i++)
+            {
+                var body = ArenaMatch.Bodies[i];
+                Assert.AreEqual(0, body.Shield, 0.01);
+                if (body.StrideCd > 10 && body.Mana < body.ManaMax - 0.5)
+                    closed = true;
+                if (body.Id == "vale")
+                    Assert.AreEqual("BULWARK · THORN · IRON", body.Cards);
+            }
+            Assert.IsTrue(closed);
+            for (var step = 0; step < 470; step++)
                 ArenaMatch.Step(0.05);
             double later = 0;
             for (var i = 0; i < ArenaMatch.Bodies.Count; i++)
