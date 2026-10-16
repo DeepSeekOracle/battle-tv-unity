@@ -1,7 +1,9 @@
 {
     "name": "BattleTv.Fight",
     "rootNamespace": "BattleTv.Fight",
-    "references": [],
+    "references": [
+        "BattleTv.Menu"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

@@ -93,11 +93,15 @@ namespace BattleTv.Fight
             _voice.playOnAwake = false;
             _voice.spatialBlend = 0f;
             Paint(0f);
+            if (BattleTv.Menu.IntroMusic.Current != null)
+                BattleTv.Menu.IntroMusic.Current.SetMuted(true);
             Play("fight", 0.5f);
         }
 
         public void BackToMenu()
         {
+            if (BattleTv.Menu.IntroMusic.Current != null)
+                BattleTv.Menu.IntroMusic.Current.SetMuted(false);
             SceneManager.LoadScene("GameMenu");
         }
 
