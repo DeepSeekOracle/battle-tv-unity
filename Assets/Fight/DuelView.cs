@@ -310,11 +310,6 @@ namespace BattleTv.Fight
                 pivotX = image.sprite.pivot.x / image.sprite.rect.width;
             rect.pivot = new Vector2(pivotX, 0f);
             float spriteH = height * Band * (body.Name == "Brute" ? 0.56f : 0.5f);
-            // The smash plate is taller than 702 so the painted club fits. The body
-            // on that plate is the same 677px as the other Brute frames, so grow the
-            // rect with the plate and the body stays the size he already is.
-            if (body.Name == "Brute" && image != null && image.sprite != null && image.sprite.rect.height > 720f)
-                spriteH *= image.sprite.rect.height / 702f;
             float aspect = 0.7f;
             if (image != null && image.sprite != null)
                 aspect = image.sprite.rect.width / image.sprite.rect.height;
