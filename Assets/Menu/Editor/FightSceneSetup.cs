@@ -27,8 +27,8 @@ namespace BattleTv.Menu.EditorTools
             var valePunch = LoadClip("vale-punch", 6);
             var valeLine = LoadClip("vale-line", 5);
             var valePlant = LoadClip("vale-plant", 4);
-            ConfigureToss("Assets/Art/Duel/vale-door/shield.png");
-            ConfigureToss("Assets/Art/Duel/vale-door/ring.png");
+            ConfigureToss("Assets/Art/Duel/vale-door/shield.png", 1024);
+            ConfigureToss("Assets/Art/Duel/vale-door/ring.png", 1024);
             var doorSprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Duel/vale-door/shield.png");
             var ringSprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Duel/vale-door/ring.png");
             var openHand = valeToss[7];
@@ -199,7 +199,7 @@ namespace BattleTv.Menu.EditorTools
                 prop.GetArrayElementAtIndex(i).objectReferenceValue = frames[i];
         }
 
-        static void ConfigureToss(string path)
+        static void ConfigureToss(string path, int maxSize = 384)
         {
             var importer = AssetImporter.GetAtPath(path) as TextureImporter;
             if (importer == null)
@@ -210,8 +210,17 @@ namespace BattleTv.Menu.EditorTools
             importer.mipmapEnabled = false;
             importer.alphaIsTransparency = true;
             importer.textureCompression = TextureImporterCompression.CompressedHQ;
-            importer.maxTextureSize = 384;
+            importer.maxTextureSize = maxSize;
             importer.filterMode = FilterMode.Bilinear;
+            var platform = importer.GetDefaultPlatformTextureSettings();
+            platform.maxTextureSize = maxSize;
+            platform.textureCompression = TextureImporterCompression.CompressedHQ;
+            importer.SetPlatformTextureSettings(platform);
+            var web = importer.GetPlatformTextureSettings("WebGL");
+            web.overridden = true;
+            web.maxTextureSize = maxSize;
+            web.textureCompression = TextureImporterCompression.CompressedHQ;
+            importer.SetPlatformTextureSettings(web);
             var settings = new TextureImporterSettings();
             importer.ReadTextureSettings(settings);
             settings.spriteMeshType = SpriteMeshType.FullRect;

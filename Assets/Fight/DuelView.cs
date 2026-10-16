@@ -203,7 +203,7 @@ namespace BattleTv.Fight
             var rect = valeDoor.rectTransform;
             rect.anchorMin = rect.anchorMax = new Vector2(0.5f, 0.5f);
             rect.pivot = new Vector2(0.5f, 0.08f);
-            float spriteH = height * Band * 0.30f;
+            float spriteH = height * Band * 0.42f;
             float aspect = valeDoor.sprite != null ? valeDoor.sprite.rect.width / valeDoor.sprite.rect.height : 0.9f;
             rect.sizeDelta = new Vector2(spriteH * aspect, spriteH);
             rect.anchoredPosition = new Vector2(x, feet);
@@ -224,11 +224,14 @@ namespace BattleTv.Fight
             var rect = valeRing.rectTransform;
             rect.anchorMin = rect.anchorMax = new Vector2(0.5f, 0.5f);
             rect.pivot = new Vector2(0.5f, 0.5f);
-            float span = height * Band * 0.78f;
-            rect.sizeDelta = new Vector2(span, span * 0.30f);
-            rect.anchoredPosition = new Vector2(x, feet + height * 0.012f);
+            float span = height * Band * 0.9f;
+            float aspect = valeRing.sprite != null && valeRing.sprite.rect.height > 1f
+                ? valeRing.sprite.rect.width / valeRing.sprite.rect.height
+                : 1.8f;
+            rect.sizeDelta = new Vector2(span, span / aspect);
+            rect.anchoredPosition = new Vector2(x, feet + height * 0.02f);
             float life = Mathf.Clamp01((float)(_vale.ArmorBuffT / 8.0));
-            valeRing.color = new Color(0.72f, 0.9f, 1f, 0.28f + 0.45f * life);
+            valeRing.color = new Color(1f, 1f, 1f, 0.72f + 0.28f * life);
         }
 
         void BeginValeClip(string callout)

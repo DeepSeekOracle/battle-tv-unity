@@ -320,7 +320,7 @@
       }
 
       var buildUrl = "Build";
-      var buildStamp = "10347249-72021-3890456";
+      var buildStamp = "11904098-72021-3893105";
       var loaderUrl = buildUrl + "/docs.loader.js?v=" + buildStamp;
       var config = {
         arguments: [],
@@ -379,6 +379,8 @@
 
       document.querySelector("#unity-loading-bar").style.display = "block";
 
+      var script = document.createElement("script");
+      script.src = loaderUrl;
       function battleTvFreshCache() {
         var key = "battleTvBuild";
         var same = false;
@@ -396,8 +398,6 @@
         });
       }
 
-      var script = document.createElement("script");
-      script.src = loaderUrl;
       script.onload = () => {
         battleTvFreshCache().then(function () {
         createUnityInstance(canvas, config, (progress) => {
