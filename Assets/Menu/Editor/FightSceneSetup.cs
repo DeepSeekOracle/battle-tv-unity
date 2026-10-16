@@ -122,7 +122,9 @@ namespace BattleTv.Menu.EditorTools
             AssignClip(so, "valePunch", valePunch);
             AssignClip(so, "valeLine", valeLine);
             AssignClip(so, "valePlant", valePlant);
-            so.FindProperty("valeDoor").objectReferenceValue = Mark(canvasObject.transform, "ValeDoor", doorSprite);
+            var door = Mark(plate, "ValeDoor", doorSprite);
+            door.transform.SetSiblingIndex(3);
+            so.FindProperty("valeDoor").objectReferenceValue = door;
             // Far half is the first plate child, so it draws behind both bodies.
             // Near half is last, so it draws over their feet. The shader clips the seam.
             var ringBack = Mark(plate, "ValeRingBack", glowSprite);
@@ -282,6 +284,18 @@ namespace BattleTv.Menu.EditorTools
             importer.ReadTextureSettings(settings);
             settings.spriteMeshType = SpriteMeshType.FullRect;
             importer.SetTextureSettings(settings);
+            if (path.EndsWith("vale-door/shield.png"))
+            {
+                // The old file was a torn slice. This kite is the whole shield from her toss frame.
+                var whole = new SpriteMetaData
+                {
+                    name = "shield_0",
+                    rect = new Rect(0f, 0f, 152f, 176f),
+                    alignment = (int)SpriteAlignment.Custom,
+                    pivot = new Vector2(0.5f, 0.02f)
+                };
+                importer.spritesheet = new[] { whole };
+            }
             importer.SaveAndReimport();
         }
 

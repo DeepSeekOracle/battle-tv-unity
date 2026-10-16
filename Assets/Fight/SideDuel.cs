@@ -189,7 +189,6 @@ namespace BattleTv.Fight
                 dmg -= armor * 1.1;
                 if (dmg < 0.5)
                 {
-                    tgt.Callout = "block";
                     Note(tgt, "block", "block");
                     return 0;
                 }
@@ -202,7 +201,6 @@ namespace BattleTv.Fight
                 dmg -= absorbed;
                 if (dmg < 0.5)
                 {
-                    tgt.Callout = "ward";
                     Note(tgt, "ward", "ward");
                     return 0;
                 }
@@ -304,6 +302,7 @@ namespace BattleTv.Fight
             dist = Math.Abs(self.X - other.X);
             if (DoorBlocks(self.X, other.X))
             {
+                // The planted kite is solid. She steps off it. He does not swing through it.
                 if (self.Name == "Vale")
                 {
                     double away = Math.Sign(self.X - other.X);
@@ -311,16 +310,12 @@ namespace BattleTv.Fight
                         away = -1;
                     self.X += away * self.Speed * 0.7 * dt;
                 }
-                else if (dist <= self.Range + ReachPad)
+                else if (self.AtkCd <= 0 && dist <= self.Range + ReachPad + 0.4)
                 {
-                    if (self.AtkCd <= 0)
-                    {
-                        self.AtkCd = 0.55;
-                        self.Callout = "block";
-                        self.Swing = 0.16;
-                    }
-                    return;
+                    self.AtkCd = 0.55;
+                    self.Swing = 0.16;
                 }
+                return;
             }
             double reach = self.Range + ReachPad;
             if (self.Name == "Vale" && dist <= reach + ValeCharge)

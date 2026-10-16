@@ -192,7 +192,6 @@ namespace BattleTv.Fight
             if (width < 2f || height < 2f)
                 return;
             bool playing = body.Name == "Vale" && _clipT >= 0f && _clip != null && _clip.Length > 0;
-            bool open = body.Name == "Vale" && !playing && SideDuel.DoorT > 0 && valeOpen != null;
             var image = rect.GetComponent<Image>();
             if (image != null && body.Name == "Vale")
             {
@@ -204,15 +203,13 @@ namespace BattleTv.Fight
                     if (_clip[frame] != null)
                         image.sprite = _clip[frame];
                 }
-                else if (open && valeOpen != null)
-                    image.sprite = valeOpen;
                 else if (_valeIdle != null)
                     image.sprite = _valeIdle;
             }
             float x = (float)(body.X / SideDuel.Lane) * width - width * 0.5f;
             float feet = -height * 0.5f + height * Feet;
             rect.anchorMin = rect.anchorMax = new Vector2(0.5f, 0.5f);
-            rect.pivot = new Vector2(playing ? _clipPivot : (open ? TossPivot : 0.5f), 0f);
+            rect.pivot = new Vector2(playing ? _clipPivot : 0.5f, 0f);
             float spriteH = height * Band * (body.Name == "Brute" ? 0.56f : 0.5f);
             float aspect = 0.7f;
             if (image != null && image.sprite != null)
@@ -293,7 +290,8 @@ namespace BattleTv.Fight
         {
             if (valeDoor == null)
                 return;
-            bool up = SideDuel.DoorT > 0;
+            bool planting = _clipT >= 0f && _vale != null && _vale.Callout == "Aegis Wall";
+            bool up = SideDuel.DoorT > 0 && !planting;
             valeDoor.enabled = up;
             if (!up || plate == null)
                 return;
@@ -305,11 +303,11 @@ namespace BattleTv.Fight
             float feet = -height * 0.5f + height * Feet;
             var rect = valeDoor.rectTransform;
             rect.anchorMin = rect.anchorMax = new Vector2(0.5f, 0.5f);
-            rect.pivot = new Vector2(0.5f, 0.08f);
-            float spriteH = height * Band * 0.42f;
+            rect.pivot = new Vector2(0.5f, 0.02f);
+            float spriteH = height * Band * 0.24f;
             float aspect = valeDoor.sprite != null ? valeDoor.sprite.rect.width / valeDoor.sprite.rect.height : 0.9f;
             rect.sizeDelta = new Vector2(spriteH * aspect, spriteH);
-            rect.anchoredPosition = new Vector2(x, feet);
+            rect.anchoredPosition = new Vector2(x, feet - spriteH * 0.14f);
         }
 
         void PlaceRing()
