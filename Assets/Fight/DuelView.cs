@@ -37,6 +37,7 @@ namespace BattleTv.Fight
         [SerializeField] Sprite bruteIdle;
         [SerializeField] Image poundLine;
         [SerializeField] Image gripRocks;
+        [SerializeField] Image dashDust;
 
         const float TossTime = 0.5f;
         const float BashTime = 0.4f;
@@ -86,6 +87,7 @@ namespace BattleTv.Fight
         float _prevBruteSwing;
         float _prevBruteAtk;
         float _lineT = -1f;
+        float _dashT = -1f;
         float _wardPulse;
         bool _wardHold;
         Sprite _valeIdle;
@@ -149,6 +151,8 @@ namespace BattleTv.Fight
                 }
                 if (_lineT >= 0f)
                     _lineT += frameDt;
+                if (_dashT >= 0f)
+                    _dashT += frameDt;
             }
             _wardPulse += frameDt;
             Fit();
@@ -178,7 +182,7 @@ namespace BattleTv.Fight
                     else if (_brute.Callout == "Brute Ward")
                         _wardHold = true;
                     else if (_brute.Callout == "Close")
-                        ArmBrute(bruteClose, 0.4f);
+                        _dashT = 0f;
                 }
                 if (_brute.Shield <= 0)
                     _wardHold = false;
@@ -220,6 +224,7 @@ namespace BattleTv.Fight
             PlaceRing();
             PlacePoundLine();
             PlaceGrip();
+            PlaceDash();
             PlaceSpark();
             TickFloaters(dt);
             bool fists = _vale.Range <= 110.0 / 32.0 && _brute.Range <= 110.0 / 32.0;
@@ -831,6 +836,33 @@ namespace BattleTv.Fight
             rect.anchoredPosition = new Vector2(feetBody.anchoredPosition.x, feetBody.anchoredPosition.y);
             rect.localScale = Vector3.one;
             gripRocks.color = new Color(1f, 1f, 1f, Mathf.Clamp01((float)(slowed.SlowT / 0.35)));
+        }
+
+        void PlaceDash()
+        {
+            if (dashDust == null)
+                return;
+            bool up = _dashT >= 0f && _dashT < 0.4f && plate != null && bruteBody != null;
+            dashDust.enabled = up;
+            if (!up)
+                return;
+            float u = _dashT / 0.4f;
+            float height = plate.rect.height;
+            float span = height * Band * Mathf.Lerp(0.62f, 0.30f, u);
+            float aspect = dashDust.sprite != null && dashDust.sprite.rect.height > 1f
+                ? dashDust.sprite.rect.width / dashDust.sprite.rect.height
+                : 2.1f;
+            var rect = dashDust.rectTransform;
+            rect.anchorMin = rect.anchorMax = new Vector2(0.5f, 0.5f);
+            rect.pivot = new Vector2(0.78f, 0.16f);
+            rect.sizeDelta = new Vector2(span * aspect, span);
+            rect.anchoredPosition = bruteBody.anchoredPosition;
+            // The dust picture travels to the right. Brute's painting faces left
+            // when his scale is positive, so the trail sits behind that shoulder.
+            float face = bruteBody.localScale.x < 0f ? -1f : 1f;
+            rect.localScale = new Vector3(face, 1f, 1f);
+            float fade = u < 0.12f ? u / 0.12f : Mathf.Clamp01((1f - u) / 0.35f);
+            dashDust.color = new Color(1f, 1f, 1f, fade);
         }
 
         void ArmBrute(Sprite[] frames, float duration)

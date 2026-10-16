@@ -167,6 +167,40 @@ namespace BattleTv.Menu.Tests
             Assert.AreEqual(32, bruteHome.Mana);
         }
 
+        [Test]
+        public void ValeAndBruteFinishALane()
+        {
+            int valeWins = 0;
+            int bruteWins = 0;
+            int draws = 0;
+            double longest = 0;
+            for (int seed = 0; seed < 12; seed++)
+            {
+                SideDuel.ResetLane();
+                var vale = SideDuel.Vale();
+                var brute = SideDuel.Brute();
+                var rng = new System.Random(seed);
+                double t = 0;
+                while (t < SideDuel.HardStop && vale.Alive && brute.Alive)
+                {
+                    SideDuel.Step(vale, brute, 1.0 / 30.0, rng, t);
+                    t += 1.0 / 30.0;
+                }
+                if (t > longest)
+                    longest = t;
+                if (vale.Alive && brute.Alive)
+                    draws++;
+                else if (vale.Alive)
+                    valeWins++;
+                else
+                    bruteWins++;
+            }
+            Assert.AreEqual(0, draws);
+            Assert.Less(longest, 280);
+            Assert.Greater(valeWins, 0);
+            Assert.Greater(bruteWins, 0);
+        }
+
         static void AssertFighters(MenuController.FitResult fit)
         {
             Assert.IsTrue(MenuController.FighterThirdStaysVisible(fit, MenuController.LeftFighterThird));

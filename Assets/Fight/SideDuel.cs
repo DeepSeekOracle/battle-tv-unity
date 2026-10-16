@@ -49,6 +49,7 @@ namespace BattleTv.Fight
         public bool Pound;
         public bool Ward;
         public string Callout = "";
+        public string Plate = "";
 
         public bool Alive => Hp > 0;
     }
@@ -71,6 +72,10 @@ namespace BattleTv.Fight
         public const double CloseCd = 30;
         public const double CloseCost = 8;
         public const double ValeCharge = 1.15;
+        // One body cannot chew a full plate before its cooldown is ready.
+        // The lane pace is applied to the blow that reaches Hit. The card
+        // test still calls Hit with the raw amount, so 14 and 0 stay put.
+        public const double LanePace = 1.8;
         public static double DoorX;
         public static double DoorT;
         static readonly List<Blow> Pending = new List<Blow>(8);
@@ -129,7 +134,10 @@ namespace BattleTv.Fight
                 return false;
             self.Mana -= WallCost;
             if (!(self.Shield > 0))
+            {
                 self.Shield += Math.Round(self.Max * 0.35);
+                self.Plate = "wall";
+            }
             self.WallCd = 15 * self.CdMul;
             self.Callout = "Shield Wall";
             self.Swing = 0.2;
@@ -209,13 +217,17 @@ namespace BattleTv.Fight
             if (melee && !reflect && tgt.Thorns > 0)
                 dmg *= 1 - tgt.Thorns;
 
+            bool broke = false;
             if (tgt.Shield > 0)
             {
                 double absorbed = Math.Min(tgt.Shield, dmg);
                 tgt.Shield -= absorbed;
                 dmg -= absorbed;
+                broke = tgt.Shield <= 0;
                 if (dmg < 0.5)
                 {
+                    if (broke)
+                        OpenPlate(tgt);
                     Note(tgt, "ward", "ward");
                     return 0;
                 }
@@ -223,7 +235,13 @@ namespace BattleTv.Fight
 
             dmg = Math.Round(dmg);
             if (dmg <= 0)
+            {
+                if (broke)
+                    OpenPlate(tgt);
                 return 0;
+            }
+            if (broke)
+                OpenPlate(tgt);
             tgt.Hp -= dmg;
             if (tgt.Hp < 0)
                 tgt.Hp = 0;
@@ -289,7 +307,7 @@ namespace BattleTv.Fight
             {
                 self.Mana -= PoundCost;
                 bool crit = rng.NextDouble() < self.Crit;
-                Hit(self, other, self.Dmg * 1.15, true, crit, false, time);
+                Hit(self, other, self.Dmg * 1.15 * LanePace, true, crit, false, time);
                 other.Stun = Math.Max(other.Stun, 0.5);
                 double dir = Math.Sign(other.X - self.X);
                 if (dir == 0)
@@ -299,11 +317,11 @@ namespace BattleTv.Fight
                 self.Callout = "Brute Pound";
                 self.Swing = 0.7;
             }
-            else if (!stepped && self.Ward && self.WardCd <= 0 && close && self.Mana >= WardCost)
+            else if (!stepped && self.Ward && self.WardCd <= 0 && close && self.Mana >= WardCost && !(self.Shield > 0))
             {
                 self.Mana -= WardCost;
-                if (!(self.Shield > 0))
-                    self.Shield += Math.Round(self.Max * 0.4);
+                self.Shield += Math.Round(self.Max * 0.4);
+                self.Plate = "ward";
                 self.ThornsV = Math.Max(self.ThornsV, 0.4);
                 self.ThornsT = Math.Max(self.ThornsT, 6);
                 self.WardCd = 16 * self.CdMul;
@@ -311,7 +329,11 @@ namespace BattleTv.Fight
                 self.Swing = 0.45;
             }
             else if (!stepped && TryGrip(self, other, dist))
-                return;
+            {
+                // In the gap the grip is the action. In melee the club still lands.
+                if (dist > self.Range + ReachPad)
+                    return;
+            }
             else if (!stepped && self.Name == "Vale" && ThinkVale(self, other))
                 return;
             else if (!stepped && self.Name != "Vale" && self.Wall && self.WallCd <= 0 && close)
@@ -356,7 +378,7 @@ namespace BattleTv.Fight
                 if (dist <= reach + 0.12)
                 {
                     bool crit = rng.NextDouble() < self.Crit;
-                    Hit(self, other, self.Dmg, true, crit, false, time);
+                    Hit(self, other, self.Dmg * LanePace, true, crit, false, time);
                 }
                 self.AtkCd = 1.0 / Math.Max(0.15, self.Rate);
                 self.Callout = bash ? "Shield Bash" : "Punch";
@@ -368,7 +390,7 @@ namespace BattleTv.Fight
                 if (self.AtkCd > 0)
                     return;
                 bool crit = rng.NextDouble() < self.Crit;
-                Hit(self, other, self.Dmg, true, crit, false, time);
+                Hit(self, other, self.Dmg * LanePace, true, crit, false, time);
                 self.AtkCd = 1.0 / Math.Max(0.15, self.Rate);
                 self.Callout = "Heavy Sweep";
                 self.Swing = 1.2;
@@ -396,6 +418,7 @@ namespace BattleTv.Fight
             {
                 self.Mana -= CoverCost;
                 self.Shield += Math.Round(self.Max * 0.34);
+                self.Plate = "cover";
                 self.CoverCd = 11 * self.CdMul;
                 self.Callout = "Aegis Cover";
                 self.Swing = 0.4;
@@ -415,7 +438,10 @@ namespace BattleTv.Fight
             {
                 self.Mana -= WallCost;
                 if (!(self.Shield > 0))
+                {
                     self.Shield += Math.Round(self.Max * 0.35);
+                    self.Plate = "wall";
+                }
                 self.WallCd = 30;
                 DoorX = (self.X + other.X) * 0.5;
                 DoorT = 3;
@@ -436,7 +462,7 @@ namespace BattleTv.Fight
         {
             if (self.Name != "Brute" || self.GripCd > 0 || self.Mana < GripCost)
                 return false;
-            if (dist <= self.Range + ReachPad || dist > self.Range + 3.2)
+            if (dist < 0.4 || dist > self.Range + 3.2)
                 return false;
             if (DoorBlocks(self.X, other.X))
                 return false;
@@ -447,6 +473,24 @@ namespace BattleTv.Fight
             self.Callout = "Iron Grip";
             self.Swing = 0.35;
             return true;
+        }
+
+        /// <summary>
+        /// A new plate waits out its cooldown after the old one breaks.
+        /// Running that clock while the plate is up let the next one land
+        /// on the same tick the first one failed.
+        /// </summary>
+        static void OpenPlate(Body body)
+        {
+            if (body.Plate == "ward")
+                body.WardCd = 16 * body.CdMul;
+            else if (body.Plate == "cover")
+                body.CoverCd = 11 * body.CdMul;
+            else if (body.Plate == "wall" && body.Name == "Vale")
+                body.WallCd = 30;
+            else if (body.Plate == "wall")
+                body.WallCd = 15 * body.CdMul;
+            body.Plate = "";
         }
 
         static double Pace(Body body)

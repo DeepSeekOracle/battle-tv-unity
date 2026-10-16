@@ -36,6 +36,7 @@ namespace BattleTv.Menu.EditorTools
             var bruteClose = LoadClip("brute-close", 1, 1024);
             ConfigureToss("Assets/Art/Duel/brute-line.png", 1024);
             ConfigureToss("Assets/Art/Duel/brute-grip.png", 1024);
+            ConfigureToss("Assets/Art/Duel/brute-dust.png", 1024);
             ApplyBrutePivots();
             bruteSweep = ReloadClip("brute-sweep", 8);
             brutePound = ReloadClip("brute-pound", 2);
@@ -44,7 +45,8 @@ namespace BattleTv.Menu.EditorTools
             var bruteIdle = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Duel/brute-drag.png");
             var lineSprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Duel/brute-line.png");
             var gripSprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Duel/brute-grip.png");
-            if (bruteIdle == null || lineSprite == null || gripSprite == null)
+            var dustSprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Duel/brute-dust.png");
+            if (bruteIdle == null || lineSprite == null || gripSprite == null || dustSprite == null)
                 throw new FileNotFoundException("Brute art did not import.", "Assets/Art/Duel/brute-drag.png");
             ConfigureToss("Assets/Art/Duel/vale-door/shield.png", 1024);
             ConfigureToss("Assets/Art/Duel/vale-door/glow-white.png", 64);
@@ -167,15 +169,18 @@ namespace BattleTv.Menu.EditorTools
             so.FindProperty("valeOpen").objectReferenceValue = openHand;
             var poundLine = Mark(plate, "BrutePound", lineSprite);
             var gripRocks = Mark(plate, "BruteGrip", gripSprite);
+            var dash = Mark(plate, "BruteDash", dustSprite);
             so.FindProperty("poundLine").objectReferenceValue = poundLine;
             so.FindProperty("gripRocks").objectReferenceValue = gripRocks;
+            so.FindProperty("dashDust").objectReferenceValue = dash;
             ringBack.transform.SetSiblingIndex(0);
             poundLine.transform.SetSiblingIndex(1);
             vale.SetSiblingIndex(2);
             brute.SetSiblingIndex(3);
             door.transform.SetSiblingIndex(4);
             gripRocks.transform.SetSiblingIndex(5);
-            ringFront.transform.SetSiblingIndex(6);
+            dash.transform.SetSiblingIndex(6);
+            ringFront.transform.SetSiblingIndex(7);
             spark.transform.SetAsLastSibling();
             so.ApplyModifiedPropertiesWithoutUndo();
             UnityEventTools.AddPersistentListener(menu.onClick, view.BackToMenu);
