@@ -35,6 +35,13 @@ namespace BattleTv.Fight
         [SerializeField] Sprite[] brutePound;
         [SerializeField] Sprite[] bruteWard;
         [SerializeField] Sprite[] bruteClose;
+        [SerializeField] Sprite[] valeDeath;
+        [SerializeField] Sprite[] valeWin;
+        [SerializeField] Sprite[] bruteDeath;
+        [SerializeField] Sprite[] bruteWin;
+        [SerializeField] GameObject scoreboard;
+        [SerializeField] Text scoreTitle;
+        [SerializeField] Text scoreDetail;
         [SerializeField] Sprite bruteIdle;
         [SerializeField] Image poundLine;
         [SerializeField] Image gripRocks;
@@ -52,12 +59,23 @@ namespace BattleTv.Fight
         const float PunchPivot = 0.37f;
         const float LinePivot = 0.54f;
         const float PlantPivot = 0.56f;
+        const float ValeDeathPivot = 0.42f;
+        const float ValeWinPivot = 0.40f;
+        const float DeathTime = 1.6f;
+        const float BruteDeathTime = 1.55f;
+        const float WinTime = 1.15f;
 
         Body _vale;
         Body _brute;
         System.Random _rng;
         double _time;
         bool _over;
+        bool _outro;
+        bool _boardUp;
+        float _outroT;
+        float _boardWait = 0.8f;
+        string _boardTitle = "";
+        string _boardDetail = "";
         int _appliedW = -1;
         int _appliedH = -1;
         string _lastLine = "";
@@ -117,6 +135,8 @@ namespace BattleTv.Fight
                 if (planted != null)
                     bruteIdle = planted.sprite;
             }
+            if (scoreboard != null)
+                scoreboard.SetActive(false);
             _voice = gameObject.AddComponent<AudioSource>();
             _voice.playOnAwake = false;
             _voice.spatialBlend = 0f;
@@ -167,6 +187,11 @@ namespace BattleTv.Fight
                 stageFilm.enabled = false;
         }
 
+        public void Replay()
+        {
+            SceneManager.LoadScene("Duel");
+        }
+
         public void BackToMenu()
         {
             if (BattleTv.Menu.IntroMusic.Current != null)
@@ -186,13 +211,19 @@ namespace BattleTv.Fight
                 {
                     _clipT += frameDt;
                     if (_clipT >= _clipDur)
-                        _clipT = -1f;
+                        _clipT = _outro ? _clipDur - 0.0001f : -1f;
                 }
                 if (_bruteClipT >= 0f)
                 {
                     _bruteClipT += frameDt;
                     if (_bruteClipT >= _bruteClipDur)
-                        _bruteClipT = -1f;
+                        _bruteClipT = _outro ? _bruteClipDur - 0.0001f : -1f;
+                }
+                if (_over && !_boardUp)
+                {
+                    _outroT += frameDt;
+                    if (_outroT >= _boardWait)
+                        ShowBoard();
                 }
                 if (_lineT >= 0f)
                     _lineT += frameDt;
@@ -238,19 +269,9 @@ namespace BattleTv.Fight
                 HearMove(_vale, ref _heardVale);
                 HearMove(_brute, ref _heardBrute);
                 if (!_vale.Alive || !_brute.Alive)
-                {
-                    _over = true;
-                    string winner = _vale.Alive ? _vale.Name : _brute.Name;
-                    if (result != null)
-                        result.text = winner + " takes the lane";
-                    Play("win", 0.55f);
-                }
+                    BeginFinish(false);
                 else if (_time >= SideDuel.HardStop)
-                {
-                    _over = true;
-                    if (result != null)
-                        result.text = "Neither side fell. The lane is a draw.";
-                }
+                    BeginFinish(true);
             }
             Paint(frozen ? 0f : frameDt);
         }
@@ -261,11 +282,16 @@ namespace BattleTv.Fight
                 return;
             Place(_vale, valeBody);
             Place(_brute, bruteBody);
-            KeepShouldersApart();
+            // A fallen body is wide. Shoving it by the nose stands the corpse back up.
+            if (!_over)
+                KeepShouldersApart();
             if (dt > 0f)
                 ReleaseBlows(dt);
-            ApplyWeight();
-            CloseThePunch();
+            if (!_over)
+            {
+                ApplyWeight();
+                CloseThePunch();
+            }
             KeepOnStage();
             PlaceDoor();
             PlaceRing();
@@ -321,7 +347,7 @@ namespace BattleTv.Fight
                 if (playing)
                 {
                     int frame = Mathf.Clamp(Mathf.FloorToInt(_clipT / _clipDur * _clip.Length), 0, _clip.Length - 1);
-                    if (_sparkLife > 0.01f && _sparkOn == "Brute" && (_vale.Callout == "Punch" || _vale.Callout == "Shield Bash"))
+                    if (!_outro && _sparkLife > 0.01f && _sparkOn == "Brute" && (_vale.Callout == "Punch" || _vale.Callout == "Shield Bash"))
                         frame = Mathf.Clamp(Mathf.FloorToInt(0.58f * _clip.Length), 0, _clip.Length - 1);
                     if (_clip[frame] != null)
                         image.sprite = _clip[frame];
@@ -334,14 +360,14 @@ namespace BattleTv.Fight
                 if (brutePlaying)
                 {
                     int frame = Mathf.Clamp(Mathf.FloorToInt(_bruteClipT / _bruteClipDur * _bruteClip.Length), 0, _bruteClip.Length - 1);
-                    if (_brute.Callout == "Heavy Sweep")
+                    if (!_outro && _brute.Callout == "Heavy Sweep")
                     {
                         // Play the swing through, and hold the strike from the hit time.
                         float u = _bruteClipDur > 0.01f ? _bruteClipT / _bruteClipDur : 1f;
                         int last = _bruteClip.Length - 1;
                         frame = u >= 0.72f ? last : Mathf.Clamp(Mathf.FloorToInt((u / 0.72f) * last), 0, last);
                     }
-                    if (_sparkLife > 0.01f && _sparkOn == "Vale" && (_brute.Callout == "Heavy Sweep" || _brute.Callout == "Brute Pound"))
+                    if (!_outro && _sparkLife > 0.01f && _sparkOn == "Vale" && (_brute.Callout == "Heavy Sweep" || _brute.Callout == "Brute Pound"))
                         frame = _bruteClip.Length - 1;
                     if (_bruteClip[frame] != null)
                         image.sprite = _bruteClip[frame];
@@ -838,6 +864,78 @@ namespace BattleTv.Fight
             if (clip == null)
                 return;
             _voice.PlayOneShot(clip, gain);
+        }
+
+        void BeginFinish(bool draw)
+        {
+            _over = true;
+            _outro = true;
+            if (result != null)
+                result.text = "";
+            if (draw)
+            {
+                _boardTitle = "Neither side fell.";
+                _boardDetail = "The lane is a draw.";
+                _boardWait = 0.8f;
+                return;
+            }
+            bool valeDown = !_vale.Alive;
+            bool bruteDown = !_brute.Alive;
+            float wait = 0.8f;
+            if (valeDown)
+            {
+                Arm(valeDeath, DeathTime, ValeDeathPivot);
+                wait = DeathTime;
+            }
+            else
+            {
+                Arm(valeWin, WinTime, ValeWinPivot);
+                wait = WinTime;
+            }
+            if (bruteDown)
+            {
+                ArmBrute(bruteDeath, BruteDeathTime);
+                wait = Mathf.Max(wait, BruteDeathTime);
+            }
+            else
+            {
+                ArmBrute(bruteWin, WinTime);
+                wait = Mathf.Max(wait, WinTime);
+            }
+            if (valeDown && bruteDown)
+            {
+                _lastLine = "Broken Door  ·  The Pillar";
+                _boardTitle = "Neither fighter stands";
+                _boardDetail = "The lane took both.";
+            }
+            else if (valeDown)
+            {
+                _lastLine = "Broken Door";
+                _boardTitle = "Brute takes the lane";
+                _boardDetail = "Crown  ·  Broken Door";
+                Play("win", 0.55f);
+            }
+            else
+            {
+                _lastLine = "The Pillar";
+                _boardTitle = "Vale takes the lane";
+                _boardDetail = "Door High  ·  The Pillar";
+                Play("win", 0.55f);
+            }
+            _boardWait = wait + 0.35f;
+        }
+
+        void ShowBoard()
+        {
+            _boardUp = true;
+            if (scoreTitle != null)
+                scoreTitle.text = _boardTitle;
+            if (scoreDetail != null)
+                scoreDetail.text = _boardDetail;
+            if (scoreboard != null)
+                scoreboard.SetActive(true);
+            else if (result != null)
+                result.text = _boardTitle;
         }
 
         void BeginValeClip(string callout)
