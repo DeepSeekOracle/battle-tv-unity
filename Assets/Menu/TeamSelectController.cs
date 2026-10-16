@@ -30,6 +30,7 @@ namespace BattleTv.Menu
         void Start()
         {
             _font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            WarmFont(_font);
             if (string.IsNullOrEmpty(ShowPick.Filter))
                 ShowPick.Filter = "champ";
             if (LaneRoster.ById(ShowPick.Inspect).Id == null)
@@ -100,13 +101,16 @@ namespace BattleTv.Menu
             var trayLayout = _tray.gameObject.AddComponent<HorizontalLayoutGroup>();
             trayLayout.spacing = 8f;
             trayLayout.childAlignment = TextAnchor.MiddleLeft;
-            trayLayout.childControlWidth = false;
+            trayLayout.childControlWidth = true;
             trayLayout.childControlHeight = true;
             trayLayout.childForceExpandWidth = false;
             trayLayout.childForceExpandHeight = true;
 
             _status = Words(foot, "Status", new Vector2(0.63f, 0.52f), new Vector2(0.995f, 0.92f), 15, TextAnchor.MiddleRight);
+            _status.horizontalOverflow = HorizontalWrapMode.Overflow;
             _status.verticalOverflow = VerticalWrapMode.Truncate;
+            _status.resizeTextForBestFit = false;
+            _status.gameObject.AddComponent<RectMask2D>();
             _fight = Button(foot, "FIGHT", new Vector2(0.74f, 0.08f), new Vector2(0.99f, 0.48f), true);
             _fightLabel = _fight.GetComponentInChildren<Text>(true);
             _fight.onClick.AddListener(Fight);
@@ -153,7 +157,7 @@ namespace BattleTv.Menu
                 ? "Blind draw. Both sides stay on their own."
                 : "Blind draw onto the sand. A mark stands in until that body is painted.");
             _status.text = block == null
-                ? ShowPick.Label(ShowPick.Mode) + " · " + Names(ShowPick.Yours)
+                ? Clip(_status, ShowPick.Label(ShowPick.Mode) + "  ·  " + Names(ShowPick.Yours))
                 : "Lane not ready";
             _fight.interactable = block == null;
             if (_fightLabel != null)
@@ -227,22 +231,39 @@ namespace BattleTv.Menu
             face.color = still != null ? Color.white : Hex(kit.Color);
             face.preserveAspect = still != null;
             face.raycastTarget = false;
-            var label = Words(row.transform, "Name", new Vector2(0.18f, 0.08f), new Vector2(0.98f, 0.92f), 18, TextAnchor.MiddleLeft);
-            label.text = kit.Name + "\n<size=13>" + kit.Tag + (soon ? "  ·  soon" : "") + "</size>";
-            label.supportRichText = true;
+            var label = Words(row.transform, "Name", new Vector2(0.18f, 0.46f), new Vector2(0.98f, 0.94f), 18, TextAnchor.MiddleLeft);
+            label.text = kit.Name;
+            label.supportRichText = false;
+            label.horizontalOverflow = HorizontalWrapMode.Overflow;
+            label.verticalOverflow = VerticalWrapMode.Truncate;
             label.color = soon ? new Color(Paper.r, Paper.g, Paper.b, 0.55f) : Paper;
+            var tag = Words(row.transform, "Tag", new Vector2(0.18f, 0.06f), new Vector2(0.98f, 0.48f), 13, TextAnchor.MiddleLeft);
+            tag.text = kit.Tag + (soon ? "   ·   soon" : "");
+            tag.supportRichText = false;
+            tag.horizontalOverflow = HorizontalWrapMode.Overflow;
+            tag.verticalOverflow = VerticalWrapMode.Truncate;
+            tag.color = soon ? new Color(Gold.r, Gold.g, Gold.b, 0.45f) : Gold;
             if (picked)
                 image.color = new Color(Gold.r, Gold.g, Gold.b, 0.28f);
         }
 
         void Dossier(Kit kit)
         {
+            var who = Words(_dossier, "Who", new Vector2(0f, 1f), new Vector2(1f, 1f), 22, TextAnchor.MiddleLeft);
+            who.rectTransform.pivot = new Vector2(0.5f, 1f);
+            who.rectTransform.anchoredPosition = new Vector2(0f, -54f);
+            who.rectTransform.sizeDelta = new Vector2(-32f, 30f);
+            who.text = kit.Name;
+            who.supportRichText = false;
+            who.horizontalOverflow = HorizontalWrapMode.Overflow;
+            who.verticalOverflow = VerticalWrapMode.Truncate;
+            who.gameObject.AddComponent<RectMask2D>();
             var body = Words(_dossier, "Body", new Vector2(0f, 1f), new Vector2(1f, 1f), 18, TextAnchor.UpperLeft);
+            body.supportRichText = false;
             body.rectTransform.pivot = new Vector2(0.5f, 1f);
-            body.rectTransform.anchoredPosition = new Vector2(0f, -58f);
+            body.rectTransform.anchoredPosition = new Vector2(0f, -92f);
             var lines = new List<string>(24);
             lines.Add(kit.ClassLabel.ToUpperInvariant());
-            lines.Add(kit.Name);
             lines.Add(kit.Tag);
             lines.Add("");
             lines.Add(kit.Bio);
@@ -272,7 +293,7 @@ namespace BattleTv.Menu
             body.rectTransform.sizeDelta = new Vector2(-20f, 10f);
             var preferred = body.preferredHeight + 28f;
             body.rectTransform.sizeDelta = new Vector2(-20f, preferred);
-            _dossier.sizeDelta = new Vector2(0f, preferred + 78f);
+            _dossier.sizeDelta = new Vector2(0f, preferred + 112f);
 
             var picked = ShowPick.Yours.Contains(kit.Id);
             var full = !picked && ShowPick.Yours.Count >= ShowPick.Mode;
@@ -296,14 +317,24 @@ namespace BattleTv.Menu
         {
             var kit = LaneRoster.ById(id);
             var slot = Button(_tray, kit.Name ?? id, Vector2.zero, Vector2.one, false);
+            var rect = slot.GetComponent<RectTransform>();
+            rect.anchorMin = new Vector2(0f, 0f);
+            rect.anchorMax = new Vector2(0f, 1f);
+            rect.pivot = new Vector2(0f, 0.5f);
+            rect.sizeDelta = new Vector2(168f, 0f);
             var layout = slot.gameObject.AddComponent<LayoutElement>();
-            layout.preferredWidth = 148f;
-            layout.minWidth = 120f;
+            layout.preferredWidth = 168f;
+            layout.minWidth = 168f;
+            slot.gameObject.AddComponent<RectMask2D>();
             var label = slot.GetComponentInChildren<Text>(true);
             if (label != null)
             {
                 label.text = kit.Name ?? id;
-                label.resizeTextMaxSize = 18;
+                label.fontSize = 15;
+                label.resizeTextForBestFit = false;
+                label.alignment = TextAnchor.MiddleCenter;
+                label.horizontalOverflow = HorizontalWrapMode.Overflow;
+                label.verticalOverflow = VerticalWrapMode.Truncate;
             }
             var drop = id;
             slot.onClick.AddListener(() =>
@@ -359,6 +390,46 @@ namespace BattleTv.Menu
                 parts[i] = kit.Name ?? ids[i];
             }
             return string.Join(", ", parts);
+        }
+
+        static string Clip(Text label, string line)
+        {
+            if (label == null || string.IsNullOrEmpty(line))
+                return line ?? "";
+            var width = label.rectTransform.rect.width;
+            if (width < 24f || label.font == null)
+                return line;
+            var settings = label.GetGenerationSettings(new Vector2(width, label.fontSize + 6f));
+            var gen = new TextGenerator();
+            if (gen.GetPreferredWidth(line, settings) <= width + 0.5f)
+                return line;
+            var cut = line;
+            while (cut.Length > 1)
+            {
+                cut = cut.Substring(0, cut.Length - 1).TrimEnd();
+                var trial = cut + "…";
+                if (gen.GetPreferredWidth(trial, settings) <= width + 0.5f)
+                    return trial;
+            }
+            return "…";
+        }
+
+        static void WarmFont(Font font)
+        {
+            if (font == null)
+                return;
+            var text = new System.Text.StringBuilder(8192);
+            text.Append("Team select FIGHT NOT READY Lane not ready no one fielded Add to team Remove from team ·…—");
+            var all = LaneRoster.All;
+            for (var i = 0; i < all.Length; i++)
+            {
+                var kit = all[i];
+                text.Append(' ').Append(kit.Name).Append(' ').Append(kit.Tag).Append(' ').Append(kit.Bio).Append(' ').Append(kit.Counter).Append(' ').Append(kit.Atk);
+            }
+            var sample = text.ToString();
+            int[] sizes = { 13, 15, 16, 18, 20, 22, 28 };
+            for (var i = 0; i < sizes.Length; i++)
+                font.RequestCharactersInTexture(sample, sizes[i], FontStyle.Bold);
         }
 
         static Color Hex(string hex)
