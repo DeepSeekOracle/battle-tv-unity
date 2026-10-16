@@ -7,7 +7,7 @@ namespace BattleTv.Menu
     {
         public void OpenCard()
         {
-            if (ShowPick.Mode != 1)
+            if (!ShowPick.BeginAutonomous(new System.Random()))
                 return;
             SceneManager.LoadScene("Duel");
         }

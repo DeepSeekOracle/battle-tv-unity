@@ -86,13 +86,15 @@ namespace BattleTv.Menu.Tests
             Assert.AreEqual("intro", Object.FindAnyObjectByType<PageChrome>().Screen);
 
             var scenes = EditorBuildSettings.scenes;
-            Assert.AreEqual(3, scenes.Length);
+            Assert.AreEqual(4, scenes.Length);
             Assert.AreEqual("Assets/Menu/Menu.unity", scenes[0].path);
             Assert.AreEqual("Assets/Menu/GameMenu.unity", scenes[1].path);
-            Assert.AreEqual("Assets/Fight/Duel.unity", scenes[2].path);
+            Assert.AreEqual("Assets/Menu/TeamSelect.unity", scenes[2].path);
+            Assert.AreEqual("Assets/Fight/Duel.unity", scenes[3].path);
             Assert.IsTrue(scenes[0].enabled);
             Assert.IsTrue(scenes[1].enabled);
             Assert.IsTrue(scenes[2].enabled);
+            Assert.IsTrue(scenes[3].enabled);
         }
 
         [Test]
@@ -236,6 +238,75 @@ namespace BattleTv.Menu.Tests
             Assert.Less(longest, 280);
             Assert.Greater(valeWins, 0);
             Assert.Greater(bruteWins, 0);
+        }
+
+        [Test]
+        public void RosterKeepsTheThirtyThreeKits()
+        {
+            Assert.AreEqual(33, LaneRoster.All.Length);
+            Assert.AreEqual(13, LaneRoster.Of("champ").Length);
+            Assert.AreEqual(15, LaneRoster.Of("beast").Length);
+            Assert.AreEqual(5, LaneRoster.Of("pet").Length);
+            Assert.AreEqual(2, LaneRoster.LinkedCount);
+            var seen = new System.Collections.Generic.HashSet<string>();
+            for (var i = 0; i < LaneRoster.All.Length; i++)
+            {
+                var kit = LaneRoster.All[i];
+                Assert.IsTrue(seen.Add(kit.Id), kit.Id);
+                Assert.IsFalse(string.IsNullOrEmpty(kit.Name));
+                Assert.Greater(kit.Moves.Length, 0);
+                Assert.Greater(kit.Cards.Length, 0);
+                for (var m = 0; m < kit.Moves.Length; m++)
+                    Assert.AreNotEqual(kit.Moves[m], LaneRoster.MoveName(kit.Moves[m]), kit.Id + " " + kit.Moves[m]);
+                for (var c = 0; c < kit.Cards.Length; c++)
+                    Assert.AreNotEqual(kit.Cards[c], LaneRoster.CardName(kit.Cards[c]), kit.Id + " " + kit.Cards[c]);
+            }
+            Assert.IsTrue(LaneRoster.ById("vale").Linked);
+            Assert.IsTrue(LaneRoster.ById("brute").Linked);
+            Assert.IsFalse(LaneRoster.ById("kael").Linked);
+
+            ShowPick.Clear();
+            ShowPick.BeginDraft(1);
+            Assert.IsTrue(ShowPick.Toggle("vale"));
+            Assert.IsTrue(ShowPick.TryField(new System.Random(1), out var block));
+            Assert.IsNull(block);
+            Assert.AreEqual("brute", ShowPick.Foes[0]);
+            Assert.IsFalse(ShowPick.Autonomous);
+
+            ShowPick.Clear();
+            ShowPick.BeginDraft(1);
+            Assert.IsTrue(ShowPick.Toggle("brute"));
+            Assert.IsTrue(ShowPick.TryField(new System.Random(2), out block));
+            Assert.AreEqual("vale", ShowPick.Foes[0]);
+
+            ShowPick.Clear();
+            ShowPick.BeginDraft(1);
+            Assert.IsFalse(ShowPick.Toggle("kael"));
+            ShowPick.Yours.Add("kael");
+            Assert.IsFalse(ShowPick.TryField(new System.Random(3), out block));
+            StringAssert.Contains("not in the lane", block);
+
+            ShowPick.Clear();
+            ShowPick.BeginDraft(2);
+            Assert.IsTrue(ShowPick.Toggle("vale"));
+            Assert.IsTrue(ShowPick.Toggle("brute"));
+            Assert.IsFalse(ShowPick.TryField(new System.Random(4), out block));
+            StringAssert.Contains("one body", block);
+
+            Assert.IsTrue(ShowPick.BeginAutonomous(new System.Random(5)));
+            Assert.IsTrue(ShowPick.Autonomous);
+            Assert.AreEqual(1, ShowPick.Mode);
+            Assert.AreEqual("vale", ShowPick.Yours[0]);
+            Assert.AreEqual("brute", ShowPick.Foes[0]);
+            ShowPick.RememberResult("vale");
+            Assert.AreEqual(1, ShowPick.Reign);
+            ShowPick.RememberResult(null);
+            Assert.AreEqual(1, ShowPick.Reign);
+            ShowPick.RememberResult("vale");
+            Assert.AreEqual(2, ShowPick.Reign);
+            ShowPick.StopShow();
+            Assert.IsFalse(ShowPick.Autonomous);
+            Assert.AreEqual(0, ShowPick.Yours.Count);
         }
 
         static void AssertFighters(MenuController.FitResult fit)

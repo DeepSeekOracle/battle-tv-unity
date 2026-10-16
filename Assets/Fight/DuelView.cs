@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using BattleTv.Menu;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.Video;
@@ -11,7 +13,8 @@ namespace BattleTv.Fight
         public const float StageWidth = 2048f;
         public const float StageHeight = 1152f;
         const float Band = 720f / 1152f;
-        const float Feet = (216f + 0.2f * 720f) / 1152f;
+        // The painted sand sits under the old 720-band foot mark. 36px on the 1152 plate.
+        const float Feet = (216f + 0.2f * 720f - 36f) / 1152f;
 
         [SerializeField] RectTransform plate;
         [SerializeField] RectTransform valeBody;
@@ -110,6 +113,7 @@ namespace BattleTv.Fight
         float _lineT = -1f;
         float _dashT = -1f;
         string _dashWho = "";
+        float _chainT;
         RenderTexture _stageTex;
         float _wardPulse;
         bool _wardHold;
@@ -138,6 +142,7 @@ namespace BattleTv.Fight
             }
             if (scoreboard != null)
                 scoreboard.SetActive(false);
+            RouteNewToons();
             _voice = gameObject.AddComponent<AudioSource>();
             _voice.playOnAwake = false;
             _voice.spatialBlend = 0f;
@@ -195,9 +200,44 @@ namespace BattleTv.Fight
 
         public void BackToMenu()
         {
-            if (BattleTv.Menu.IntroMusic.Current != null)
-                BattleTv.Menu.IntroMusic.Current.SetMuted(false);
+            ShowPick.StopShow();
+            if (IntroMusic.Current != null)
+                IntroMusic.Current.SetMuted(false);
             SceneManager.LoadScene("GameMenu");
+        }
+
+        public void PickNew()
+        {
+            bool show = ShowPick.Autonomous;
+            if (show)
+                ShowPick.StopShow();
+            if (IntroMusic.Current != null)
+                IntroMusic.Current.SetMuted(false);
+            SceneManager.LoadScene(show ? "GameMenu" : "TeamSelect");
+        }
+
+        void RouteNewToons()
+        {
+            if (scoreboard == null)
+                return;
+            var buttons = scoreboard.GetComponentsInChildren<Button>(true);
+            for (var i = 0; i < buttons.Length; i++)
+            {
+                var label = buttons[i].GetComponentInChildren<Text>(true);
+                if (label == null || (label.text != "NEW TOONS" && label.text != "LEAVE SHOW"))
+                    continue;
+                var click = buttons[i].onClick;
+                var wired = false;
+                for (var n = 0; n < click.GetPersistentEventCount(); n++)
+                {
+                    if (click.GetPersistentMethodName(n) == nameof(PickNew))
+                        wired = true;
+                    else
+                        click.SetPersistentListenerState(n, UnityEventCallState.Off);
+                }
+                if (!wired)
+                    click.AddListener(PickNew);
+            }
         }
 
         void Update()
@@ -230,6 +270,15 @@ namespace BattleTv.Fight
                     _lineT += frameDt;
                 if (_dashT >= 0f)
                     _dashT += frameDt;
+            }
+            if (_boardUp && ShowPick.Autonomous)
+            {
+                _chainT += frameDt;
+                if (_chainT >= 4.5f)
+                {
+                    _chainT = -1f;
+                    Replay();
+                }
             }
             _wardPulse += frameDt;
             Fit();
@@ -888,10 +937,12 @@ namespace BattleTv.Fight
                 _boardTitle = "Neither side fell.";
                 _boardDetail = "The lane is a draw.";
                 _boardWait = 0.8f;
+                ShowPick.RememberResult(null);
                 return;
             }
             bool valeDown = !_vale.Alive;
             bool bruteDown = !_brute.Alive;
+            ShowPick.RememberResult(valeDown == bruteDown ? null : valeDown ? "brute" : "vale");
             float wait = 0.8f;
             if (valeDown)
             {
@@ -942,9 +993,23 @@ namespace BattleTv.Fight
             if (scoreTitle != null)
                 scoreTitle.text = _boardTitle;
             if (scoreDetail != null)
-                scoreDetail.text = _boardDetail;
+            {
+                var reign = ShowPick.ReignLine();
+                scoreDetail.text = string.IsNullOrEmpty(reign) ? _boardDetail : _boardDetail + "\n" + reign;
+            }
             if (scoreboard != null)
+            {
+                if (ShowPick.Autonomous)
+                {
+                    var labels = scoreboard.GetComponentsInChildren<Text>(true);
+                    for (var i = 0; i < labels.Length; i++)
+                    {
+                        if (labels[i].text == "NEW TOONS")
+                            labels[i].text = "LEAVE SHOW";
+                    }
+                }
                 scoreboard.SetActive(true);
+            }
             else if (result != null)
                 result.text = _boardTitle;
         }

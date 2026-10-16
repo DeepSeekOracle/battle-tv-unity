@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace BattleTv.Menu
@@ -18,8 +19,9 @@ namespace BattleTv.Menu
 
         public void Pick(int mode)
         {
-            ShowPick.Mode = mode;
+            ShowPick.BeginDraft(mode);
             Paint();
+            SceneManager.LoadScene("TeamSelect");
         }
 
         void Paint()

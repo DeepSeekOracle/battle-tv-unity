@@ -236,7 +236,7 @@ namespace BattleTv.Menu.EditorTools
             board.SetActive(false);
             UnityEventTools.AddPersistentListener(menu.onClick, view.BackToMenu);
             UnityEventTools.AddPersistentListener(replay.onClick, view.Replay);
-            UnityEventTools.AddPersistentListener(toons.onClick, view.BackToMenu);
+            UnityEventTools.AddPersistentListener(toons.onClick, view.PickNew);
 
             var eventObject = new GameObject("EventSystem", typeof(EventSystem), typeof(StandaloneInputModule));
             eventObject.GetComponent<EventSystem>().SetSelectedGameObject(menu.gameObject);
@@ -246,6 +246,7 @@ namespace BattleTv.Menu.EditorTools
             {
                 new EditorBuildSettingsScene("Assets/Menu/Menu.unity", true),
                 new EditorBuildSettingsScene("Assets/Menu/GameMenu.unity", true),
+                new EditorBuildSettingsScene("Assets/Menu/TeamSelect.unity", true),
                 new EditorBuildSettingsScene(ScenePath, true)
             };
             Debug.Log("[FightSceneSetup] Duel scene saved.");
