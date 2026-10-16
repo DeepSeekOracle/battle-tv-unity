@@ -129,6 +129,25 @@ namespace BattleTv.Menu.Tests
         }
 
         [Test]
+        public void PageHeadCarriesShareCards()
+        {
+            string root = Path.GetFullPath(Path.Combine(Application.dataPath, ".."));
+            string head = File.ReadAllText(Path.Combine(root, "tools", "seo", "page-head.html"));
+            StringAssert.Contains("property=\"og:title\"", head);
+            StringAssert.Contains("name=\"twitter:card\" content=\"summary_large_image\"", head);
+            StringAssert.Contains("name=\"googlebot\"", head);
+            StringAssert.Contains("https://deepseekoracle.github.io/battle-tv-unity/", head);
+            StringAssert.Contains("https://deepseekoracle.github.io/battle-tv-unity/og.jpg", head);
+            StringAssert.Contains("application/ld+json", head);
+            string robots = File.ReadAllText(Path.Combine(root, "tools", "seo", "robots.txt"));
+            StringAssert.Contains("User-agent: Googlebot", robots);
+            StringAssert.Contains("Sitemap: https://deepseekoracle.github.io/battle-tv-unity/sitemap.xml", robots);
+            string publisher = File.ReadAllText(Path.Combine(root, "Assets", "Menu", "Editor", "WebGlPublish.cs"));
+            StringAssert.Contains("InjectSeo", publisher);
+            StringAssert.Contains("page-head.html", publisher);
+        }
+
+        [Test]
         public void ValeAndBruteKeepTheRosterBuild()
         {
             var vale = SideDuel.Vale();

@@ -42,6 +42,7 @@ namespace BattleTv.Menu.EditorTools
 
                 var indexPath = Path.Combine(output, "index.html");
                 InjectIntroBed(indexPath);
+                InjectSeo(indexPath);
                 AssertRelativePaths(indexPath);
                 AssertPublishedClip(output);
                 AssertPublishedRest(output);
@@ -139,6 +140,37 @@ namespace BattleTv.Menu.EditorTools
                 html = html.Replace(body, body + "\n" + chrome);
             }
             File.WriteAllText(indexPath, html);
+        }
+
+        /// <summary>
+        /// The WebGL template title is not a page. Share cards, the canonical
+        /// URL, and the crawler files are copied back after docs/ is rebuilt.
+        /// </summary>
+        static void InjectSeo(string indexPath)
+        {
+            var seo = Path.GetFullPath(Path.Combine(Application.dataPath, "..", "tools", "seo"));
+            var html = File.ReadAllText(indexPath);
+            if (!html.Contains("property=\"og:title\""))
+            {
+                var head = File.ReadAllText(Path.Combine(seo, "page-head.html")).Trim();
+                if (!head.Contains("property=\"og:title\"") || !head.Contains("name=\"twitter:card\"") || !head.Contains("name=\"googlebot\""))
+                    throw new InvalidOperationException("Battle TV page head is missing the share cards.");
+                const string title = "<title>Unity Web Player | Battle TV</title>";
+                if (!html.Contains(title))
+                    throw new InvalidOperationException("index.html has no Unity title to replace.");
+                html = html.Replace(title, head);
+                File.WriteAllText(indexPath, html);
+            }
+            foreach (var name in new[] { "robots.txt", "sitemap.xml", "og.jpg" })
+            {
+                var from = Path.Combine(seo, name);
+                if (!File.Exists(from))
+                    throw new InvalidOperationException("Crawler file missing: " + name);
+                File.Copy(from, Path.Combine(Path.GetDirectoryName(indexPath), name), true);
+            }
+            html = File.ReadAllText(indexPath);
+            if (!html.Contains("https://deepseekoracle.github.io/battle-tv-unity/") || !html.Contains("summary_large_image"))
+                throw new InvalidOperationException("Published page is missing the canonical URL or the X card.");
         }
 
         /// <summary>
