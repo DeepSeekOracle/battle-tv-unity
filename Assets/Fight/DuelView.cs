@@ -59,6 +59,10 @@ namespace BattleTv.Fight
         float _valeFlash;
         float _bruteFlash;
         bool _finishSaid;
+        string _heardVale = "";
+        string _heardBrute = "";
+        AudioSource _voice;
+        readonly Dictionary<string, AudioClip> _sfx = new Dictionary<string, AudioClip>(16);
         readonly List<Blow> _inbox = new List<Blow>(8);
         readonly List<Queued> _queue = new List<Queued>(8);
         readonly List<Floater> _floaters = new List<Floater>(8);
@@ -85,7 +89,11 @@ namespace BattleTv.Fight
                 if (planted != null)
                     _valeIdle = planted.sprite;
             }
+            _voice = gameObject.AddComponent<AudioSource>();
+            _voice.playOnAwake = false;
+            _voice.spatialBlend = 0f;
             Paint(0f);
+            Play("fight", 0.5f);
         }
 
         public void BackToMenu()
@@ -120,12 +128,15 @@ namespace BattleTv.Fight
                 _prevAtk = atk;
                 _prevSwing = (float)_vale.Swing;
                 CollectBlows();
+                HearMove(_vale, ref _heardVale);
+                HearMove(_brute, ref _heardBrute);
                 if (!_vale.Alive || !_brute.Alive)
                 {
                     _over = true;
                     string winner = _vale.Alive ? _vale.Name : _brute.Name;
                     if (result != null)
                         result.text = winner + " takes the lane";
+                    Play("win", 0.55f);
                 }
                 else if (_time >= SideDuel.HardStop)
                 {
@@ -220,7 +231,7 @@ namespace BattleTv.Fight
             float recoil = body.Name == "Vale" ? _valeRecoil : _bruteRecoil;
             if (image != null)
                 image.color = Color.Lerp(Color.white, new Color(1f, 0.94f, 0.82f), Mathf.Clamp01(flash));
-            float give = recoil * 0.07f;
+            float give = recoil * 0.11f;
             rect.localScale = new Vector3(1f + give, 1f - give, 1f);
         }
 
@@ -283,7 +294,8 @@ namespace BattleTv.Fight
             float away = Mathf.Sign(rect.anchoredPosition.x - other.anchoredPosition.x);
             if (Mathf.Abs(away) < 0.01f)
                 away = 1f;
-            rect.anchoredPosition += new Vector2(away * SpanX(rect) * 0.08f * recoil, 0f);
+            // View only. The sim position stays. A third of a body is enough to read as weight.
+            rect.anchoredPosition += new Vector2(away * SpanX(rect) * 0.30f * recoil, 0f);
         }
 
         void PlaceDoor()
@@ -413,16 +425,20 @@ namespace BattleTv.Fight
                 _sparkLife = 0.18f;
                 _sparkOn = blow.Target;
                 _sparkCrit = blow.Tone == "crit";
+                float weight = blow.Tone == "crit" || blow.Tone == "down" ? 1.35f
+                    : blow.Tone == "ward" || blow.Tone == "block" ? 0.4f
+                    : 1f;
                 if (blow.Target == "Vale")
                 {
-                    _valeRecoil = 1f;
+                    _valeRecoil = weight;
                     _valeFlash = 1f;
                 }
                 else
                 {
-                    _bruteRecoil = 1f;
+                    _bruteRecoil = weight;
                     _bruteFlash = 1f;
                 }
+                Play(BlowSound(blow), blow.Tone == "ward" || blow.Tone == "block" ? 0.22f : 0.4f);
             }
             Color color = Color.white;
             int size = 15;
@@ -481,8 +497,8 @@ namespace BattleTv.Fight
             if (dt > 0f)
             {
                 _sparkLife = Mathf.Max(0f, _sparkLife - dt);
-                _valeRecoil = Mathf.Max(0f, _valeRecoil - dt / 0.16f);
-                _bruteRecoil = Mathf.Max(0f, _bruteRecoil - dt / 0.16f);
+                _valeRecoil = Mathf.Max(0f, _valeRecoil - dt / 0.36f);
+                _bruteRecoil = Mathf.Max(0f, _bruteRecoil - dt / 0.36f);
                 _valeFlash = Mathf.Max(0f, _valeFlash - dt / 0.12f);
                 _bruteFlash = Mathf.Max(0f, _bruteFlash - dt / 0.12f);
             }
@@ -566,6 +582,54 @@ namespace BattleTv.Fight
             public float Life;
             public float X;
             public float Y;
+        }
+
+        void HearMove(Body body, ref string heard)
+        {
+            string now = body.Callout ?? "";
+            if (now == heard)
+                return;
+            heard = now;
+            if (now == "Aegis Wall")
+                Play("vale_wall", 0.4f);
+            else if (now == "Line Bulwark")
+                Play("vale_line", 0.4f);
+            else if (now == "Aegis Cover")
+                Play("vale_cover", 0.4f);
+            else if (now == "Ward Field")
+                Play("brute_ward", 0.4f);
+            else if (now == "Ground Pound")
+                Play("brute_pound", 0.46f);
+        }
+
+        string BlowSound(Blow blow)
+        {
+            if (blow.Tone == "down")
+                return "kill";
+            if (blow.Tone == "crit")
+                return "big";
+            bool valeSwung = blow.Target == "Brute" && _vale != null
+                && (_vale.Callout == "Punch" || _vale.Callout == "Shield Bash");
+            if (valeSwung)
+                return "vale_cleave";
+            bool bruteSwung = blow.Target == "Vale" && _brute != null && _brute.Callout == "Heavy Sweep";
+            if (bruteSwung)
+                return "brute_sweep";
+            return "hit";
+        }
+
+        void Play(string name, float gain)
+        {
+            if (_voice == null || string.IsNullOrEmpty(name))
+                return;
+            if (!_sfx.TryGetValue(name, out AudioClip clip))
+            {
+                clip = Resources.Load<AudioClip>("Sfx/" + name);
+                _sfx[name] = clip;
+            }
+            if (clip == null)
+                return;
+            _voice.PlayOneShot(clip, gain);
         }
 
         void BeginValeClip(string callout)

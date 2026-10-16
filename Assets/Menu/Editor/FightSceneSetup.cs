@@ -48,6 +48,7 @@ namespace BattleTv.Menu.EditorTools
             camera.cullingMask = 0;
             camera.orthographic = true;
             cameraObject.tag = "MainCamera";
+            cameraObject.AddComponent<AudioListener>();
 
             var canvasObject = new GameObject("Canvas", typeof(RectTransform), typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
             var canvas = canvasObject.GetComponent<Canvas>();
