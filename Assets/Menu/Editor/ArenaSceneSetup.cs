@@ -85,6 +85,17 @@ namespace BattleTv.Menu.EditorTools
             AssignClip(so, "lfSlip", Cutout("lf-slip", 2));
             AssignClip(so, "lfDeath", Cutout("lf-death", 1));
             AssignClip(so, "lfWin", Cutout("lf-win", 1));
+            var glow = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Duel/vale-door/glow-white.png");
+            if (glow == null)
+                throw new FileNotFoundException("Sigil plate did not import.", "Assets/Art/Duel/vale-door/glow-white.png");
+            so.FindProperty("sigilGlow").objectReferenceValue = glow;
+            so.FindProperty("sigilRingBack").objectReferenceValue = SigilMat("Assets/Fight/SigilRingBack.mat", 1f, 1f);
+            so.FindProperty("sigilRingFront").objectReferenceValue = SigilMat("Assets/Fight/SigilRingFront.mat", 1f, -1f);
+            so.FindProperty("sigilBolt").objectReferenceValue = SigilMat("Assets/Fight/SigilBolt.mat", 0f, 0f);
+            so.FindProperty("sigilBurst").objectReferenceValue = SigilMat("Assets/Fight/SigilBurst.mat", 3f, 0f);
+            so.FindProperty("sigilMend").objectReferenceValue = SigilMat("Assets/Fight/SigilMend.mat", 2f, 0f);
+            so.FindProperty("sigilEmber").objectReferenceValue = SigilMat("Assets/Fight/SigilEmber.mat", 5f, 0f);
+            so.FindProperty("sigilLance").objectReferenceValue = SigilMat("Assets/Fight/SigilLance.mat", 4f, 0f);
             so.ApplyModifiedPropertiesWithoutUndo();
 
             new GameObject("EventSystem", typeof(EventSystem), typeof(StandaloneInputModule));
@@ -166,6 +177,26 @@ namespace BattleTv.Menu.EditorTools
                     return found;
             }
             return null;
+        }
+
+        static Material SigilMat(string path, float kind, float half)
+        {
+            var shader = AssetDatabase.LoadAssetAtPath<Shader>("Assets/Fight/ArenaSigil.shader");
+            if (shader == null)
+                throw new FileNotFoundException("Arena sigil shader is missing.", "Assets/Fight/ArenaSigil.shader");
+            var mat = AssetDatabase.LoadAssetAtPath<Material>(path);
+            if (mat == null)
+            {
+                mat = new Material(shader) { name = Path.GetFileNameWithoutExtension(path) };
+                AssetDatabase.CreateAsset(mat, path);
+            }
+            else
+                mat.shader = shader;
+            mat.SetFloat("_Kind", kind);
+            mat.SetFloat("_Half", half);
+            EditorUtility.SetDirty(mat);
+            AssetDatabase.SaveAssets();
+            return mat;
         }
 
         static void Configure(string path, bool alpha, int max, bool fullPlate = false)

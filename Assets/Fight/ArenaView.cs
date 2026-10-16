@@ -59,10 +59,21 @@ namespace BattleTv.Fight
         [SerializeField] Sprite[] lfSlip;
         [SerializeField] Sprite[] lfDeath;
         [SerializeField] Sprite[] lfWin;
+        [SerializeField] Sprite sigilGlow;
+        [SerializeField] Material sigilRingBack;
+        [SerializeField] Material sigilRingFront;
+        [SerializeField] Material sigilBolt;
+        [SerializeField] Material sigilBurst;
+        [SerializeField] Material sigilMend;
+        [SerializeField] Material sigilEmber;
+        [SerializeField] Material sigilLance;
 
         Font _font;
         readonly List<Actor> _actors = new List<Actor>(10);
         readonly List<Actor> _bolts = new List<Actor>(16);
+        readonly List<Sigil> _sigils = new List<Sigil>(48);
+        readonly List<Flash> _flashes = new List<Flash>(24);
+        int _sigilN;
         Text _clock;
         Text _callout;
         GameObject _board;
@@ -90,6 +101,27 @@ namespace BattleTv.Fight
             public float Pivot = 0.5f;
             public bool HoldClip;
             public string Pose = "";
+            public double SeenHp = -1;
+            public bool SeenAlive = true;
+        }
+
+        sealed class Sigil
+        {
+            public RectTransform Rect;
+            public Image Image;
+        }
+
+        sealed class Flash
+        {
+            public int Kind;
+            public double X;
+            public double Y;
+            public double X2;
+            public double Y2;
+            public float Life;
+            public float Max;
+            public float Radius;
+            public Color Color;
         }
 
         void Start()
@@ -124,6 +156,7 @@ namespace BattleTv.Fight
                 AdvanceClip(_actors[i], dt);
             EnsureActors();
             Paint();
+            AgeFlashes(dt);
             if (ArenaMatch.Over && !_boardUp)
                 ShowBoard();
         }
@@ -181,7 +214,10 @@ namespace BattleTv.Fight
                 if (body.Swing > 0.22 && actor.Heard < 0.05)
                     Play("hit", 0.22f);
                 if (body.Alive && body.Swing > actor.Heard + 0.02 && body.Swing > 0.18)
+                {
                     Arm(actor, body);
+                    NoteCast(body);
+                }
                 if (!body.Alive && actor.Pose != "death")
                     ArmEnd(actor, body, false);
                 if (ArenaMatch.Over && body.Alive && actor.Pose != "win" && actor.Pose != "death")
@@ -214,7 +250,10 @@ namespace BattleTv.Fight
                     actor.Hud.ShowPools(body.Name, body.Cards, body.Hp, body.Max, body.Mana, body.ManaMax, body.AtkCd, body.Rate, body.Shield, body.StrideCd, held);
                 }
             }
-            PaintBolts(width, height);
+            if (sigilBolt != null)
+                PaintSigils(width, height);
+            else
+                PaintBolts(width, height);
             if (_clock != null)
             {
                 var secs = Mathf.FloorToInt((float)ArenaMatch.Time);
@@ -239,6 +278,246 @@ namespace BattleTv.Fight
                 if (line.Length > 0)
                     _callout.text = line;
             }
+        }
+
+        void NoteCast(ArenaBody body)
+        {
+            var color = KitColor(body);
+            var mv = FindMove(body);
+            var shape = mv != null ? mv.Shape : (body.Gun ? "bolt" : "melee");
+            var foe = NearestFoe(body);
+            var tiles = mv != null && mv.Radius > 0.2 ? mv.Radius : 2.4;
+            var radius = (float)(tiles * ArenaMatch.Tile);
+            var st = mv != null ? mv.St : null;
+            var self = mv != null ? mv.Self : null;
+            if (shape == "aura" || shape == "blast")
+            {
+                var at = shape == "blast" && foe != null ? foe : body;
+                Push(3, at.X, at.Y, at.X, at.Y, 0.5f, radius, color);
+            }
+            else if (shape == "beam" && foe != null)
+                Push(4, body.X, body.Y, foe.X, foe.Y, 0.32f, 18f, color);
+            else if (shape == "melee" || shape == "arc")
+            {
+                if (foe != null)
+                    Push(5, foe.X, foe.Y, foe.X, foe.Y, 0.22f, 36f, color);
+            }
+            else if (shape == "bolt" || shape == "multi" || shape == "lob")
+                Push(5, body.X, body.Y, body.X, body.Y, 0.14f, 28f, color);
+            else if (shape == "revive")
+                Push(2, body.X, body.Y, body.X, body.Y, 0.7f, 120f, color);
+            else if (shape == "blink" || shape == "stride")
+                Push(3, body.X, body.Y, body.X, body.Y, 0.35f, 80f, color);
+            else
+            {
+                var ward = Has(st, self, true);
+                var mend = Has(st, self, false);
+                Push(ward && !mend ? 3 : 2, body.X, body.Y, body.X, body.Y, 0.45f, ward ? 110f : 80f, color);
+            }
+        }
+
+        static bool Has(ArenaLogic.Status a, ArenaLogic.Status b, bool ward)
+        {
+            if (ward)
+                return (a != null && (a.Aegis > 0 || a.ThornV > 0 || a.Armor > 0))
+                    || (b != null && (b.Aegis > 0 || b.ThornV > 0 || b.Armor > 0));
+            return (a != null && (a.Heal > 0 || a.RegenT > 0 || a.HasteD > 0 || a.SwiftD > 0))
+                || (b != null && (b.Heal > 0 || b.RegenT > 0 || b.HasteD > 0 || b.SwiftD > 0));
+        }
+
+        static ArenaLogic.MoveDef FindMove(ArenaBody body)
+        {
+            if (body.Moves == null)
+                return null;
+            var call = body.Callout ?? "";
+            for (var i = 0; i < body.Moves.Count; i++)
+            {
+                if (body.Moves[i].Name == call)
+                    return body.Moves[i];
+            }
+            return null;
+        }
+
+        void Push(int kind, double x, double y, double x2, double y2, float life, float radius, Color color)
+        {
+            _flashes.Add(new Flash
+            {
+                Kind = kind,
+                X = x,
+                Y = y,
+                X2 = x2,
+                Y2 = y2,
+                Life = life,
+                Max = life,
+                Radius = radius,
+                Color = color
+            });
+        }
+
+        void AgeFlashes(float dt)
+        {
+            for (var i = _flashes.Count - 1; i >= 0; i--)
+            {
+                _flashes[i].Life -= dt;
+                if (_flashes[i].Life <= 0f)
+                    _flashes.RemoveAt(i);
+            }
+        }
+
+        void PaintSigils(float width, float height)
+        {
+            _sigilN = 0;
+            for (var i = 0; i < _actors.Count; i++)
+            {
+                var actor = _actors[i];
+                var body = actor.Body;
+                if (body == null)
+                    continue;
+                var color = KitColor(body);
+                var feet = OnSand(body.X, body.Y, width, height);
+                var rise = actor.Rect != null ? actor.Rect.sizeDelta.y * 0.42f : 40f;
+                if (!body.Alive && actor.SeenAlive)
+                    Push(5, body.X, body.Y, body.X, body.Y, 0.28f, 48f, color);
+                if (body.Alive && !actor.SeenAlive)
+                    Push(2, body.X, body.Y, body.X, body.Y, 0.65f, 130f, color);
+                if (body.Alive && actor.SeenHp >= 0 && body.Hp > actor.SeenHp + 0.75)
+                    Push(2, body.X, body.Y, body.X, body.Y, 0.4f, 90f, color);
+                if (body.Alive && actor.SeenHp >= 0 && body.Hp < actor.SeenHp - 0.75)
+                    Push(5, body.X, body.Y + 18, body.X, body.Y, 0.18f, 34f, color);
+                actor.SeenHp = body.Hp;
+                actor.SeenAlive = body.Alive;
+                if (!body.Alive)
+                    continue;
+                if (body.Shield > 0.5 || body.ThornsT > 0.05)
+                {
+                    var ward = body.ThornsT > 0.05 ? 150f : 124f;
+                    PlaceRing(feet, ward, color, 0.9f, true);
+                }
+                if (body.Stun > 0.05 || body.Root > 0.05)
+                    PlaceRing(feet + new Vector2(0f, rise), 70f, color, 0.75f, false);
+                if (body.RegenT > 0.05 || body.HasteT > 0.05 || body.SwiftT > 0.05 || body.VeilT > 0.05)
+                    Place(sigilMend, feet + new Vector2(0f, rise * 0.45f), new Vector2(78f, 36f), 0f, color, 0.55f, false);
+                if (body.BurnT > 0.05 || body.BleedT > 0.05)
+                    Place(sigilEmber, feet + new Vector2(0f, rise), new Vector2(30f, 30f), 0f, color, 0.8f, false);
+            }
+            for (var i = 0; i < ArenaMatch.Bolts.Count; i++)
+            {
+                var bolt = ArenaMatch.Bolts[i];
+                var color = bolt.Src != null ? KitColor(bolt.Src) : Gold;
+                var at = OnSand(bolt.X, bolt.Y, width, height);
+                if (bolt.Lob)
+                    Place(sigilEmber, at, new Vector2(26f, 26f), 0f, color, 1f, false);
+                else
+                {
+                    var aim = -(float)bolt.Angle * Mathf.Rad2Deg;
+                    Place(sigilBolt, at, new Vector2(46f, 14f), aim, color, 1f, false);
+                }
+            }
+            for (var i = 0; i < _flashes.Count; i++)
+            {
+                var flash = _flashes[i];
+                var k = flash.Life / Mathf.Max(0.05f, flash.Max);
+                var grow = flash.Kind == 3 ? Mathf.Lerp(0.45f, 1f, 1f - k) : 1f;
+                var at = OnSand(flash.X, flash.Y, width, height);
+                var size = WorldSpan(flash.Radius, width) * (flash.Kind == 3 ? 2f : 1f) * grow;
+                size = Mathf.Clamp(size, 28f, 520f);
+                if (flash.Kind == 4)
+                {
+                    var to = OnSand(flash.X2, flash.Y2, width, height);
+                    var delta = to - at;
+                    var mid = (at + to) * 0.5f;
+                    var ang = Mathf.Atan2(delta.y, delta.x) * Mathf.Rad2Deg;
+                    Place(sigilLance, mid, new Vector2(delta.magnitude, 16f), ang, flash.Color, k, false);
+                }
+                else if (flash.Kind == 2)
+                    Place(sigilMend, at + new Vector2(0f, size * 0.15f), new Vector2(size, size * 0.42f), 0f, flash.Color, k, false);
+                else if (flash.Kind == 5)
+                    Place(sigilEmber, at + new Vector2(0f, size * 0.35f), new Vector2(size, size), 0f, flash.Color, k, false);
+                else
+                    PlaceRing(at, Mathf.Max(64f, size), flash.Color, k, false);
+            }
+            for (var i = _sigilN; i < _sigils.Count; i++)
+                _sigils[i].Image.enabled = false;
+        }
+
+        void PlaceRing(Vector2 at, float diameter, Color color, float alpha, bool behind)
+        {
+            var wide = new Vector2(diameter, diameter * 0.42f);
+            Place(sigilRingBack, at, wide, 0f, color, alpha * 0.85f, true);
+            Place(sigilRingFront, at, wide, 0f, color, alpha, false);
+            if (behind)
+            {
+                var back = _sigils[_sigilN - 2];
+                back.Rect.SetSiblingIndex(0);
+            }
+        }
+
+        void Place(Material mat, Vector2 at, Vector2 size, float angle, Color color, float alpha, bool behind)
+        {
+            if (mat == null || sigilGlow == null)
+                return;
+            var node = TakeSigil();
+            node.Image.sprite = sigilGlow;
+            node.Image.material = mat;
+            node.Image.color = new Color(color.r, color.g, color.b, Mathf.Clamp01(alpha));
+            var rect = node.Rect;
+            rect.anchorMin = rect.anchorMax = new Vector2(0.5f, 0.5f);
+            rect.pivot = new Vector2(0.5f, 0.5f);
+            rect.sizeDelta = size;
+            rect.anchoredPosition = at;
+            rect.localEulerAngles = new Vector3(0f, 0f, angle);
+            if (behind)
+                rect.SetSiblingIndex(0);
+            else
+                rect.SetAsLastSibling();
+        }
+
+        Sigil TakeSigil()
+        {
+            if (_sigilN >= _sigils.Count)
+            {
+                var go = new GameObject("Sigil", typeof(RectTransform), typeof(Image));
+                go.transform.SetParent(plate, false);
+                var image = go.GetComponent<Image>();
+                image.raycastTarget = false;
+                _sigils.Add(new Sigil { Rect = go.GetComponent<RectTransform>(), Image = image });
+            }
+            var node = _sigils[_sigilN];
+            _sigilN++;
+            node.Image.enabled = true;
+            return node;
+        }
+
+        float WorldSpan(double world, float plateW)
+        {
+            return (float)(world / ArenaMatch.WorldW) * (SandRight - SandLeft) * plateW;
+        }
+
+        Color KitColor(ArenaBody body)
+        {
+            if (body.Token || (body.Id != null && body.Id.StartsWith("ward_")))
+                return new Color(0.55f, 0.86f, 1f, 1f);
+            var kit = LaneRoster.ById(body.Id);
+            return string.IsNullOrEmpty(kit.Color) ? Gold : Hex(kit.Color);
+        }
+
+        static ArenaBody NearestFoe(ArenaBody body)
+        {
+            ArenaBody best = null;
+            var bestD = double.MaxValue;
+            for (var i = 0; i < ArenaMatch.Bodies.Count; i++)
+            {
+                var other = ArenaMatch.Bodies[i];
+                if (!other.Alive || other.Team == body.Team)
+                    continue;
+                var d = (other.X - body.X) * (other.X - body.X) + (other.Y - body.Y) * (other.Y - body.Y);
+                if (d < bestD)
+                {
+                    bestD = d;
+                    best = other;
+                }
+            }
+            return best;
         }
 
         void PaintBolts(float width, float height)
@@ -325,7 +604,11 @@ namespace BattleTv.Fight
                         found = true;
                 }
                 if (!found)
+                {
                     AddActor(body);
+                    if (ArenaMatch.Time > 0.4)
+                        Push(3, body.X, body.Y, body.X, body.Y, 0.45f, 90f, KitColor(body));
+                }
             }
         }
 
@@ -338,6 +621,8 @@ namespace BattleTv.Fight
             actor.Image = node.GetComponent<Image>();
             actor.Image.raycastTarget = false;
             actor.Image.preserveAspect = true;
+            actor.SeenHp = body.Hp;
+            actor.SeenAlive = body.Alive;
             var painted = Still(body.Id);
             if (painted != null)
             {
