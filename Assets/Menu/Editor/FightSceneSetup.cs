@@ -1,4 +1,6 @@
+using System.Globalization;
 using System.IO;
+using System.Text.RegularExpressions;
 using BattleTv.Fight;
 using UnityEditor;
 using UnityEditor.Events;
@@ -27,6 +29,23 @@ namespace BattleTv.Menu.EditorTools
             var valePunch = LoadClip("vale-punch", 6);
             var valeLine = LoadClip("vale-line", 5);
             var valePlant = LoadClip("vale-plant", 4);
+            Configure("Assets/Art/Duel/brute-drag.png", true);
+            var bruteSweep = LoadClip("brute-sweep", 3, 1024);
+            var brutePound = LoadClip("brute-pound", 2, 1024);
+            var bruteWard = LoadClip("brute-ward", 2, 1024);
+            var bruteClose = LoadClip("brute-close", 1, 1024);
+            ConfigureToss("Assets/Art/Duel/brute-line.png", 1024);
+            ConfigureToss("Assets/Art/Duel/brute-grip.png", 1024);
+            ApplyBrutePivots();
+            bruteSweep = ReloadClip("brute-sweep", 3);
+            brutePound = ReloadClip("brute-pound", 2);
+            bruteWard = ReloadClip("brute-ward", 2);
+            bruteClose = ReloadClip("brute-close", 1);
+            var bruteIdle = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Duel/brute-drag.png");
+            var lineSprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Duel/brute-line.png");
+            var gripSprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Duel/brute-grip.png");
+            if (bruteIdle == null || lineSprite == null || gripSprite == null)
+                throw new FileNotFoundException("Brute art did not import.", "Assets/Art/Duel/brute-drag.png");
             ConfigureToss("Assets/Art/Duel/vale-door/shield.png", 1024);
             ConfigureToss("Assets/Art/Duel/vale-door/glow-white.png", 64);
             var doorSprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Duel/vale-door/shield.png");
@@ -73,7 +92,7 @@ namespace BattleTv.Menu.EditorTools
                 throw new FileNotFoundException("Duel stage did not import.", StagePath);
 
             var vale = Fighter(plate, "Vale", ValePath);
-            var brute = Fighter(plate, "Brute", BrutePath);
+            var brute = Fighter(plate, "Brute", "Assets/Art/Duel/brute-drag.png");
 
             var bar = Skin("bar-frame.png", new Vector4(12, 5, 12, 5));
             var pip = Skin("pip-frame.png", new Vector4(8, 4, 8, 4));
@@ -123,6 +142,11 @@ namespace BattleTv.Menu.EditorTools
             AssignClip(so, "valePunch", valePunch);
             AssignClip(so, "valeLine", valeLine);
             AssignClip(so, "valePlant", valePlant);
+            AssignClip(so, "bruteSweep", bruteSweep);
+            AssignClip(so, "brutePound", brutePound);
+            AssignClip(so, "bruteWard", bruteWard);
+            AssignClip(so, "bruteClose", bruteClose);
+            so.FindProperty("bruteIdle").objectReferenceValue = bruteIdle;
             var door = Mark(plate, "ValeDoor", doorSprite);
             door.transform.SetSiblingIndex(3);
             so.FindProperty("valeDoor").objectReferenceValue = door;
@@ -141,6 +165,18 @@ namespace BattleTv.Menu.EditorTools
             so.FindProperty("valeRing").objectReferenceValue = ringFront;
             so.FindProperty("hitSpark").objectReferenceValue = spark;
             so.FindProperty("valeOpen").objectReferenceValue = openHand;
+            var poundLine = Mark(plate, "BrutePound", lineSprite);
+            var gripRocks = Mark(plate, "BruteGrip", gripSprite);
+            so.FindProperty("poundLine").objectReferenceValue = poundLine;
+            so.FindProperty("gripRocks").objectReferenceValue = gripRocks;
+            ringBack.transform.SetSiblingIndex(0);
+            poundLine.transform.SetSiblingIndex(1);
+            vale.SetSiblingIndex(2);
+            brute.SetSiblingIndex(3);
+            door.transform.SetSiblingIndex(4);
+            gripRocks.transform.SetSiblingIndex(5);
+            ringFront.transform.SetSiblingIndex(6);
+            spark.transform.SetAsLastSibling();
             so.ApplyModifiedPropertiesWithoutUndo();
             UnityEventTools.AddPersistentListener(menu.onClick, view.BackToMenu);
 
@@ -237,6 +273,19 @@ namespace BattleTv.Menu.EditorTools
             return image;
         }
 
+        static Sprite[] ReloadClip(string folder, int count)
+        {
+            var frames = new Sprite[count];
+            for (int i = 0; i < count; i++)
+            {
+                var path = "Assets/Art/Duel/" + folder + "/f" + i.ToString("00") + ".png";
+                frames[i] = AssetDatabase.LoadAssetAtPath<Sprite>(path);
+                if (frames[i] == null)
+                    throw new FileNotFoundException("Brute clip frame did not import.", path);
+            }
+            return frames;
+        }
+
         static Sprite[] LoadClip(string folder, int count, int maxSize = 384)
         {
             var frames = new Sprite[count];
@@ -249,6 +298,26 @@ namespace BattleTv.Menu.EditorTools
                     throw new FileNotFoundException("Vale clip frame did not import.", path);
             }
             return frames;
+        }
+
+        static void ApplyBrutePivots()
+        {
+            var text = File.ReadAllText("Assets/Art/Duel/brute-pivots.json");
+            foreach (Match match in Regex.Matches(text, "\"([^\"]+)\"\\s*:\\s*([0-9.]+)"))
+            {
+                string path = "Assets/Art/Duel/" + match.Groups[1].Value;
+                float x = float.Parse(match.Groups[2].Value, CultureInfo.InvariantCulture);
+                var importer = AssetImporter.GetAtPath(path) as TextureImporter;
+                if (importer == null)
+                    throw new FileNotFoundException("Brute pivot target is missing.", path);
+                var settings = new TextureImporterSettings();
+                importer.ReadTextureSettings(settings);
+                settings.spriteAlignment = (int)SpriteAlignment.Custom;
+                settings.spritePivot = new Vector2(Mathf.Clamp01(x), 0f);
+                settings.spriteMeshType = SpriteMeshType.FullRect;
+                importer.SetTextureSettings(settings);
+                importer.SaveAndReimport();
+            }
         }
 
         static void AssignClip(SerializedObject so, string property, Sprite[] frames)

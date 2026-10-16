@@ -137,7 +137,7 @@ namespace BattleTv.Menu.Tests
             Assert.AreEqual(1256, brute.Max);
             Assert.AreEqual(12, vale.Armor);
             Assert.AreEqual(9, brute.Armor);
-            Assert.AreEqual(20, SideDuel.Hit(vale, brute, vale.Dmg, true, false, false));
+            Assert.AreEqual(14, SideDuel.Hit(vale, brute, vale.Dmg, true, false, false));
             Assert.AreEqual(0, SideDuel.Hit(brute, vale, 5, true, false, false));
             Assert.AreEqual(60, vale.Mana);
             Assert.AreEqual(40, brute.Mana);
@@ -157,6 +157,14 @@ namespace BattleTv.Menu.Tests
             Assert.IsTrue(SideDuel.TryClose(fresh, wall));
             Assert.AreEqual(30, fresh.StrideCd);
             Assert.AreEqual(52, fresh.Mana);
+
+            var bruteHome = SideDuel.Brute();
+            var valeFar = SideDuel.Vale();
+            bruteHome.X = 8;
+            valeFar.X = 12;
+            Assert.IsTrue(SideDuel.TryClose(bruteHome, valeFar));
+            Assert.AreEqual(30, bruteHome.StrideCd);
+            Assert.AreEqual(32, bruteHome.Mana);
         }
 
         static void AssertFighters(MenuController.FitResult fit)

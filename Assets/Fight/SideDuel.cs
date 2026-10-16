@@ -42,6 +42,9 @@ namespace BattleTv.Fight
         public double BulwarkCd;
         public double ArmorBuff;
         public double ArmorBuffT;
+        public double SlowT;
+        public double SlowMul;
+        public double GripCd;
         public bool Wall;
         public bool Pound;
         public bool Ward;
@@ -96,12 +99,13 @@ namespace BattleTv.Fight
         const double WallCost = 16.5;
         const double WardCost = 17.6;
         const double PoundCost = 11;
+        const double GripCost = 12;
         const double GunTiles = 110.0 / 32.0;
 
         public static Body Vale()
         {
             var body = Make("Vale", "Door Flesh · Bumper Thorn · Fair Plate",
-                895, 26, 0.72, 3.3, 8, 1.6, 0.15, 0.82, 0, 0, 3, 0.22, 0.30, 15.6);
+                895, 26, 0.72, 3.3, 8, 1.6, 0.15, 0.82, 0, 0, 3, 0.22, 0.30, 2.4);
             body.Wall = true;
             body.ManaMax = body.Mana = 60;
             body.ManaRegen = 4;
@@ -111,7 +115,7 @@ namespace BattleTv.Fight
         public static Body Brute()
         {
             var body = Make("Brute", "Fair Plate · Deeper Well · Bumper Thorn",
-                760, 34, 0.66, 2.0, 5, 1.5, 0.08, 0.92, 0.40, -0.12, 3, 0, 0.30, 2.4);
+                760, 34, 0.66, 2.0, 5, 1.5, 0.08, 0.92, 0.40, -0.12, 3, 0, 0.30, 15.6);
             body.Pound = true;
             body.Ward = true;
             body.ManaMax = body.Mana = 40;
@@ -133,8 +137,9 @@ namespace BattleTv.Fight
         }
 
         /// <summary>
-        /// Close is the fist's thirty-second step, and only onto a gun that is
-        /// still outside the swing. Two fists walk. The clock ignores cdMul.
+        /// Close is a thirty-second step. Vale uses it only onto a gun that is
+        /// still outside her swing. Brute uses it onto whoever is in front of
+        /// him. The clock ignores cdMul. It does not cross the planted kite.
         /// </summary>
         public static bool TryClose(Body self, Body other)
         {
@@ -142,7 +147,11 @@ namespace BattleTv.Fight
                 return false;
             if (self.StrideCd > 0 || self.Mana < CloseCost)
                 return false;
-            if (self.Range > GunTiles || other.Range <= GunTiles)
+            bool ontoGun = self.Range <= GunTiles && other.Range > GunTiles;
+            bool bruteStep = self.Name == "Brute" && self.Range <= GunTiles;
+            if (!ontoGun && !bruteStep)
+                return false;
+            if (DoorBlocks(self.X, other.X))
                 return false;
             double dist = Math.Abs(self.X - other.X);
             double reach = 7 + self.Range;
@@ -155,7 +164,7 @@ namespace BattleTv.Fight
             self.Mana -= CloseCost;
             self.StrideCd = CloseCd;
             self.Callout = "Close";
-            self.Swing = 0.2;
+            self.Swing = 0.4;
             return true;
         }
 
@@ -194,6 +203,12 @@ namespace BattleTv.Fight
                 }
             }
 
+            // Bumper Thorn takes thirty percent off a melee blow. It does not
+            // answer. The ward's timed thorns still answer, and they do not add
+            // the card on top of that answer.
+            if (melee && !reflect && tgt.Thorns > 0)
+                dmg *= 1 - tgt.Thorns;
+
             if (tgt.Shield > 0)
             {
                 double absorbed = Math.Min(tgt.Shield, dmg);
@@ -218,10 +233,9 @@ namespace BattleTv.Fight
             if (killed)
                 Note(tgt, "DOWN", "down");
 
-            if (melee && !reflect && src != null)
+            if (melee && !reflect && src != null && tgt.ThornsT > 0)
             {
-                double rate = (tgt.ThornsT > 0 ? tgt.ThornsV : 0) + tgt.Thorns;
-                double back = dmg * rate;
+                double back = dmg * tgt.ThornsV;
                 if (back > 1)
                     Hit(tgt, src, back, false, false, true);
             }
@@ -255,6 +269,8 @@ namespace BattleTv.Fight
             body.ThornsT = Math.Max(0, body.ThornsT - dt);
             body.Swing = Math.Max(0, body.Swing - dt);
             body.StrideCd = Math.Max(0, body.StrideCd - dt);
+            body.GripCd = Math.Max(0, body.GripCd - dt);
+            body.SlowT = Math.Max(0, body.SlowT - dt);
             body.CoverCd = Math.Max(0, body.CoverCd - dt);
             body.BulwarkCd = Math.Max(0, body.BulwarkCd - dt);
             body.ArmorBuffT = Math.Max(0, body.ArmorBuffT - dt);
@@ -280,8 +296,8 @@ namespace BattleTv.Fight
                     dir = 1;
                 other.X += dir * 2;
                 self.PoundCd = 10 * self.CdMul;
-                self.Callout = "Ground Pound";
-                self.Swing = 0.28;
+                self.Callout = "Brute Pound";
+                self.Swing = 0.7;
             }
             else if (!stepped && self.Ward && self.WardCd <= 0 && close && self.Mana >= WardCost)
             {
@@ -291,9 +307,11 @@ namespace BattleTv.Fight
                 self.ThornsV = Math.Max(self.ThornsV, 0.4);
                 self.ThornsT = Math.Max(self.ThornsT, 6);
                 self.WardCd = 16 * self.CdMul;
-                self.Callout = "Ward Field";
-                self.Swing = 0.2;
+                self.Callout = "Brute Ward";
+                self.Swing = 0.45;
             }
+            else if (!stepped && TryGrip(self, other, dist))
+                return;
             else if (!stepped && self.Name == "Vale" && ThinkVale(self, other))
                 return;
             else if (!stepped && self.Name != "Vale" && self.Wall && self.WallCd <= 0 && close)
@@ -308,7 +326,7 @@ namespace BattleTv.Fight
                     double away = Math.Sign(self.X - other.X);
                     if (away == 0)
                         away = -1;
-                    self.X += away * self.Speed * 0.7 * dt;
+                    self.X += away * Pace(self) * 0.7 * dt;
                 }
                 else if (self.AtkCd <= 0 && dist <= self.Range + ReachPad + 0.4)
                 {
@@ -323,7 +341,7 @@ namespace BattleTv.Fight
                 if (self.AtkCd > 0)
                 {
                     if (dist > reach)
-                        self.X += Math.Sign(other.X - self.X) * self.Speed * dt;
+                        self.X += Math.Sign(other.X - self.X) * Pace(self) * dt;
                     return;
                 }
                 bool bash = dist > reach;
@@ -345,7 +363,7 @@ namespace BattleTv.Fight
                 self.Swing = bash ? 0.36 : 0.24;
                 return;
             }
-            if (self.Name != "Vale" && dist <= reach)
+            if (self.Name != "Vale" && !stepped && dist <= reach)
             {
                 if (self.AtkCd > 0)
                     return;
@@ -353,11 +371,11 @@ namespace BattleTv.Fight
                 Hit(self, other, self.Dmg, true, crit, false, time);
                 self.AtkCd = 1.0 / Math.Max(0.15, self.Rate);
                 self.Callout = "Heavy Sweep";
-                self.Swing = 0.22;
+                self.Swing = 0.55;
                 return;
             }
 
-            double step = Math.Sign(other.X - self.X) * self.Speed * dt;
+            double step = Math.Sign(other.X - self.X) * Pace(self) * dt;
             self.X += step;
         }
 
@@ -408,6 +426,34 @@ namespace BattleTv.Fight
                 return true;
             }
             return false;
+        }
+
+        /// <summary>
+        /// Iron Grip is Brute's slow. Rocks sit on their feet for the duration.
+        /// It reaches just past his club, and it does not cross the planted kite.
+        /// </summary>
+        static bool TryGrip(Body self, Body other, double dist)
+        {
+            if (self.Name != "Brute" || self.GripCd > 0 || self.Mana < GripCost)
+                return false;
+            if (dist <= self.Range + ReachPad || dist > self.Range + 3.2)
+                return false;
+            if (DoorBlocks(self.X, other.X))
+                return false;
+            self.Mana -= GripCost;
+            self.GripCd = 14 * self.CdMul;
+            other.SlowT = Math.Max(other.SlowT, 4);
+            other.SlowMul = 0.42;
+            self.Callout = "Iron Grip";
+            self.Swing = 0.35;
+            return true;
+        }
+
+        static double Pace(Body body)
+        {
+            if (body.SlowT > 0 && body.SlowMul > 0)
+                return body.Speed * (1 - body.SlowMul);
+            return body.Speed;
         }
 
         static bool DoorBlocks(double a, double b)

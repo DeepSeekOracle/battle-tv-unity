@@ -30,6 +30,13 @@ namespace BattleTv.Fight
         [SerializeField] Image valeRing;
         [SerializeField] Image hitSpark;
         [SerializeField] Sprite valeOpen;
+        [SerializeField] Sprite[] bruteSweep;
+        [SerializeField] Sprite[] brutePound;
+        [SerializeField] Sprite[] bruteWard;
+        [SerializeField] Sprite[] bruteClose;
+        [SerializeField] Sprite bruteIdle;
+        [SerializeField] Image poundLine;
+        [SerializeField] Image gripRocks;
 
         const float TossTime = 0.5f;
         const float BashTime = 0.4f;
@@ -71,9 +78,18 @@ namespace BattleTv.Fight
         float _clipT = -1f;
         float _clipDur = 0.4f;
         float _clipPivot = 0.5f;
+        Sprite[] _bruteClip;
+        float _bruteClipT = -1f;
+        float _bruteClipDur = 0.55f;
         float _prevSwing;
         float _prevAtk;
+        float _prevBruteSwing;
+        float _prevBruteAtk;
+        float _lineT = -1f;
+        float _wardPulse;
+        bool _wardHold;
         Sprite _valeIdle;
+        const float PoundLineTime = 0.62f;
 
         void Start()
         {
@@ -88,6 +104,12 @@ namespace BattleTv.Fight
                 var planted = valeBody.GetComponent<Image>();
                 if (planted != null)
                     _valeIdle = planted.sprite;
+            }
+            if (bruteIdle == null && bruteBody != null)
+            {
+                var planted = bruteBody.GetComponent<Image>();
+                if (planted != null)
+                    bruteIdle = planted.sprite;
             }
             _voice = gameObject.AddComponent<AudioSource>();
             _voice.playOnAwake = false;
@@ -111,12 +133,24 @@ namespace BattleTv.Fight
             bool frozen = _hitStop > 0f;
             if (frozen)
                 _hitStop = Mathf.Max(0f, _hitStop - frameDt);
-            else if (_clipT >= 0f)
+            else
             {
-                _clipT += frameDt;
-                if (_clipT >= _clipDur)
-                    _clipT = -1f;
+                if (_clipT >= 0f)
+                {
+                    _clipT += frameDt;
+                    if (_clipT >= _clipDur)
+                        _clipT = -1f;
+                }
+                if (_bruteClipT >= 0f)
+                {
+                    _bruteClipT += frameDt;
+                    if (_bruteClipT >= _bruteClipDur)
+                        _bruteClipT = -1f;
+                }
+                if (_lineT >= 0f)
+                    _lineT += frameDt;
             }
+            _wardPulse += frameDt;
             Fit();
             if (!frozen && !_over && _vale != null && _brute != null)
             {
@@ -131,6 +165,25 @@ namespace BattleTv.Fight
                     BeginValeClip(_vale.Callout);
                 _prevAtk = atk;
                 _prevSwing = (float)_vale.Swing;
+                float batk = (float)_brute.AtkCd;
+                if (batk > _prevBruteAtk + 0.05f && _brute.Callout == "Heavy Sweep")
+                    ArmBrute(bruteSweep, 0.55f);
+                else if (_brute.Swing > _prevBruteSwing + 0.02f && _brute.Swing > 0.18f)
+                {
+                    if (_brute.Callout == "Brute Pound")
+                    {
+                        ArmBrute(brutePound, 0.7f);
+                        _lineT = 0f;
+                    }
+                    else if (_brute.Callout == "Brute Ward")
+                        _wardHold = true;
+                    else if (_brute.Callout == "Close")
+                        ArmBrute(bruteClose, 0.4f);
+                }
+                if (_brute.Shield <= 0)
+                    _wardHold = false;
+                _prevBruteAtk = batk;
+                _prevBruteSwing = (float)_brute.Swing;
                 CollectBlows();
                 HearMove(_vale, ref _heardVale);
                 HearMove(_brute, ref _heardBrute);
@@ -165,6 +218,8 @@ namespace BattleTv.Fight
             CloseThePunch();
             PlaceDoor();
             PlaceRing();
+            PlacePoundLine();
+            PlaceGrip();
             PlaceSpark();
             TickFloaters(dt);
             bool fists = _vale.Range <= 110.0 / 32.0 && _brute.Range <= 110.0 / 32.0;
@@ -207,6 +262,7 @@ namespace BattleTv.Fight
             if (width < 2f || height < 2f)
                 return;
             bool playing = body.Name == "Vale" && _clipT >= 0f && _clip != null && _clip.Length > 0;
+            bool brutePlaying = body.Name == "Brute" && _bruteClipT >= 0f && _bruteClip != null && _bruteClip.Length > 0;
             var image = rect.GetComponent<Image>();
             if (image != null && body.Name == "Vale")
             {
@@ -221,10 +277,32 @@ namespace BattleTv.Fight
                 else if (_valeIdle != null)
                     image.sprite = _valeIdle;
             }
+            else if (image != null && body.Name == "Brute")
+            {
+                if (brutePlaying)
+                {
+                    int frame = Mathf.Clamp(Mathf.FloorToInt(_bruteClipT / _bruteClipDur * _bruteClip.Length), 0, _bruteClip.Length - 1);
+                    if (_sparkLife > 0.01f && _sparkOn == "Vale" && (_brute.Callout == "Heavy Sweep" || _brute.Callout == "Brute Pound"))
+                        frame = _bruteClip.Length - 1;
+                    if (_bruteClip[frame] != null)
+                        image.sprite = _bruteClip[frame];
+                }
+                else if (_wardHold && bruteWard != null && bruteWard.Length > 0)
+                {
+                    int frame = ((int)(_wardPulse / 0.28f)) % bruteWard.Length;
+                    if (bruteWard[frame] != null)
+                        image.sprite = bruteWard[frame];
+                }
+                else if (bruteIdle != null)
+                    image.sprite = bruteIdle;
+            }
             float x = (float)(body.X / SideDuel.Lane) * width - width * 0.5f;
             float feet = -height * 0.5f + height * Feet;
             rect.anchorMin = rect.anchorMax = new Vector2(0.5f, 0.5f);
-            rect.pivot = new Vector2(playing ? _clipPivot : 0.5f, 0f);
+            float pivotX = playing ? _clipPivot : 0.5f;
+            if (body.Name == "Brute" && image != null && image.sprite != null && image.sprite.rect.width > 1f)
+                pivotX = image.sprite.pivot.x / image.sprite.rect.width;
+            rect.pivot = new Vector2(pivotX, 0f);
             float spriteH = height * Band * (body.Name == "Brute" ? 0.56f : 0.5f);
             float aspect = 0.7f;
             if (image != null && image.sprite != null)
@@ -254,9 +332,11 @@ namespace BattleTv.Fight
 
         static float Front(RectTransform rect, float home)
         {
-            float reach = (1f - rect.pivot.x) * SpanX(rect);
+            // Vale's paintings lead on the right of the pivot. Brute's lead on the left.
+            // After a mirror, that same edge is still the nose or the club.
+            float reachFrac = home > 0f ? (1f - rect.pivot.x) : rect.pivot.x;
             float face = (rect.localScale.x < 0f ? -1f : 1f) * home;
-            return rect.anchoredPosition.x + face * reach;
+            return rect.anchoredPosition.x + face * reachFrac * SpanX(rect);
         }
 
         void KeepShouldersApart()
@@ -390,17 +470,24 @@ namespace BattleTv.Fight
         {
             _inbox.Clear();
             SideDuel.TakeBlows(_inbox);
-            bool striking = _clipT >= 0f && (_vale.Callout == "Punch" || _vale.Callout == "Shield Bash");
+            bool valeStrike = _clipT >= 0f && (_vale.Callout == "Punch" || _vale.Callout == "Shield Bash");
+            bool bruteStrike = _bruteClipT >= 0f && (_brute.Callout == "Heavy Sweep" || _brute.Callout == "Brute Pound");
             for (int i = 0; i < _inbox.Count; i++)
             {
                 Blow blow = _inbox[i];
                 var queued = new Queued { Blow = blow, Wait = 0.07f, ClipAt = -1f };
                 if (blow.Tone == "block" || blow.Tone == "ward")
                     queued.Wait = 0f;
-                else if (striking)
+                else if (blow.Target == "Brute" && valeStrike)
                 {
                     queued.Wait = -1f;
                     queued.ClipAt = _clipDur * 0.58f;
+                }
+                else if (blow.Target == "Vale" && bruteStrike)
+                {
+                    queued.Wait = -1f;
+                    queued.ClipAt = _bruteClipDur * 0.72f;
+                    queued.OnBrute = true;
                 }
                 _queue.Add(queued);
             }
@@ -414,7 +501,8 @@ namespace BattleTv.Fight
                 Queued queued = _queue[i];
                 if (queued.ClipAt >= 0f)
                 {
-                    if (_clipT < queued.ClipAt)
+                    float clock = queued.OnBrute ? _bruteClipT : _clipT;
+                    if (clock < queued.ClipAt)
                         continue;
                 }
                 else
@@ -600,6 +688,7 @@ namespace BattleTv.Fight
             public Blow Blow;
             public float Wait;
             public float ClipAt;
+            public bool OnBrute;
         }
 
         struct Floater
@@ -622,10 +711,14 @@ namespace BattleTv.Fight
                 Play("vale_line", 0.4f);
             else if (now == "Aegis Cover")
                 Play("vale_cover", 0.4f);
-            else if (now == "Ward Field")
+            else if (now == "Brute Ward" || now == "Ward Field")
                 Play("brute_ward", 0.4f);
-            else if (now == "Ground Pound")
+            else if (now == "Brute Pound" || now == "Ground Pound")
                 Play("brute_pound", 0.46f);
+            else if (now == "Iron Grip")
+                Play("cast", 0.4f);
+            else if (now == "Close" && body.Name == "Brute")
+                Play("brute_sweep", 0.28f);
         }
 
         string BlowSound(Blow blow)
@@ -670,6 +763,76 @@ namespace BattleTv.Fight
                 Arm(valeLine, LineTime, LinePivot);
             else if (callout == "Aegis Wall")
                 Arm(valePlant, PlantTime, PlantPivot);
+        }
+
+        void PlacePoundLine()
+        {
+            if (poundLine == null)
+                return;
+            bool up = _lineT >= 0f && _lineT < PoundLineTime && plate != null && bruteBody != null && valeBody != null;
+            poundLine.enabled = up;
+            if (!up)
+                return;
+            float u = Mathf.Clamp01(_lineT / PoundLineTime);
+            float from = bruteBody.anchoredPosition.x;
+            float to = valeBody.anchoredPosition.x;
+            float dir = Mathf.Sign(to - from);
+            if (Mathf.Abs(dir) < 0.01f)
+                dir = -1f;
+            float height = plate.rect.height;
+            float feet = -height * 0.5f + height * Feet;
+            float span = height * Band * Mathf.Lerp(0.42f, 0.92f, u);
+            float thick = height * Band * 0.24f;
+            var rect = poundLine.rectTransform;
+            rect.anchorMin = rect.anchorMax = new Vector2(0.5f, 0.5f);
+            rect.pivot = new Vector2(0.5f, 0.08f);
+            rect.sizeDelta = new Vector2(span, thick);
+            rect.anchoredPosition = new Vector2(Mathf.Lerp(from, to, u * 0.9f), feet);
+            rect.localScale = new Vector3(dir, 1f, 1f);
+            float fade = u < 0.12f ? u / 0.12f : Mathf.Clamp01((1f - u) / 0.28f);
+            poundLine.color = new Color(1f, 1f, 1f, fade);
+        }
+
+        void PlaceGrip()
+        {
+            if (gripRocks == null)
+                return;
+            Body slowed = null;
+            RectTransform feetBody = null;
+            if (_vale != null && _vale.SlowT > 0.02)
+            {
+                slowed = _vale;
+                feetBody = valeBody;
+            }
+            else if (_brute != null && _brute.SlowT > 0.02)
+            {
+                slowed = _brute;
+                feetBody = bruteBody;
+            }
+            gripRocks.enabled = slowed != null && feetBody != null && plate != null;
+            if (!gripRocks.enabled)
+                return;
+            float height = plate.rect.height;
+            float span = height * Band * 0.20f;
+            float aspect = gripRocks.sprite != null && gripRocks.sprite.rect.height > 1f
+                ? gripRocks.sprite.rect.width / gripRocks.sprite.rect.height
+                : 1.1f;
+            var rect = gripRocks.rectTransform;
+            rect.anchorMin = rect.anchorMax = new Vector2(0.5f, 0.5f);
+            rect.pivot = new Vector2(0.5f, 0.06f);
+            rect.sizeDelta = new Vector2(span * aspect, span);
+            rect.anchoredPosition = new Vector2(feetBody.anchoredPosition.x, feetBody.anchoredPosition.y);
+            rect.localScale = Vector3.one;
+            gripRocks.color = new Color(1f, 1f, 1f, Mathf.Clamp01((float)(slowed.SlowT / 0.35)));
+        }
+
+        void ArmBrute(Sprite[] frames, float duration)
+        {
+            if (frames == null || frames.Length == 0 || frames[0] == null)
+                return;
+            _bruteClip = frames;
+            _bruteClipDur = duration;
+            _bruteClipT = 0f;
         }
 
         void Arm(Sprite[] frames, float duration, float pivot)
