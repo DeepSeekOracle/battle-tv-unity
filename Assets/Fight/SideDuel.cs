@@ -371,7 +371,7 @@ namespace BattleTv.Fight
                 Hit(self, other, self.Dmg, true, crit, false, time);
                 self.AtkCd = 1.0 / Math.Max(0.15, self.Rate);
                 self.Callout = "Heavy Sweep";
-                self.Swing = 0.55;
+                self.Swing = 1.2;
                 return;
             }
 
