@@ -309,6 +309,37 @@ namespace BattleTv.Menu.Tests
             Assert.AreEqual(0, ShowPick.Yours.Count);
         }
 
+        [Test]
+        public void DraftMenuKeepsTheLineup()
+        {
+            ShowPick.Clear();
+            ShowPick.BeginDraft(1);
+            Assert.IsTrue(ShowPick.Toggle("vale"));
+            Assert.IsTrue(ShowPick.TryField(new System.Random(7), out _));
+            ShowPick.LeaveToMode();
+            Assert.IsFalse(ShowPick.Autonomous);
+            Assert.AreEqual("vale", ShowPick.Yours[0]);
+            Assert.AreEqual(0, ShowPick.Foes.Count);
+
+            ShowPick.Clear();
+            Assert.IsTrue(ShowPick.BeginAutonomous(new System.Random(8)));
+            ShowPick.LeaveToMode();
+            Assert.IsFalse(ShowPick.Autonomous);
+            Assert.AreEqual(0, ShowPick.Yours.Count);
+            Assert.AreEqual(0, ShowPick.Foes.Count);
+
+            ShowPick.Clear();
+            ShowPick.Focus("brute");
+            Assert.AreEqual("brute", ShowPick.Inspect);
+            Assert.AreEqual("beast", ShowPick.Filter);
+            ShowPick.Focus("vale");
+            Assert.AreEqual("champ", ShowPick.Filter);
+            ShowPick.Focus("nope");
+            Assert.AreEqual("vale", ShowPick.Inspect);
+            Assert.AreEqual("champ", ShowPick.Filter);
+            ShowPick.StopShow();
+        }
+
         static void AssertFighters(MenuController.FitResult fit)
         {
             Assert.IsTrue(MenuController.FighterThirdStaysVisible(fit, MenuController.LeftFighterThird));

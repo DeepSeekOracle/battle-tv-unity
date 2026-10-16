@@ -51,13 +51,14 @@ namespace BattleTv.Menu
             var back = Button(head, "BACK", new Vector2(0.012f, 0.18f), new Vector2(0.12f, 0.82f), false);
             back.onClick.AddListener(() => SceneManager.LoadScene("GameMenu"));
             _title = Words(head, "Title", new Vector2(0.14f, 0.46f), new Vector2(0.46f, 0.92f), 28, TextAnchor.MiddleLeft);
-            _need = Words(head, "Need", new Vector2(0.14f, 0.08f), new Vector2(0.46f, 0.48f), 16, TextAnchor.MiddleLeft);
+            _need = Words(head, "Need", new Vector2(0.14f, 0.06f), new Vector2(0.98f, 0.46f), 16, TextAnchor.MiddleLeft);
             _need.color = Gold;
+            _need.verticalOverflow = VerticalWrapMode.Truncate;
             for (var i = 0; i < ShowPick.Modes.Length; i++)
             {
                 var mode = ShowPick.Modes[i];
                 var x0 = 0.50f + i * 0.122f;
-                var button = Button(head, ShowPick.Label(mode), new Vector2(x0, 0.18f), new Vector2(x0 + 0.11f, 0.82f), false);
+                var button = Button(head, ShowPick.Label(mode), new Vector2(x0, 0.52f), new Vector2(x0 + 0.11f, 0.90f), false);
                 button.onClick.AddListener(() =>
                 {
                     ShowPick.SetMode(mode);
@@ -74,6 +75,8 @@ namespace BattleTv.Menu
             random.onClick.AddListener(() =>
             {
                 ShowPick.RandomDraw(new System.Random());
+                if (ShowPick.Yours.Count > 0)
+                    ShowPick.Focus(ShowPick.Yours[0]);
                 Refresh();
             });
 
@@ -103,6 +106,7 @@ namespace BattleTv.Menu
             trayLayout.childForceExpandHeight = true;
 
             _status = Words(foot, "Status", new Vector2(0.63f, 0.52f), new Vector2(0.995f, 0.92f), 15, TextAnchor.MiddleRight);
+            _status.verticalOverflow = VerticalWrapMode.Truncate;
             _fight = Button(foot, "FIGHT", new Vector2(0.74f, 0.08f), new Vector2(0.99f, 0.48f), true);
             _fightLabel = _fight.GetComponentInChildren<Text>(true);
             _fight.onClick.AddListener(Fight);
@@ -114,8 +118,9 @@ namespace BattleTv.Menu
             button.onClick.AddListener(() =>
             {
                 ShowPick.Filter = cls;
+                var looking = LaneRoster.ById(ShowPick.Inspect);
                 var list = LaneRoster.Of(cls);
-                if (list.Length > 0)
+                if ((looking.Id == null || looking.Cls != cls) && list.Length > 0)
                     ShowPick.Inspect = list[0].Id;
                 Refresh();
             });
@@ -136,7 +141,7 @@ namespace BattleTv.Menu
             Canvas.ForceUpdateCanvases();
             var list = LaneRoster.Of(ShowPick.Filter);
             var looking = LaneRoster.ById(ShowPick.Inspect);
-            if (looking.Id == null || looking.Cls != ShowPick.Filter)
+            if (looking.Id == null)
             {
                 looking = list.Length > 0 ? list[0] : LaneRoster.All[0];
                 ShowPick.Inspect = looking.Id;
@@ -145,7 +150,9 @@ namespace BattleTv.Menu
             _title.text = "Team select  " + ShowPick.Yours.Count + "/" + ShowPick.Mode;
             var block = ShowPick.BlockReason();
             _need.text = block ?? "Blind draw. Both sides stay on their own.";
-            _status.text = block ?? ShowPick.Label(ShowPick.Mode) + " · " + Names(ShowPick.Yours);
+            _status.text = block == null
+                ? ShowPick.Label(ShowPick.Mode) + " · " + Names(ShowPick.Yours)
+                : "Lane not ready";
             _fight.interactable = block == null;
             if (_fightLabel != null)
                 _fightLabel.text = block == null ? "FIGHT" : "NOT READY";
@@ -297,7 +304,7 @@ namespace BattleTv.Menu
             var drop = id;
             slot.onClick.AddListener(() =>
             {
-                ShowPick.Inspect = drop;
+                ShowPick.Focus(drop);
                 ShowPick.Drop(drop);
                 Refresh();
             });

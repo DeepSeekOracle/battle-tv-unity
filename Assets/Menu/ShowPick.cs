@@ -170,6 +170,24 @@ namespace BattleTv.Menu
             Foes.Clear();
         }
 
+        // The mode page keeps a drafted lineup. An autonomous card was forced, so leaving it clears that card.
+        public static void LeaveToMode()
+        {
+            if (Autonomous)
+                StopShow();
+            else
+                Foes.Clear();
+        }
+
+        public static void Focus(string id)
+        {
+            var kit = LaneRoster.ById(id);
+            if (kit.Id == null)
+                return;
+            Inspect = kit.Id;
+            Filter = kit.Cls;
+        }
+
         public static void RememberResult(string winnerId)
         {
             if (!Autonomous || string.IsNullOrEmpty(winnerId))

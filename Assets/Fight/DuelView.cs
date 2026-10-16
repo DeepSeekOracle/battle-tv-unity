@@ -200,7 +200,7 @@ namespace BattleTv.Fight
 
         public void BackToMenu()
         {
-            ShowPick.StopShow();
+            ShowPick.LeaveToMode();
             if (IntroMusic.Current != null)
                 IntroMusic.Current.SetMuted(false);
             SceneManager.LoadScene("GameMenu");
@@ -374,6 +374,12 @@ namespace BattleTv.Fight
             }
             if (callout == null)
                 return;
+            // The killing swing is still up on the same frame BeginFinish writes the signature line.
+            if (_outro)
+            {
+                callout.text = _lastLine;
+                return;
+            }
             string fresh = null;
             if (_brute.Swing > _vale.Swing && !string.IsNullOrEmpty(_brute.Callout))
                 fresh = _brute.Name + "  " + _brute.Callout;
@@ -930,10 +936,16 @@ namespace BattleTv.Fight
         {
             _over = true;
             _outro = true;
+            // The killing blow's squash would hold on the fallen painting. The spark stays.
+            _valeRecoil = 0f;
+            _bruteRecoil = 0f;
+            _valeFlash = 0f;
+            _bruteFlash = 0f;
             if (result != null)
                 result.text = "";
             if (draw)
             {
+                _lastLine = "Neither side fell.";
                 _boardTitle = "Neither side fell.";
                 _boardDetail = "The lane is a draw.";
                 _boardWait = 0.8f;
