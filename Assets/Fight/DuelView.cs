@@ -25,8 +25,8 @@ namespace BattleTv.Fight
         [SerializeField] Sprite[] valeLine;
         [SerializeField] Sprite[] valePlant;
         [SerializeField] Image valeDoor;
+        [SerializeField] Image valeRingBack;
         [SerializeField] Image valeRing;
-        [SerializeField] Sprite[] valeRingFrames;
         [SerializeField] Sprite valeOpen;
 
         const float TossTime = 0.5f;
@@ -212,33 +212,40 @@ namespace BattleTv.Fight
 
         void PlaceRing()
         {
-            if (valeRing == null)
-                return;
             bool up = _vale != null && _vale.ArmorBuffT > 0.05 && plate != null;
-            valeRing.enabled = up;
-            if (!up)
+            if (valeRingBack != null)
+                valeRingBack.enabled = up;
+            if (valeRing != null)
+                valeRing.enabled = up;
+            if (!up || plate == null)
                 return;
             float width = plate.rect.width;
             float height = plate.rect.height;
+            if (width < 2f || height < 2f)
+                return;
             float x = (float)(_vale.X / SideDuel.Lane) * width - width * 0.5f;
             float feet = -height * 0.5f + height * Feet;
-            var rect = valeRing.rectTransform;
+            // Wide and flat. The centre sits on her feet, so the top of the
+            // ellipse is behind her calves and the bottom is on the sand in front.
+            float span = height * Band * 0.92f;
+            float thick = span / 3.2f;
+            float life = Mathf.Clamp01((float)(_vale.ArmorBuffT / 8.0));
+            float fade = Mathf.Clamp01((float)(_vale.ArmorBuffT / 0.45));
+            var tint = new Color(1f, 1f, 1f, fade * (0.70f + 0.30f * life));
+            Seat(valeRingBack, x, feet, span, thick, tint);
+            Seat(valeRing, x, feet, span, thick, tint);
+        }
+
+        static void Seat(Image image, float x, float y, float span, float thick, Color tint)
+        {
+            if (image == null)
+                return;
+            var rect = image.rectTransform;
             rect.anchorMin = rect.anchorMax = new Vector2(0.5f, 0.5f);
             rect.pivot = new Vector2(0.5f, 0.5f);
-            if (valeRingFrames != null && valeRingFrames.Length > 0)
-            {
-                int frame = Mathf.FloorToInt(Time.unscaledTime * 5f) % valeRingFrames.Length;
-                if (valeRingFrames[frame] != null)
-                    valeRing.sprite = valeRingFrames[frame];
-            }
-            float span = height * Band * 0.9f;
-            float aspect = valeRing.sprite != null && valeRing.sprite.rect.height > 1f
-                ? valeRing.sprite.rect.width / valeRing.sprite.rect.height
-                : 3.2f;
-            rect.sizeDelta = new Vector2(span, span / aspect);
-            rect.anchoredPosition = new Vector2(x, feet + height * 0.02f);
-            float life = Mathf.Clamp01((float)(_vale.ArmorBuffT / 8.0));
-            valeRing.color = new Color(1f, 1f, 1f, 0.72f + 0.28f * life);
+            rect.sizeDelta = new Vector2(span, thick);
+            rect.anchoredPosition = new Vector2(x, y);
+            image.color = tint;
         }
 
         void BeginValeClip(string callout)

@@ -28,10 +28,14 @@ namespace BattleTv.Menu.EditorTools
             var valeLine = LoadClip("vale-line", 5);
             var valePlant = LoadClip("vale-plant", 4);
             ConfigureToss("Assets/Art/Duel/vale-door/shield.png", 1024);
-            var valeRingFrames = LoadClip("vale-ring", 8, 1024);
+            ConfigureToss("Assets/Art/Duel/vale-door/glow-white.png", 64);
             var doorSprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Duel/vale-door/shield.png");
-            var ringSprite = valeRingFrames[0];
+            var glowSprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Duel/vale-door/glow-white.png");
             var openHand = valeToss[7];
+            if (glowSprite == null)
+                throw new FileNotFoundException("Ground ring sprite did not import.", "Assets/Art/Duel/vale-door/glow-white.png");
+            var ringBackMat = RingMat("Assets/Fight/GroundRingBack.mat", 1f);
+            var ringFrontMat = RingMat("Assets/Fight/GroundRingFront.mat", -1f);
 
             var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
             RenderSettings.skybox = null;
@@ -118,8 +122,16 @@ namespace BattleTv.Menu.EditorTools
             AssignClip(so, "valeLine", valeLine);
             AssignClip(so, "valePlant", valePlant);
             so.FindProperty("valeDoor").objectReferenceValue = Mark(canvasObject.transform, "ValeDoor", doorSprite);
-            so.FindProperty("valeRing").objectReferenceValue = Mark(canvasObject.transform, "ValeRing", ringSprite);
-            AssignClip(so, "valeRingFrames", valeRingFrames);
+            // Far half is the first plate child, so it draws behind both bodies.
+            // Near half is last, so it draws over their feet. The shader clips the seam.
+            var ringBack = Mark(plate, "ValeRingBack", glowSprite);
+            var ringFront = Mark(plate, "ValeRingFront", glowSprite);
+            ringBack.material = ringBackMat;
+            ringFront.material = ringFrontMat;
+            ringBack.transform.SetSiblingIndex(0);
+            ringFront.transform.SetAsLastSibling();
+            so.FindProperty("valeRingBack").objectReferenceValue = ringBack;
+            so.FindProperty("valeRing").objectReferenceValue = ringFront;
             so.FindProperty("valeOpen").objectReferenceValue = openHand;
             so.ApplyModifiedPropertiesWithoutUndo();
             UnityEventTools.AddPersistentListener(menu.onClick, view.BackToMenu);
@@ -165,6 +177,27 @@ namespace BattleTv.Menu.EditorTools
             settings.spriteMeshType = SpriteMeshType.FullRect;
             importer.SetTextureSettings(settings);
             importer.SaveAndReimport();
+        }
+
+        static Material RingMat(string path, float half)
+        {
+            var shader = AssetDatabase.LoadAssetAtPath<Shader>("Assets/Fight/GroundRing.shader");
+            if (shader == null)
+                throw new FileNotFoundException("Ground ring shader is missing.", "Assets/Fight/GroundRing.shader");
+            var mat = AssetDatabase.LoadAssetAtPath<Material>(path);
+            if (mat == null)
+            {
+                mat = new Material(shader) { name = Path.GetFileNameWithoutExtension(path) };
+                AssetDatabase.CreateAsset(mat, path);
+            }
+            else
+            {
+                mat.shader = shader;
+            }
+            mat.SetFloat("_Half", half);
+            EditorUtility.SetDirty(mat);
+            AssetDatabase.SaveAssets();
+            return mat;
         }
 
         static Image Mark(Transform parent, string name, Sprite sprite)
