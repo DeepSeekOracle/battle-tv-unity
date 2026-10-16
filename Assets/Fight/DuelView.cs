@@ -26,6 +26,7 @@ namespace BattleTv.Fight
         [SerializeField] Sprite[] valePlant;
         [SerializeField] Image valeDoor;
         [SerializeField] Image valeRing;
+        [SerializeField] Sprite[] valeRingFrames;
         [SerializeField] Sprite valeOpen;
 
         const float TossTime = 0.5f;
@@ -224,10 +225,16 @@ namespace BattleTv.Fight
             var rect = valeRing.rectTransform;
             rect.anchorMin = rect.anchorMax = new Vector2(0.5f, 0.5f);
             rect.pivot = new Vector2(0.5f, 0.5f);
+            if (valeRingFrames != null && valeRingFrames.Length > 0)
+            {
+                int frame = Mathf.FloorToInt(Time.unscaledTime * 5f) % valeRingFrames.Length;
+                if (valeRingFrames[frame] != null)
+                    valeRing.sprite = valeRingFrames[frame];
+            }
             float span = height * Band * 0.9f;
             float aspect = valeRing.sprite != null && valeRing.sprite.rect.height > 1f
                 ? valeRing.sprite.rect.width / valeRing.sprite.rect.height
-                : 1.8f;
+                : 3.2f;
             rect.sizeDelta = new Vector2(span, span / aspect);
             rect.anchoredPosition = new Vector2(x, feet + height * 0.02f);
             float life = Mathf.Clamp01((float)(_vale.ArmorBuffT / 8.0));

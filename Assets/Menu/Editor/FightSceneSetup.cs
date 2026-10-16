@@ -28,9 +28,9 @@ namespace BattleTv.Menu.EditorTools
             var valeLine = LoadClip("vale-line", 5);
             var valePlant = LoadClip("vale-plant", 4);
             ConfigureToss("Assets/Art/Duel/vale-door/shield.png", 1024);
-            ConfigureToss("Assets/Art/Duel/vale-door/ring.png", 1024);
+            var valeRingFrames = LoadClip("vale-ring", 8, 1024);
             var doorSprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Duel/vale-door/shield.png");
-            var ringSprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Duel/vale-door/ring.png");
+            var ringSprite = valeRingFrames[0];
             var openHand = valeToss[7];
 
             var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
@@ -119,6 +119,7 @@ namespace BattleTv.Menu.EditorTools
             AssignClip(so, "valePlant", valePlant);
             so.FindProperty("valeDoor").objectReferenceValue = Mark(canvasObject.transform, "ValeDoor", doorSprite);
             so.FindProperty("valeRing").objectReferenceValue = Mark(canvasObject.transform, "ValeRing", ringSprite);
+            AssignClip(so, "valeRingFrames", valeRingFrames);
             so.FindProperty("valeOpen").objectReferenceValue = openHand;
             so.ApplyModifiedPropertiesWithoutUndo();
             UnityEventTools.AddPersistentListener(menu.onClick, view.BackToMenu);
@@ -177,13 +178,13 @@ namespace BattleTv.Menu.EditorTools
             return image;
         }
 
-        static Sprite[] LoadClip(string folder, int count)
+        static Sprite[] LoadClip(string folder, int count, int maxSize = 384)
         {
             var frames = new Sprite[count];
             for (int i = 0; i < count; i++)
             {
                 var path = "Assets/Art/Duel/" + folder + "/f" + i.ToString("00") + ".png";
-                ConfigureToss(path);
+                ConfigureToss(path, maxSize);
                 frames[i] = AssetDatabase.LoadAssetAtPath<Sprite>(path);
                 if (frames[i] == null)
                     throw new FileNotFoundException("Vale clip frame did not import.", path);
