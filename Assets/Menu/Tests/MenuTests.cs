@@ -369,25 +369,22 @@ namespace BattleTv.Menu.Tests
             double hp = 0;
             for (var i = 0; i < ArenaMatch.Bodies.Count; i++)
             {
-                hp += ArenaMatch.Bodies[i].Hp;
-                Assert.GreaterOrEqual(ArenaMatch.Bodies[i].X, ArenaMatch.Inset - 0.01);
-                Assert.LessOrEqual(ArenaMatch.Bodies[i].X, ArenaMatch.WorldW - ArenaMatch.Inset + 0.01);
-            }
-            for (var step = 0; step < 30; step++)
-                ArenaMatch.Step(0.05);
-            var closed = false;
-            for (var i = 0; i < ArenaMatch.Bodies.Count; i++)
-            {
                 var body = ArenaMatch.Bodies[i];
+                hp += body.Hp;
                 Assert.AreEqual(0, body.Shield, 0.01);
-                if (body.StrideCd > 10 && body.Mana < body.ManaMax - 0.5)
-                    closed = true;
+                Assert.GreaterOrEqual(body.X, ArenaMatch.Inset - 0.01);
+                Assert.LessOrEqual(body.X, ArenaMatch.WorldW - ArenaMatch.Inset + 0.01);
                 if (body.Id == "vale")
+                {
+                    Assert.AreEqual(1056, body.Max, 0.01);
+                    Assert.AreEqual(12, body.Armor, 0.01);
                     Assert.AreEqual("BULWARK · THORN · IRON", body.Cards);
+                    Assert.Greater(body.Moves.Count, 3);
+                }
             }
-            Assert.IsTrue(closed);
-            for (var step = 0; step < 470; step++)
+            for (var step = 0; step < 500; step++)
                 ArenaMatch.Step(0.05);
+            Assert.Greater(ArenaLogic.Casts, 0);
             double later = 0;
             for (var i = 0; i < ArenaMatch.Bodies.Count; i++)
             {

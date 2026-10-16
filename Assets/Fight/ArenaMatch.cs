@@ -30,6 +30,71 @@ namespace BattleTv.Fight
         public string Cards = "";
         public string Callout = "";
         public bool Alive = true;
+        public bool Gun;
+        public bool Token;
+        public double Ttl;
+        public double Crit = 0.1;
+        public double CritMul = 1.5;
+        public double CdMul = 1;
+        public double Splash;
+        public double Bulwark;
+        public double ThornsMod;
+        public double Leech;
+        public double Vamp;
+        public double Fury;
+        public double Veil;
+        public double VeilT;
+        public double VeilV;
+        public double Execute;
+        public double PassiveRegen;
+        public double StartShield;
+        public double GivesArmor;
+        public double GivesDmg;
+        public int Pierce;
+        public int Volley;
+        public double Echo;
+        public bool FirstDouble;
+        public bool FirstUsed;
+        public bool CleanseCard;
+        public bool UsedCleanse;
+        public bool SecondLife;
+        public bool UsedRevive;
+        public bool LastStand;
+        public bool UsedLastStand;
+        public double Stun;
+        public double Root;
+        public double Silence;
+        public double SlowT;
+        public double SlowV;
+        public double SwiftT;
+        public double SwiftV;
+        public double HasteT;
+        public double HasteV;
+        public double RageT;
+        public double RageV;
+        public double WeakT;
+        public double WeakV;
+        public double TauntT;
+        public double ThornsT;
+        public double ThornsV;
+        public double WoundT;
+        public double WoundV;
+        public double ArmorBuff;
+        public double ArmorBuffT;
+        public double BurnT;
+        public double BurnDps;
+        public double BleedT;
+        public double BleedDps;
+        public double RegenT;
+        public double RegenHps;
+        public double LifestealT;
+        public double LifestealV;
+        public int CcHardN;
+        public double CcHardAt;
+        public int CcSoftN;
+        public double CcSoftAt;
+        public System.Collections.Generic.List<ArenaLogic.MoveDef> Moves;
+        public double[] Cds = System.Array.Empty<double>();
     }
 
     public sealed class ArenaBolt
@@ -41,6 +106,18 @@ namespace BattleTv.Fight
         public int Team;
         public double Dmg;
         public ArenaBody Target;
+        public ArenaBody Src;
+        public double Angle;
+        public double Speed;
+        public double Life = 2;
+        public string Name = "";
+        public bool Lob;
+        public double Tx;
+        public double Ty;
+        public double Radius;
+        public bool Opening;
+        public bool IgnoreArmor;
+        public ArenaLogic.Status St;
     }
 
     /// <summary>
@@ -57,8 +134,6 @@ namespace BattleTv.Fight
         public const double WorldH = MapH * Tile;
         public const double Inset = Tile * 1.15;
         public const double Sep = 40;
-        const double GunTiles = 110.0 / 32.0;
-
         public static readonly List<ArenaBody> Bodies = new List<ArenaBody>(10);
         public static readonly List<ArenaBolt> Bolts = new List<ArenaBolt>(16);
         public static double Time;
@@ -74,6 +149,7 @@ namespace BattleTv.Fight
             Over = false;
             Title = "";
             Detail = "";
+            ArenaLogic.Reset(seed);
             Place(yours, 0);
             Place(foes, 1);
         }
@@ -85,102 +161,7 @@ namespace BattleTv.Fight
             if (dt > 0.05)
                 dt = 0.05;
             Time += dt;
-            for (var i = Bolts.Count - 1; i >= 0; i--)
-            {
-                var bolt = Bolts[i];
-                var aim = bolt.Target;
-                if (aim != null && aim.Alive)
-                {
-                    var dx = aim.X - bolt.X;
-                    var dy = aim.Y - bolt.Y;
-                    var dist = Math.Sqrt(dx * dx + dy * dy);
-                    if (dist < 18)
-                    {
-                        Land(bolt.Dmg, aim);
-                        Bolts.RemoveAt(i);
-                        continue;
-                    }
-                    var step = 14 * Tile * dt;
-                    bolt.X += dx / dist * step;
-                    bolt.Y += dy / dist * step;
-                }
-                else
-                {
-                    bolt.X += bolt.Vx * dt;
-                    bolt.Y += bolt.Vy * dt;
-                    if (bolt.X < 0 || bolt.Y < 0 || bolt.X > WorldW || bolt.Y > WorldH)
-                        Bolts.RemoveAt(i);
-                }
-            }
-            for (var i = 0; i < Bodies.Count; i++)
-            {
-                var body = Bodies[i];
-                if (!body.Alive)
-                    continue;
-                body.Swing = Math.Max(0, body.Swing - dt);
-                body.AtkCd = Math.Max(0, body.AtkCd - dt);
-                body.StrideCd = Math.Max(0, body.StrideCd - dt);
-                var foe = Nearest(body);
-                if (foe == null)
-                {
-                    body.Mana = Math.Min(body.ManaMax, body.Mana + body.ManaRegen * dt);
-                    continue;
-                }
-                var dx = foe.X - body.X;
-                var dy = foe.Y - body.Y;
-                var dist = Math.Sqrt(dx * dx + dy * dy);
-                if (dist < 0.001)
-                    dist = 0.001;
-                var stop = Math.Max(Tile * 0.9, body.Range * Tile);
-                if (body.StrideCd <= 0 && body.Mana >= SideDuel.CloseCost && dist > stop + Tile * 2.2)
-                {
-                    var gap = dist - (stop + 18);
-                    body.X += dx / dist * gap;
-                    body.Y += dy / dist * gap;
-                    body.Mana -= SideDuel.CloseCost;
-                    body.StrideCd = SideDuel.CloseCd;
-                    body.Callout = "Close";
-                    body.Swing = 0.28;
-                    Hold(body);
-                    dx = foe.X - body.X;
-                    dy = foe.Y - body.Y;
-                    dist = Math.Sqrt(dx * dx + dy * dy);
-                    if (dist < 0.001)
-                        dist = 0.001;
-                }
-                body.Mana = Math.Min(body.ManaMax, body.Mana + body.ManaRegen * dt);
-                if (dist > stop)
-                {
-                    var step = body.Speed * Tile * dt;
-                    if (step > dist - stop)
-                        step = dist - stop;
-                    body.X += dx / dist * step;
-                    body.Y += dy / dist * step;
-                }
-                Hold(body);
-                if (dist <= stop + 10 && body.AtkCd <= 0)
-                {
-                    body.AtkCd = 1.0 / Math.Max(0.25, body.Rate);
-                    body.Swing = 0.28;
-                    body.Callout = body.Atk;
-                    var amount = body.Dmg * SideDuel.SuddenScale(Time);
-                    if (body.Range > GunTiles)
-                    {
-                        Bolts.Add(new ArenaBolt
-                        {
-                            X = body.X,
-                            Y = body.Y,
-                            Vx = dx / dist * 14 * Tile,
-                            Vy = dy / dist * 14 * Tile,
-                            Team = body.Team,
-                            Dmg = amount,
-                            Target = foe
-                        });
-                    }
-                    else
-                        Land(amount, foe);
-                }
-            }
+            ArenaLogic.Advance(dt);
             for (var n = 0; n < 3; n++)
                 Ease();
             if (Time >= SideDuel.HardStop)
@@ -212,40 +193,11 @@ namespace BattleTv.Fight
                     Team = team,
                     Slot = slot,
                     X = (team == 0 ? 3 : MapW - 4) * Tile,
-                    Y = (3 + slot * 4) * Tile,
-                    Hp = Math.Max(1, kit.Hp),
-                    Max = Math.Max(1, kit.Hp),
-                    Dmg = kit.Dmg,
-                    Rate = kit.Rate,
-                    Speed = Math.Max(0.4, kit.Speed),
-                    Armor = kit.Armor,
-                    Range = Math.Max(0.8, kit.Range),
-                    Mana = kit.Mana,
-                    ManaMax = kit.Mana,
-                    ManaRegen = LaneRoster.ManaRegen(kit.Id),
-                    Shield = 0,
-                    StrideCd = 0,
-                    Cards = Tags(kit)
+                    Y = (3 + slot * 4) * Tile
                 };
+                ArenaLogic.Dress(body, kit);
                 Bodies.Add(body);
             }
-        }
-
-        static string Tags(Kit kit)
-        {
-            if (kit.Cards == null || kit.Cards.Length == 0)
-                return "";
-            var line = "";
-            for (var i = 0; i < kit.Cards.Length; i++)
-            {
-                var tag = LaneRoster.CardTag(kit.Cards[i]);
-                if (string.IsNullOrEmpty(tag))
-                    continue;
-                if (line.Length > 0)
-                    line += " · ";
-                line += tag;
-            }
-            return line;
         }
 
         static int[] Slots(int count)
@@ -259,43 +211,6 @@ namespace BattleTv.Fight
             if (count == 4)
                 return new[] { 0, 1, 3, 4 };
             return new[] { 0, 1, 2, 3, 4 };
-        }
-
-        static ArenaBody Nearest(ArenaBody body)
-        {
-            ArenaBody best = null;
-            var bestD = double.MaxValue;
-            for (var i = 0; i < Bodies.Count; i++)
-            {
-                var other = Bodies[i];
-                if (!other.Alive || other.Team == body.Team)
-                    continue;
-                var dx = other.X - body.X;
-                var dy = other.Y - body.Y;
-                var d = dx * dx + dy * dy;
-                if (d < bestD)
-                {
-                    bestD = d;
-                    best = other;
-                }
-            }
-            return best;
-        }
-
-        static void Land(double amount, ArenaBody target)
-        {
-            if (target == null || !target.Alive)
-                return;
-            var dmg = amount - target.Armor * 1.1;
-            if (dmg < 0.5)
-                return;
-            target.Hp -= dmg;
-            if (target.Hp <= 0)
-            {
-                target.Hp = 0;
-                target.Alive = false;
-                target.Callout = "";
-            }
         }
 
         static void Ease()
@@ -326,7 +241,7 @@ namespace BattleTv.Fight
             }
         }
 
-        static void Hold(ArenaBody body)
+        public static void Hold(ArenaBody body)
         {
             if (body.X < Inset)
                 body.X = Inset;

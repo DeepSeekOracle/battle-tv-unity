@@ -35,6 +35,21 @@ namespace BattleTv.Fight
         [SerializeField] Sprite fillStam;
         [SerializeField] Sprite fillBlock;
         [SerializeField] Sprite fillDash;
+        [SerializeField] Sprite bruteRest;
+        [SerializeField] Sprite bruteGrip;
+        [SerializeField] Sprite[] valeBash;
+        [SerializeField] Sprite[] valePunch;
+        [SerializeField] Sprite[] valeToss;
+        [SerializeField] Sprite[] valeLine;
+        [SerializeField] Sprite[] valePlant;
+        [SerializeField] Sprite[] valeDeath;
+        [SerializeField] Sprite[] valeWin;
+        [SerializeField] Sprite[] bruteSweep;
+        [SerializeField] Sprite[] brutePound;
+        [SerializeField] Sprite[] bruteWard;
+        [SerializeField] Sprite[] bruteClose;
+        [SerializeField] Sprite[] bruteDeath;
+        [SerializeField] Sprite[] bruteWin;
 
         Font _font;
         readonly List<Actor> _actors = new List<Actor>(10);
@@ -60,6 +75,12 @@ namespace BattleTv.Fight
             public Text Name;
             public LaneHud Hud;
             public double Heard;
+            public Sprite[] Clip;
+            public float ClipT = -1f;
+            public float ClipDur = 0.4f;
+            public float Pivot = 0.5f;
+            public bool HoldClip;
+            public string Pose = "";
         }
 
         void Start()
@@ -90,6 +111,9 @@ namespace BattleTv.Fight
                 if (AliveCount() < before)
                     Play("kill", 0.5f);
             }
+            for (var i = 0; i < _actors.Count; i++)
+                AdvanceClip(_actors[i], dt);
+            EnsureActors();
             Paint();
             if (ArenaMatch.Over && !_boardUp)
                 ShowBoard();
@@ -98,40 +122,7 @@ namespace BattleTv.Fight
         void Spawn()
         {
             for (var i = 0; i < ArenaMatch.Bodies.Count; i++)
-            {
-                var body = ArenaMatch.Bodies[i];
-                var actor = new Actor { Body = body };
-                var node = new GameObject(body.Id, typeof(RectTransform), typeof(Image));
-                node.transform.SetParent(plate, false);
-                actor.Rect = node.GetComponent<RectTransform>();
-                actor.Image = node.GetComponent<Image>();
-                actor.Image.raycastTarget = false;
-                actor.Image.preserveAspect = true;
-                var painted = Still(body.Id);
-                if (painted != null)
-                {
-                    actor.Image.sprite = painted;
-                    actor.Image.color = Color.white;
-                }
-                else
-                {
-                    actor.Image.sprite = mark;
-                    actor.Image.color = Hex(LaneRoster.ById(body.Id).Color);
-                }
-                var shadow = new GameObject("Shadow", typeof(RectTransform), typeof(Image));
-                shadow.transform.SetParent(plate, false);
-                actor.Shadow = shadow.GetComponent<Image>();
-                actor.Shadow.sprite = mark;
-                actor.Shadow.color = new Color(0f, 0f, 0f, 0.38f);
-                actor.Shadow.raycastTarget = false;
-                var label = Words(plate, body.Name);
-                label.fontSize = 14;
-                label.alignment = TextAnchor.MiddleCenter;
-                label.color = Paper;
-                actor.Name = label;
-                actor.Hud = Column(TeamIndex(body), body.Team == 0);
-                _actors.Add(actor);
-            }
+                AddActor(ArenaMatch.Bodies[i]);
         }
 
         static int TeamIndex(ArenaBody body)
@@ -168,7 +159,6 @@ namespace BattleTv.Fight
                 if (actor.Image.sprite != null && actor.Image.sprite.rect.height > 1f)
                     aspect = actor.Image.sprite.rect.width / actor.Image.sprite.rect.height;
                 actor.Rect.anchorMin = actor.Rect.anchorMax = new Vector2(0.5f, 0.5f);
-                actor.Rect.pivot = new Vector2(PivotX(body.Id, actor.Image), 0f);
                 actor.Rect.sizeDelta = new Vector2(spriteH * aspect, spriteH);
                 actor.Rect.anchoredPosition = point;
                 var foe = NearestX(body);
@@ -177,15 +167,24 @@ namespace BattleTv.Fight
                     face = foe >= body.X ? 1f : -1f;
                 else if (body.Id == "brute")
                     face = foe >= body.X ? -1f : 1f;
-                if (!body.Alive)
-                    face = 1f;
-                actor.Rect.localScale = new Vector3(face, 1f, 1f);
+                if (body.Alive)
+                    actor.Rect.localScale = new Vector3(face, 1f, 1f);
                 if (body.Swing > 0.22 && actor.Heard < 0.05)
                     Play("hit", 0.22f);
+                if (body.Alive && body.Swing > actor.Heard + 0.02 && body.Swing > 0.18)
+                    Arm(actor, body);
+                if (!body.Alive && actor.Pose != "death")
+                    ArmEnd(actor, body, false);
+                if (ArenaMatch.Over && body.Alive && actor.Pose != "win" && actor.Pose != "death")
+                    ArmEnd(actor, body, true);
                 actor.Heard = body.Swing;
+                ShowFrame(actor, body);
+                var pivot = body.Id == "vale" && actor.ClipT >= 0f ? actor.Pivot : PivotX(body.Id, actor.Image);
+                actor.Rect.pivot = new Vector2(pivot, 0f);
+                var painted = Still(body.Id) != null;
                 actor.Image.color = body.Alive
-                    ? (Still(body.Id) != null ? Color.white : Hex(LaneRoster.ById(body.Id).Color))
-                    : new Color(0.35f, 0.28f, 0.22f, 0.8f);
+                    ? (painted ? Color.white : Hex(LaneRoster.ById(body.Id).Color))
+                    : (painted ? new Color(0.78f, 0.7f, 0.62f, 1f) : new Color(0.35f, 0.28f, 0.22f, 0.8f));
                 actor.Rect.SetSiblingIndex(i + 2);
                 var shadow = actor.Shadow.rectTransform;
                 shadow.anchorMin = shadow.anchorMax = new Vector2(0.5f, 0.5f);
@@ -297,23 +296,179 @@ namespace BattleTv.Fight
             if (id == "vale")
                 return valeStill;
             if (id == "brute")
-                return bruteStill;
+                return bruteRest != null ? bruteRest : bruteStill;
             return null;
+        }
+
+        void EnsureActors()
+        {
+            for (var i = 0; i < ArenaMatch.Bodies.Count; i++)
+            {
+                var body = ArenaMatch.Bodies[i];
+                var found = false;
+                for (var a = 0; a < _actors.Count; a++)
+                {
+                    if (_actors[a].Body == body)
+                        found = true;
+                }
+                if (!found)
+                    AddActor(body);
+            }
+        }
+
+        void AddActor(ArenaBody body)
+        {
+            var actor = new Actor { Body = body };
+            var node = new GameObject(body.Id, typeof(RectTransform), typeof(Image));
+            node.transform.SetParent(plate, false);
+            actor.Rect = node.GetComponent<RectTransform>();
+            actor.Image = node.GetComponent<Image>();
+            actor.Image.raycastTarget = false;
+            actor.Image.preserveAspect = true;
+            var painted = Still(body.Id);
+            if (painted != null)
+            {
+                actor.Image.sprite = painted;
+                actor.Image.color = Color.white;
+            }
+            else
+            {
+                actor.Image.sprite = mark;
+                actor.Image.color = body.Token ? new Color(0.45f, 0.75f, 0.95f, 1f) : Hex(LaneRoster.ById(body.Id).Color);
+            }
+            var shadow = new GameObject("Shadow", typeof(RectTransform), typeof(Image));
+            shadow.transform.SetParent(plate, false);
+            actor.Shadow = shadow.GetComponent<Image>();
+            actor.Shadow.sprite = mark;
+            actor.Shadow.color = new Color(0f, 0f, 0f, 0.38f);
+            actor.Shadow.raycastTarget = false;
+            var label = Words(plate, body.Name);
+            label.fontSize = 14;
+            label.alignment = TextAnchor.MiddleCenter;
+            label.color = Paper;
+            actor.Name = label;
+            if (!body.Token)
+                actor.Hud = Column(TeamIndex(body), body.Team == 0);
+            _actors.Add(actor);
+        }
+
+        void AdvanceClip(Actor actor, float dt)
+        {
+            if (actor.ClipT < 0f)
+                return;
+            actor.ClipT += dt;
+            if (actor.ClipT < actor.ClipDur)
+                return;
+            if (actor.HoldClip)
+                actor.ClipT = actor.ClipDur - 0.0001f;
+            else
+            {
+                actor.ClipT = -1f;
+                actor.Pose = "";
+            }
+        }
+
+        void Arm(Actor actor, ArenaBody body)
+        {
+            var call = body.Callout ?? "";
+            if (body.Id == "vale")
+            {
+                if (call == "Shield Bash" || call == "Shield Hook")
+                    ArmClip(actor, valeBash, 0.4f, 0.39f, call);
+                else if (call == "Cleave" || call == "Punch")
+                    ArmClip(actor, valePunch, 0.34f, 0.37f, call);
+                else if (call == "Cover")
+                    ArmClip(actor, valeToss, 0.5f, 0.3f, call);
+                else if (call == "Bulwark")
+                    ArmClip(actor, valeLine, 0.5f, 0.54f, call);
+                else if (call == "Shield Wall")
+                    ArmClip(actor, valePlant, 0.4f, 0.56f, call);
+            }
+            else if (body.Id == "brute")
+            {
+                if (call == "Heavy Sweep")
+                    ArmClip(actor, bruteSweep, 1.42f, 0f, call);
+                else if (call == "Ground Pound")
+                    ArmClip(actor, brutePound, 0.7f, 0f, call);
+                else if (call == "Ward Field")
+                    ArmClip(actor, bruteWard, 0.55f, 0f, call);
+                else if (call == "Close" || call == "Slip")
+                    ArmClip(actor, bruteClose, 0.35f, 0f, call);
+                else if (call == "Iron Grip")
+                    ArmClip(actor, bruteGrip == null ? null : new[] { bruteGrip }, 0.4f, 0f, call);
+            }
+        }
+
+        void ArmEnd(Actor actor, ArenaBody body, bool win)
+        {
+            if (body.Id == "vale")
+                ArmClip(actor, win ? valeWin : valeDeath, win ? 1.15f : 1.6f, win ? 0.40f : 0.42f, win ? "win" : "death");
+            else if (body.Id == "brute")
+                ArmClip(actor, win ? bruteWin : bruteDeath, win ? 1.15f : 1.55f, 0f, win ? "win" : "death");
+            else
+                actor.Pose = win ? "win" : "death";
+            actor.HoldClip = true;
+        }
+
+        static void ArmClip(Actor actor, Sprite[] frames, float duration, float pivot, string pose)
+        {
+            if (frames == null || frames.Length == 0 || frames[0] == null)
+                return;
+            actor.Clip = frames;
+            actor.ClipDur = duration;
+            actor.ClipT = 0f;
+            actor.Pivot = pivot;
+            actor.Pose = pose;
+        }
+
+        void ShowFrame(Actor actor, ArenaBody body)
+        {
+            if (actor.Image == null)
+                return;
+            if (actor.ClipT >= 0f && actor.Clip != null && actor.Clip.Length > 0)
+            {
+                var u = actor.ClipDur > 0.01f ? actor.ClipT / actor.ClipDur : 1f;
+                var frame = Mathf.Clamp(Mathf.FloorToInt(u * actor.Clip.Length), 0, actor.Clip.Length - 1);
+                if (body.Id == "brute" && body.Callout == "Heavy Sweep" && !actor.HoldClip)
+                {
+                    var last = actor.Clip.Length - 1;
+                    frame = u >= 0.72f ? last : Mathf.Clamp(Mathf.FloorToInt((u / 0.72f) * last), 0, last);
+                }
+                if (actor.Clip[frame] != null)
+                    actor.Image.sprite = actor.Clip[frame];
+                return;
+            }
+            var still = Still(body.Id);
+            if (still != null)
+                actor.Image.sprite = still;
         }
 
         void BuildChrome()
         {
-            _clock = Words(transform, "0:00");
-            var clock = _clock.rectTransform;
-            clock.anchorMin = new Vector2(0.40f, 0.90f);
-            clock.anchorMax = new Vector2(0.60f, 0.98f);
-            clock.offsetMin = clock.offsetMax = Vector2.zero;
+            var clockPlate = new GameObject("ClockPlate", typeof(RectTransform), typeof(Image));
+            clockPlate.transform.SetParent(transform, false);
+            var clockBox = clockPlate.GetComponent<RectTransform>();
+            clockBox.anchorMin = new Vector2(0.445f, 0.915f);
+            clockBox.anchorMax = new Vector2(0.555f, 0.965f);
+            clockBox.offsetMin = clockBox.offsetMax = Vector2.zero;
+            var clockFace = clockPlate.GetComponent<Image>();
+            clockFace.raycastTarget = false;
+            if (barFrame != null)
+            {
+                clockFace.sprite = barFrame;
+                clockFace.type = Image.Type.Sliced;
+                clockFace.color = Color.white;
+            }
+            else
+                clockFace.color = new Color(0.08f, 0.06f, 0.04f, 0.8f);
+            _clock = Words(clockPlate.transform, "0:00");
+            Stretch(_clock.rectTransform);
             _clock.alignment = TextAnchor.MiddleCenter;
-            _clock.fontSize = 22;
+            _clock.fontSize = 18;
             _callout = Words(transform, "Colosseum  ·  swept sand");
             var call = _callout.rectTransform;
-            call.anchorMin = new Vector2(0.30f, 0.845f);
-            call.anchorMax = new Vector2(0.70f, 0.90f);
+            call.anchorMin = new Vector2(0.30f, 0.868f);
+            call.anchorMax = new Vector2(0.70f, 0.908f);
             call.offsetMin = call.offsetMax = Vector2.zero;
             _callout.alignment = TextAnchor.MiddleCenter;
             _callout.fontSize = 16;

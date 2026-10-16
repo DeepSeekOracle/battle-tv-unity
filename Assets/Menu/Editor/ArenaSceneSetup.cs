@@ -59,6 +59,21 @@ namespace BattleTv.Menu.EditorTools
             so.FindProperty("fillStam").objectReferenceValue = HudSkin("fill-stam.png");
             so.FindProperty("fillBlock").objectReferenceValue = HudSkin("fill-block.png");
             so.FindProperty("fillDash").objectReferenceValue = HudSkin("fill-dash.png");
+            so.FindProperty("bruteRest").objectReferenceValue = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Duel/brute-drag.png");
+            so.FindProperty("bruteGrip").objectReferenceValue = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Duel/brute-grip.png");
+            AssignClip(so, "valeBash", Frames("vale-bash", 6));
+            AssignClip(so, "valePunch", Frames("vale-punch", 6));
+            AssignClip(so, "valeToss", Frames("vale-toss", 8));
+            AssignClip(so, "valeLine", Frames("vale-line", 5));
+            AssignClip(so, "valePlant", Frames("vale-plant", 4));
+            AssignClip(so, "valeDeath", Frames("vale-death", 4));
+            AssignClip(so, "valeWin", Frames("vale-win", 2));
+            AssignClip(so, "bruteSweep", Frames("brute-sweep", 8));
+            AssignClip(so, "brutePound", Frames("brute-pound", 2));
+            AssignClip(so, "bruteWard", Frames("brute-ward", 2));
+            AssignClip(so, "bruteClose", Frames("brute-close", 1));
+            AssignClip(so, "bruteDeath", Frames("brute-death", 3));
+            AssignClip(so, "bruteWin", Frames("brute-win", 2));
             so.ApplyModifiedPropertiesWithoutUndo();
 
             new GameObject("EventSystem", typeof(EventSystem), typeof(StandaloneInputModule));
@@ -74,6 +89,27 @@ namespace BattleTv.Menu.EditorTools
             };
             AssetDatabase.SaveAssets();
             Debug.Log("[ArenaSceneSetup] Arena scene saved.");
+        }
+
+        static Sprite[] Frames(string folder, int count)
+        {
+            var frames = new Sprite[count];
+            for (var i = 0; i < count; i++)
+            {
+                var path = "Assets/Art/Duel/" + folder + "/f" + i.ToString("00") + ".png";
+                frames[i] = AssetDatabase.LoadAssetAtPath<Sprite>(path);
+                if (frames[i] == null)
+                    throw new FileNotFoundException("Arena clip frame did not import.", path);
+            }
+            return frames;
+        }
+
+        static void AssignClip(SerializedObject so, string property, Sprite[] frames)
+        {
+            var prop = so.FindProperty(property);
+            prop.arraySize = frames.Length;
+            for (var i = 0; i < frames.Length; i++)
+                prop.GetArrayElementAtIndex(i).objectReferenceValue = frames[i];
         }
 
         static Sprite HudSkin(string file)
