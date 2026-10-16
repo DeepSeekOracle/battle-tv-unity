@@ -63,6 +63,11 @@ namespace BattleTv.Menu.EditorTools
             var teamObject = new SerializedObject(team);
             teamObject.FindProperty("valeStill").objectReferenceValue = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Duel/vale.png");
             teamObject.FindProperty("bruteStill").objectReferenceValue = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Duel/brute.png");
+            ArenaSceneSetup.ImportFatherStill();
+            var father = ArenaSceneSetup.LoadPlate("Assets/Art/Duel/lightfather.png");
+            if (father == null)
+                throw new FileNotFoundException("Lightfather still did not import.", "Assets/Art/Duel/lightfather.png");
+            teamObject.FindProperty("lightfatherStill").objectReferenceValue = father;
             teamObject.ApplyModifiedPropertiesWithoutUndo();
 
             new GameObject("EventSystem", typeof(EventSystem), typeof(StandaloneInputModule));

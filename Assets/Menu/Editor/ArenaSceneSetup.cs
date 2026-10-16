@@ -74,6 +74,17 @@ namespace BattleTv.Menu.EditorTools
             AssignClip(so, "bruteClose", Frames("brute-close", 1));
             AssignClip(so, "bruteDeath", Frames("brute-death", 3));
             AssignClip(so, "bruteWin", Frames("brute-win", 2));
+            var father = "Assets/Art/Duel/lightfather.png";
+            Configure(father, true, 2048, true);
+            so.FindProperty("lightfatherStill").objectReferenceValue = LoadSprite(father);
+            AssignClip(so, "lfBolt", Cutout("lf-bolt", 4));
+            AssignClip(so, "lfSeal", Cutout("lf-seal", 3));
+            AssignClip(so, "lfProvenance", Cutout("lf-provenance", 3));
+            AssignClip(so, "lfCover", Cutout("lf-cover", 4));
+            AssignClip(so, "lfStandard", Cutout("lf-standard", 4));
+            AssignClip(so, "lfSlip", Cutout("lf-slip", 2));
+            AssignClip(so, "lfDeath", Cutout("lf-death", 1));
+            AssignClip(so, "lfWin", Cutout("lf-win", 1));
             so.ApplyModifiedPropertiesWithoutUndo();
 
             new GameObject("EventSystem", typeof(EventSystem), typeof(StandaloneInputModule));
@@ -93,11 +104,23 @@ namespace BattleTv.Menu.EditorTools
 
         static Sprite[] Frames(string folder, int count)
         {
+            return LoadFrames(folder, count, false);
+        }
+
+        static Sprite[] Cutout(string folder, int count)
+        {
+            return LoadFrames(folder, count, true);
+        }
+
+        static Sprite[] LoadFrames(string folder, int count, bool cutout)
+        {
             var frames = new Sprite[count];
             for (var i = 0; i < count; i++)
             {
                 var path = "Assets/Art/Duel/" + folder + "/f" + i.ToString("00") + ".png";
-                frames[i] = AssetDatabase.LoadAssetAtPath<Sprite>(path);
+                if (cutout)
+                    Configure(path, true, 2048, true);
+                frames[i] = LoadSprite(path);
                 if (frames[i] == null)
                     throw new FileNotFoundException("Arena clip frame did not import.", path);
             }
@@ -121,13 +144,37 @@ namespace BattleTv.Menu.EditorTools
             return sprite;
         }
 
-        static void Configure(string path, bool alpha, int max)
+        public static void ImportFatherStill()
+        {
+            Configure("Assets/Art/Duel/lightfather.png", true, 2048, true);
+        }
+
+        public static Sprite LoadPlate(string path)
+        {
+            return LoadSprite(path);
+        }
+
+        static Sprite LoadSprite(string path)
+        {
+            var sprite = AssetDatabase.LoadAssetAtPath<Sprite>(path);
+            if (sprite != null)
+                return sprite;
+            var all = AssetDatabase.LoadAllAssetsAtPath(path);
+            for (var i = 0; i < all.Length; i++)
+            {
+                if (all[i] is Sprite found)
+                    return found;
+            }
+            return null;
+        }
+
+        static void Configure(string path, bool alpha, int max, bool fullPlate = false)
         {
             var importer = AssetImporter.GetAtPath(path) as TextureImporter;
             if (importer == null)
                 throw new FileNotFoundException("Arena art is missing.", path);
             importer.textureType = TextureImporterType.Sprite;
-            importer.spriteImportMode = SpriteImportMode.Single;
+            importer.spriteImportMode = fullPlate ? SpriteImportMode.Multiple : SpriteImportMode.Single;
             importer.sRGBTexture = true;
             importer.mipmapEnabled = false;
             importer.alphaIsTransparency = alpha;
@@ -138,6 +185,20 @@ namespace BattleTv.Menu.EditorTools
             importer.ReadTextureSettings(settings);
             settings.spriteMeshType = SpriteMeshType.FullRect;
             importer.SetTextureSettings(settings);
+            if (fullPlate)
+            {
+                importer.GetSourceTextureWidthAndHeight(out var w, out var h);
+                importer.spritesheet = new[]
+                {
+                    new SpriteMetaData
+                    {
+                        name = Path.GetFileNameWithoutExtension(path),
+                        rect = new Rect(0f, 0f, w, h),
+                        alignment = (int)SpriteAlignment.Custom,
+                        pivot = new Vector2(0.5f, 0f)
+                    }
+                };
+            }
             importer.SaveAndReimport();
         }
     }

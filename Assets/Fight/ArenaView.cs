@@ -50,6 +50,15 @@ namespace BattleTv.Fight
         [SerializeField] Sprite[] bruteClose;
         [SerializeField] Sprite[] bruteDeath;
         [SerializeField] Sprite[] bruteWin;
+        [SerializeField] Sprite lightfatherStill;
+        [SerializeField] Sprite[] lfBolt;
+        [SerializeField] Sprite[] lfSeal;
+        [SerializeField] Sprite[] lfProvenance;
+        [SerializeField] Sprite[] lfCover;
+        [SerializeField] Sprite[] lfStandard;
+        [SerializeField] Sprite[] lfSlip;
+        [SerializeField] Sprite[] lfDeath;
+        [SerializeField] Sprite[] lfWin;
 
         Font _font;
         readonly List<Actor> _actors = new List<Actor>(10);
@@ -163,10 +172,10 @@ namespace BattleTv.Fight
                 actor.Rect.anchoredPosition = point;
                 var foe = NearestX(body);
                 var face = 1f;
-                if (body.Id == "vale" || (body.Id != "brute" && Still(body.Id) == null))
-                    face = foe >= body.X ? 1f : -1f;
-                else if (body.Id == "brute")
+                if (body.Id == "brute")
                     face = foe >= body.X ? -1f : 1f;
+                else if (body.Id == "vale" || body.Id == "lightfather" || Still(body.Id) == null)
+                    face = foe >= body.X ? 1f : -1f;
                 if (body.Alive)
                     actor.Rect.localScale = new Vector3(face, 1f, 1f);
                 if (body.Swing > 0.22 && actor.Heard < 0.05)
@@ -179,7 +188,9 @@ namespace BattleTv.Fight
                     ArmEnd(actor, body, true);
                 actor.Heard = body.Swing;
                 ShowFrame(actor, body);
-                var pivot = body.Id == "vale" && actor.ClipT >= 0f ? actor.Pivot : PivotX(body.Id, actor.Image);
+                var pivot = (body.Id == "vale" || body.Id == "lightfather") && actor.ClipT >= 0f
+                    ? actor.Pivot
+                    : PivotX(body.Id, actor.Image);
                 actor.Rect.pivot = new Vector2(pivot, 0f);
                 var painted = Still(body.Id) != null;
                 actor.Image.color = body.Alive
@@ -297,6 +308,8 @@ namespace BattleTv.Fight
                 return valeStill;
             if (id == "brute")
                 return bruteRest != null ? bruteRest : bruteStill;
+            if (id == "lightfather")
+                return lightfatherStill;
             return null;
         }
 
@@ -397,6 +410,21 @@ namespace BattleTv.Fight
                 else if (call == "Iron Grip")
                     ArmClip(actor, bruteGrip == null ? null : new[] { bruteGrip }, 0.4f, 0f, call);
             }
+            else if (body.Id == "lightfather")
+            {
+                if (call == "Seal Bolt")
+                    ArmClip(actor, lfBolt, 0.42f, 0.5f, call);
+                else if (call == "Δ9 Seal")
+                    ArmClip(actor, lfSeal, 0.70f, 0.5f, call);
+                else if (call == "Provenance")
+                    ArmClip(actor, lfProvenance, 0.80f, 0.5f, call);
+                else if (call == "Cover")
+                    ArmClip(actor, lfCover, 0.50f, 0.5f, call);
+                else if (call == "Standard Raised")
+                    ArmClip(actor, lfStandard, 0.55f, 0.5f, call);
+                else if (call == "Slip" || call == "Close")
+                    ArmClip(actor, lfSlip, 0.35f, 0.5f, call);
+            }
         }
 
         void ArmEnd(Actor actor, ArenaBody body, bool win)
@@ -405,6 +433,8 @@ namespace BattleTv.Fight
                 ArmClip(actor, win ? valeWin : valeDeath, win ? 1.15f : 1.6f, win ? 0.40f : 0.42f, win ? "win" : "death");
             else if (body.Id == "brute")
                 ArmClip(actor, win ? bruteWin : bruteDeath, win ? 1.15f : 1.55f, 0f, win ? "win" : "death");
+            else if (body.Id == "lightfather")
+                ArmClip(actor, win ? lfWin : lfDeath, win ? 1.15f : 1.55f, 0.5f, win ? "win" : "death");
             else
                 actor.Pose = win ? "win" : "death";
             actor.HoldClip = true;

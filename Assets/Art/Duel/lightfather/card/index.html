@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Lightfather animation card</title>
+<style>
+  body { margin: 0; background: #100c08; color: #f6e7c1; font: 16px/1.4 Georgia, serif; }
+  main { max-width: 1180px; margin: 0 auto; padding: 28px 20px 64px; }
+  h1 { font-weight: normal; letter-spacing: 0.08em; text-transform: uppercase; font-size: 22px; margin: 0 0 6px; }
+  h2 { font-size: 18px; font-weight: normal; margin: 28px 0 8px; color: #f59e0b; }
+  p, li { max-width: 78ch; }
+  .book { display: flex; gap: 28px; flex-wrap: wrap; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { border-bottom: 1px solid rgba(245,158,11,0.35); text-align: left; padding: 6px 8px; vertical-align: top; }
+  th { color: #f59e0b; font-weight: normal; letter-spacing: 0.06em; text-transform: uppercase; font-size: 12px; }
+  .row { display: grid; grid-template-columns: 220px 1fr; gap: 16px; margin: 22px 0; padding-top: 12px; border-top: 1px solid rgba(246,231,193,0.18); }
+  img { width: 220px; height: auto; background: #000; display: block; }
+  .tag { color: #f59e0b; }
+  .wait { color: #c4b5a0; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Lightfather · Architect · Δ9</h1>
+  <p>This card is the only pose list. A later frame has to match one of these keys. Native facing is right. The whole sprite flips. The triangle stays in the leading hand.</p>
+  <div class="book">
+    <table>
+      <tr><th>Book</th><th>Value</th></tr>
+      <tr><td>Basic</td><td>Seal Bolt · bolt · halo</td></tr>
+      <tr><td>Body</td><td>660 health · 27 damage · 0.84 attacks/s · speed 3.4 · armor 4 · range 8.0 · mana 160 · regen 10</td></tr>
+      <tr><td>Crit / cooldown</td><td>0.19 crit · 0.82 cooldown scale</td></tr>
+      <tr><td>Cards</td><td>Hall Standard · Second Life · Warded</td></tr>
+      <tr><td>Stride</td><td>Slip · he is a gun · 30s · cost 8</td></tr>
+    </table>
+  </div>
+
+  <h2>What stays off the body</h2>
+  <ul>
+    <li>The Δ9 ring is the ground-ring shader. It is not painted into the seal frame.</li>
+    <li>The thrown Cover ward is cropped off the cover key into its own sprite.</li>
+    <li>The planted standard is cropped off the standard key. After the clip he returns to idle with empty hands and the banner stays in the sand.</li>
+    <li>Provenance does not draw the ally. The kneel is only him.</li>
+  </ul>
+
+  <h2>Keys</h2>
+
+  <div class="row">
+    <img src="idle.png" alt="Idle">
+    <div>
+      <div class="tag">Idle · feet pivot</div>
+      <p>Rest. Triangle forward at chest height. Rear hand is a fist. This frame opens and closes Seal Bolt, Cover, and Standard.</p>
+    </div>
+  </div>
+  <div class="row">
+    <img src="bolt-gather.png" alt="Seal Bolt gather">
+    <div>
+      <div class="tag">Seal Bolt · frame 2 of 4 · 0.42s · contact is the next frame</div>
+      <p>Gather. Triangle cocked in the forward hand. Rear fist stays back. Pivot stays on the feet until the release.</p>
+    </div>
+  </div>
+  <div class="row">
+    <img src="bolt-release.png" alt="Seal Bolt release">
+    <div>
+      <div class="tag">Seal Bolt · frame 3 of 4 · contact · pivot on the open hand</div>
+      <p>Release. The arm is straight and the triangle has left the fingers. The bolt sprite continues from that point. The body does not follow it.</p>
+    </div>
+  </div>
+  <div class="row">
+    <img src="seal.png" alt="Delta 9 Seal">
+    <div>
+      <div class="tag">Δ9 Seal · frame 2 of 3 · 0.70s · feet pivot · hold</div>
+      <p>Stamp. Triangle overhead, the other fist down. Stuns the room and shields his own. The ring is a separate plate under his feet.</p>
+    </div>
+  </div>
+  <div class="row">
+    <img src="provenance.png" alt="Provenance">
+    <div>
+      <div class="tag">Provenance · frame 2 of 3 · 0.80s · feet pivot · hold</div>
+      <p>Kneel. Forward palm low, triangle on the empty ground. Raises a fallen ally. No second body in this sprite.</p>
+    </div>
+  </div>
+  <div class="row">
+    <img src="cover.png" alt="Cover">
+    <div>
+      <div class="tag">Cover · frame 2 of 4 · 0.50s · hand pivot</div>
+      <p>Throw. The nested triangle stays in the off hand. The gold ward on the right is cropped out and flies to the hurt ally. His body frames do not keep that flying ward.</p>
+    </div>
+  </div>
+  <div class="row">
+    <img src="standard.png" alt="Standard Raised">
+    <div>
+      <div class="tag">Standard Raised · frame 2 of 4 · 0.55s · feet pivot</div>
+      <p>Plant. Banner staff in the rear hand, triangle still forward. The banner is cropped into a prop that stays. He goes back to idle without it.</p>
+    </div>
+  </div>
+  <div class="row">
+    <img src="slip.png" alt="Slip">
+    <div>
+      <div class="tag">Slip · frame 1 of 2 · 0.35s · feet pivot</div>
+      <p>One step off a fist. Weight on the rear foot, front foot up, triangle guarded at the chest. Frame 2 is idle.</p>
+    </div>
+  </div>
+  <div class="row">
+    <img src="death.png" alt="Death">
+    <div>
+      <div class="tag">Death · last frame · 1.55s · hold · pivot at the lowest pixel, not the standing feet</div>
+      <p>Down. Eyes closed, triangle dim beside the open hand. The clip holds this frame.</p>
+      <p class="wait">Stagger and kneel are not drawn. Do not invent them between idle and this frame until this card adds those two keys.</p>
+    </div>
+  </div>
+  <div class="row">
+    <img src="win.png" alt="Win">
+    <div>
+      <div class="tag">Win · last frame · 1.15s · hold · feet pivot</div>
+      <p>Chin up, free hand open, triangle high. This is not the seal: the seal keeps a closed fist at the hip.</p>
+    </div>
+  </div>
+</main>
+</body>
+</html>
