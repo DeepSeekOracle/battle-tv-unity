@@ -1,11 +1,16 @@
 {
-  "brute-drag.png": 0.5372,
-  "brute-sweep/f00.png": 0.5475,
-  "brute-sweep/f01.png": 0.6386,
-  "brute-sweep/f02.png": 0.6745,
-  "brute-pound/f00.png": 0.5372,
-  "brute-pound/f01.png": 0.7418,
-  "brute-ward/f00.png": 0.7783,
-  "brute-ward/f01.png": 0.7783,
-  "brute-close/f00.png": 0.7142
+  "brute-sweep/f00.png": 0.5857,
+  "brute-sweep/f01.png": 0.5125,
+  "brute-sweep/f02.png": 0.5695,
+  "brute-sweep/f03.png": 0.6026,
+  "brute-sweep/f04.png": 0.7377,
+  "brute-sweep/f05.png": 0.7256,
+  "brute-sweep/f06.png": 0.7357,
+  "brute-sweep/f07.png": 0.7407,
+  "brute-drag.png": 0.4907,
+  "brute-pound/f00.png": 0.4907,
+  "brute-pound/f01.png": 0.8372,
+  "brute-close/f00.png": 0.6318,
+  "brute-ward/f00.png": 0.631,
+  "brute-ward/f01.png": 0.631
 }

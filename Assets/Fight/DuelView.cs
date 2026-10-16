@@ -284,9 +284,10 @@ namespace BattleTv.Fight
                     int frame = Mathf.Clamp(Mathf.FloorToInt(_bruteClipT / _bruteClipDur * _bruteClip.Length), 0, _bruteClip.Length - 1);
                     if (_brute.Callout == "Heavy Sweep")
                     {
-                        // Overhead, then the club coming over, then the bonk. Equal slices were too fast to read.
+                        // Play the swing through, and hold the strike from the hit time.
                         float u = _bruteClipDur > 0.01f ? _bruteClipT / _bruteClipDur : 1f;
-                        frame = u < 0.34f ? 0 : u < 0.62f ? 1 : _bruteClip.Length - 1;
+                        int last = _bruteClip.Length - 1;
+                        frame = u >= 0.72f ? last : Mathf.Clamp(Mathf.FloorToInt((u / 0.72f) * last), 0, last);
                     }
                     if (_sparkLife > 0.01f && _sparkOn == "Vale" && (_brute.Callout == "Heavy Sweep" || _brute.Callout == "Brute Pound"))
                         frame = _bruteClip.Length - 1;

@@ -30,14 +30,14 @@ namespace BattleTv.Menu.EditorTools
             var valeLine = LoadClip("vale-line", 5);
             var valePlant = LoadClip("vale-plant", 4);
             Configure("Assets/Art/Duel/brute-drag.png", true);
-            var bruteSweep = LoadClip("brute-sweep", 3, 1024);
+            var bruteSweep = LoadClip("brute-sweep", 8, 1024);
             var brutePound = LoadClip("brute-pound", 2, 1024);
             var bruteWard = LoadClip("brute-ward", 2, 1024);
             var bruteClose = LoadClip("brute-close", 1, 1024);
             ConfigureToss("Assets/Art/Duel/brute-line.png", 1024);
             ConfigureToss("Assets/Art/Duel/brute-grip.png", 1024);
             ApplyBrutePivots();
-            bruteSweep = ReloadClip("brute-sweep", 3);
+            bruteSweep = ReloadClip("brute-sweep", 8);
             brutePound = ReloadClip("brute-pound", 2);
             bruteWard = ReloadClip("brute-ward", 2);
             bruteClose = ReloadClip("brute-close", 1);
