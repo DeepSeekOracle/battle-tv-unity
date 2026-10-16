@@ -193,6 +193,15 @@ namespace BattleTv.Menu.Tests
             Assert.Greater(pinned.X, corner.X);
             Assert.AreEqual(30, pinned.StrideCd);
             Assert.AreEqual(32, pinned.Mana);
+
+            var valePin = SideDuel.Vale();
+            var onHer = SideDuel.Brute();
+            valePin.X = SideDuel.Wall;
+            onHer.X = 4.2;
+            Assert.IsTrue(SideDuel.TryClose(valePin, onHer));
+            Assert.Greater(valePin.X, onHer.X);
+            Assert.AreEqual(30, valePin.StrideCd);
+            Assert.AreEqual(52, valePin.Mana);
         }
 
         [Test]

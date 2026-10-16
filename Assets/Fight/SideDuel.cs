@@ -150,9 +150,9 @@ namespace BattleTv.Fight
         /// <summary>
         /// Close is a thirty-second step. Vale uses it only onto a gun that is
         /// still outside her swing. Brute uses it onto whoever is in front of
-        /// him. A body pinned on the side stones leaps past the other fighter
-        /// instead, so a corner is a way out. The clock ignores cdMul.
-        /// It does not cross the planted kite.
+        /// him. Either fighter, pinned on the side stones with the other in
+        /// their face, leaps past them. That way out does not wait on the gun
+        /// rule. The clock ignores cdMul. It does not cross the planted kite.
         /// </summary>
         public static bool TryClose(Body self, Body other)
         {
@@ -160,15 +160,17 @@ namespace BattleTv.Fight
                 return false;
             if (self.StrideCd > 0 || self.Mana < CloseCost)
                 return false;
+            if (DoorBlocks(self.X, other.X))
+                return false;
+            double dist = Math.Abs(self.X - other.X);
+            // Checked before the gun rule. Vale versus Brute never passed that
+            // rule, so she stood on the stones and never took the leap.
+            if (Pinned(self) && dist <= self.Range + 1.5 && LeapPast(self, other))
+                return true;
             bool ontoGun = self.Range <= GunTiles && other.Range > GunTiles;
             bool bruteStep = self.Name == "Brute" && self.Range <= GunTiles;
             if (!ontoGun && !bruteStep)
                 return false;
-            if (DoorBlocks(self.X, other.X))
-                return false;
-            double dist = Math.Abs(self.X - other.X);
-            if (Pinned(self) && dist <= self.Range + 1.5 && LeapPast(self, other))
-                return true;
             double reach = 7 + self.Range;
             if (dist <= self.Range + 1.5 || dist > reach)
                 return false;

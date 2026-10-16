@@ -109,6 +109,7 @@ namespace BattleTv.Fight
         float _prevBruteAtk;
         float _lineT = -1f;
         float _dashT = -1f;
+        string _dashWho = "";
         RenderTexture _stageTex;
         float _wardPulse;
         bool _wardHold;
@@ -259,7 +260,10 @@ namespace BattleTv.Fight
                     else if (_brute.Callout == "Brute Ward")
                         _wardHold = true;
                     else if (_brute.Callout == "Close")
+                    {
                         _dashT = 0f;
+                        _dashWho = "Brute";
+                    }
                 }
                 if (_brute.Shield <= 0)
                     _wardHold = false;
@@ -832,8 +836,15 @@ namespace BattleTv.Fight
                 Play("brute_pound", 0.46f);
             else if (now == "Iron Grip")
                 Play("cast", 0.4f);
-            else if (now == "Close" && body.Name == "Brute")
-                Play("brute_sweep", 0.28f);
+            else if (now == "Close")
+            {
+                _dashT = 0f;
+                _dashWho = body.Name;
+                if (body.Name == "Brute")
+                    Play("brute_sweep", 0.28f);
+                else
+                    Play("cast", 0.32f);
+            }
         }
 
         string BlowSound(Blow blow)
@@ -1017,7 +1028,8 @@ namespace BattleTv.Fight
         {
             if (dashDust == null)
                 return;
-            bool up = _dashT >= 0f && _dashT < 0.4f && plate != null && bruteBody != null;
+            var dustBody = _dashWho == "Vale" ? valeBody : bruteBody;
+            bool up = _dashT >= 0f && _dashT < 0.4f && plate != null && dustBody != null;
             dashDust.enabled = up;
             if (!up)
                 return;
@@ -1031,10 +1043,13 @@ namespace BattleTv.Fight
             rect.anchorMin = rect.anchorMax = new Vector2(0.5f, 0.5f);
             rect.pivot = new Vector2(0.78f, 0.16f);
             rect.sizeDelta = new Vector2(span * aspect, span);
-            rect.anchoredPosition = bruteBody.anchoredPosition;
-            // The dust picture travels to the right. Brute's painting faces left
-            // when his scale is positive, so the trail sits behind that shoulder.
-            float face = bruteBody.localScale.x < 0f ? -1f : 1f;
+            rect.anchoredPosition = dustBody.anchoredPosition;
+            // The dust picture travels to the right. Brute faces left when his
+            // scale is positive, so that direction is behind his shoulder.
+            // Vale faces right on a positive scale, so her trail flips.
+            float face = dustBody.localScale.x < 0f ? -1f : 1f;
+            if (_dashWho == "Vale")
+                face = -face;
             rect.localScale = new Vector3(face, 1f, 1f);
             float fade = u < 0.12f ? u / 0.12f : Mathf.Clamp01((1f - u) / 0.35f);
             dashDust.color = new Color(1f, 1f, 1f, fade);
