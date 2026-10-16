@@ -86,15 +86,17 @@ namespace BattleTv.Menu.Tests
             Assert.AreEqual("intro", Object.FindAnyObjectByType<PageChrome>().Screen);
 
             var scenes = EditorBuildSettings.scenes;
-            Assert.AreEqual(4, scenes.Length);
+            Assert.AreEqual(5, scenes.Length);
             Assert.AreEqual("Assets/Menu/Menu.unity", scenes[0].path);
             Assert.AreEqual("Assets/Menu/GameMenu.unity", scenes[1].path);
             Assert.AreEqual("Assets/Menu/TeamSelect.unity", scenes[2].path);
             Assert.AreEqual("Assets/Fight/Duel.unity", scenes[3].path);
+            Assert.AreEqual("Assets/Fight/Arena.unity", scenes[4].path);
             Assert.IsTrue(scenes[0].enabled);
             Assert.IsTrue(scenes[1].enabled);
             Assert.IsTrue(scenes[2].enabled);
             Assert.IsTrue(scenes[3].enabled);
+            Assert.IsTrue(scenes[4].enabled);
         }
 
         [Test]
@@ -290,8 +292,11 @@ namespace BattleTv.Menu.Tests
             ShowPick.BeginDraft(2);
             Assert.IsTrue(ShowPick.Toggle("vale"));
             Assert.IsTrue(ShowPick.Toggle("brute"));
-            Assert.IsFalse(ShowPick.TryField(new System.Random(4), out block));
-            StringAssert.Contains("one body", block);
+            Assert.IsTrue(ShowPick.TryField(new System.Random(4), out block));
+            Assert.IsNull(block);
+            Assert.AreEqual(2, ShowPick.Foes.Count);
+            Assert.AreNotEqual("vale", ShowPick.Foes[0]);
+            Assert.AreNotEqual("brute", ShowPick.Foes[0]);
 
             Assert.IsTrue(ShowPick.BeginAutonomous(new System.Random(5)));
             Assert.IsTrue(ShowPick.Autonomous);
@@ -337,6 +342,46 @@ namespace BattleTv.Menu.Tests
             ShowPick.Focus("nope");
             Assert.AreEqual("vale", ShowPick.Inspect);
             Assert.AreEqual("champ", ShowPick.Filter);
+            ShowPick.StopShow();
+        }
+
+        [Test]
+        public void ArenaFieldUsesTheBook()
+        {
+            ShowPick.Clear();
+            ShowPick.BeginDraft(1);
+            Assert.IsFalse(ShowPick.Toggle("kael"));
+
+            ShowPick.Clear();
+            ShowPick.BeginDraft(2);
+            Assert.IsTrue(ShowPick.Toggle("vale"));
+            Assert.IsTrue(ShowPick.Toggle("kael"));
+            Assert.IsTrue(ShowPick.TryField(new System.Random(9), out var block));
+            Assert.IsNull(block);
+            Assert.AreEqual(2, ShowPick.Foes.Count);
+            Assert.IsFalse(ShowPick.PaintsValeAndBrute());
+
+            ArenaMatch.Begin(ShowPick.Yours, ShowPick.Foes, 3);
+            Assert.AreEqual(4, ArenaMatch.Bodies.Count);
+            double hp = 0;
+            for (var i = 0; i < ArenaMatch.Bodies.Count; i++)
+            {
+                hp += ArenaMatch.Bodies[i].Hp;
+                Assert.GreaterOrEqual(ArenaMatch.Bodies[i].X, ArenaMatch.Inset - 0.01);
+                Assert.LessOrEqual(ArenaMatch.Bodies[i].X, ArenaMatch.WorldW - ArenaMatch.Inset + 0.01);
+            }
+            for (var step = 0; step < 500; step++)
+                ArenaMatch.Step(0.05);
+            double later = 0;
+            for (var i = 0; i < ArenaMatch.Bodies.Count; i++)
+            {
+                later += ArenaMatch.Bodies[i].Hp;
+                Assert.GreaterOrEqual(ArenaMatch.Bodies[i].X, ArenaMatch.Inset - 0.01);
+                Assert.LessOrEqual(ArenaMatch.Bodies[i].X, ArenaMatch.WorldW - ArenaMatch.Inset + 0.01);
+                Assert.GreaterOrEqual(ArenaMatch.Bodies[i].Y, ArenaMatch.Inset - 0.01);
+                Assert.LessOrEqual(ArenaMatch.Bodies[i].Y, ArenaMatch.WorldH - ArenaMatch.Inset + 0.01);
+            }
+            Assert.Less(later, hp);
             ShowPick.StopShow();
         }
 

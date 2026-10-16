@@ -247,7 +247,8 @@ namespace BattleTv.Menu.EditorTools
                 new EditorBuildSettingsScene("Assets/Menu/Menu.unity", true),
                 new EditorBuildSettingsScene("Assets/Menu/GameMenu.unity", true),
                 new EditorBuildSettingsScene("Assets/Menu/TeamSelect.unity", true),
-                new EditorBuildSettingsScene(ScenePath, true)
+                new EditorBuildSettingsScene(ScenePath, true),
+                new EditorBuildSettingsScene("Assets/Fight/Arena.unity", true)
             };
             Debug.Log("[FightSceneSetup] Duel scene saved.");
         }

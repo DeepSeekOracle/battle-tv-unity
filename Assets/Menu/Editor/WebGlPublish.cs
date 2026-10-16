@@ -24,6 +24,7 @@ namespace BattleTv.Menu.EditorTools
                 GameMenuSetup.Build();
                 TeamSelectSetup.Build();
                 FightSceneSetup.Build();
+                ArenaSceneSetup.Build();
                 ApplyPlayerSettings();
                 var output = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "docs"));
                 if (Directory.Exists(output))
@@ -32,7 +33,7 @@ namespace BattleTv.Menu.EditorTools
 
                 var report = BuildPipeline.BuildPlayer(new BuildPlayerOptions
                 {
-                    scenes = new[] { "Assets/Menu/Menu.unity", "Assets/Menu/GameMenu.unity", "Assets/Menu/TeamSelect.unity", "Assets/Fight/Duel.unity" },
+                    scenes = new[] { "Assets/Menu/Menu.unity", "Assets/Menu/GameMenu.unity", "Assets/Menu/TeamSelect.unity", "Assets/Fight/Duel.unity", "Assets/Fight/Arena.unity" },
                     locationPathName = output,
                     target = BuildTarget.WebGL,
                     options = BuildOptions.None

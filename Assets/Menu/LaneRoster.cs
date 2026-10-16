@@ -164,6 +164,35 @@ namespace BattleTv.Menu
             return draw;
         }
 
+        public static string[] BlindBook(IList<string> yours, int count, Random rng)
+        {
+            var pool = new List<string>();
+            for (var i = 0; i < All.Length; i++)
+            {
+                var taken = false;
+                for (var y = 0; y < yours.Count; y++)
+                {
+                    if (yours[y] == All[i].Id)
+                        taken = true;
+                }
+                if (!taken)
+                    pool.Add(All[i].Id);
+            }
+            if (pool.Count < count || rng == null)
+                return null;
+            for (var i = pool.Count - 1; i > 0; i--)
+            {
+                var j = rng.Next(i + 1);
+                var swap = pool[i];
+                pool[i] = pool[j];
+                pool[j] = swap;
+            }
+            var draw = new string[count];
+            for (var i = 0; i < count; i++)
+                draw[i] = pool[i];
+            return draw;
+        }
+
         public static string MoveName(string id)
         {
             return MoveNames.TryGetValue(id, out var name) ? name : id;

@@ -42,7 +42,9 @@ namespace BattleTv.Menu
                 return true;
             }
             var kit = LaneRoster.ById(id);
-            if (kit.Id == null || !kit.Linked)
+            if (kit.Id == null)
+                return false;
+            if (Mode <= 1 && !kit.Linked)
                 return false;
             if (Yours.Count >= Mode)
                 return false;
@@ -99,9 +101,13 @@ namespace BattleTv.Menu
             for (var i = 0; i < Yours.Count; i++)
             {
                 var kit = LaneRoster.ById(Yours[i]);
-                if (kit.Id == null || !kit.Linked)
+                if (kit.Id == null)
+                    return (Yours[i] ?? "That kit") + " is not in the book.";
+                if (Mode <= 1 && !kit.Linked)
                     return (kit.Name ?? Yours[i]) + " is not in the lane yet.";
             }
+            if (Mode > 1)
+                return null;
             var linked = LaneRoster.LinkedCount;
             var need = Mode * 2;
             if (linked < need)
@@ -120,15 +126,17 @@ namespace BattleTv.Menu
                 return false;
             if (rng == null)
                 rng = new Random();
-            var foe = LaneRoster.Blind(Yours, Mode, rng);
+            var foe = Mode > 1
+                ? LaneRoster.BlindBook(Yours, Mode, rng)
+                : LaneRoster.Blind(Yours, Mode, rng);
             if (foe == null)
             {
-                block = "Not enough other linked kits for a blind side.";
+                block = "Not enough other kits for a blind side.";
                 return false;
             }
             for (var i = 0; i < foe.Length; i++)
                 Foes.Add(foe[i]);
-            if (!PaintsValeAndBrute())
+            if (Mode <= 1 && !PaintsValeAndBrute())
             {
                 Foes.Clear();
                 block = "The lane is still one painted body each. Vale and Brute are the bodies in the side view.";

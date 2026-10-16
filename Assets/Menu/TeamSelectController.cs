@@ -133,7 +133,7 @@ namespace BattleTv.Menu
                 Refresh();
                 return;
             }
-            SceneManager.LoadScene("Duel");
+            SceneManager.LoadScene(ShowPick.Mode <= 1 ? "Duel" : "Arena");
         }
 
         void Refresh()
@@ -149,7 +149,9 @@ namespace BattleTv.Menu
 
             _title.text = "Team select  " + ShowPick.Yours.Count + "/" + ShowPick.Mode;
             var block = ShowPick.BlockReason();
-            _need.text = block ?? "Blind draw. Both sides stay on their own.";
+            _need.text = block ?? (ShowPick.Mode <= 1
+                ? "Blind draw. Both sides stay on their own."
+                : "Blind draw onto the sand. A mark stands in until that body is painted.");
             _status.text = block == null
                 ? ShowPick.Label(ShowPick.Mode) + " · " + Names(ShowPick.Yours)
                 : "Lane not ready";
@@ -196,6 +198,7 @@ namespace BattleTv.Menu
         {
             var picked = ShowPick.Yours.Contains(kit.Id);
             var on = ShowPick.Inspect == kit.Id;
+            var soon = !kit.Linked && ShowPick.Mode <= 1;
             var row = Child(_list, kit.Id);
             var rect = row.GetComponent<RectTransform>();
             rect.sizeDelta = new Vector2(0f, 58f);
@@ -225,9 +228,9 @@ namespace BattleTv.Menu
             face.preserveAspect = still != null;
             face.raycastTarget = false;
             var label = Words(row.transform, "Name", new Vector2(0.18f, 0.08f), new Vector2(0.98f, 0.92f), 18, TextAnchor.MiddleLeft);
-            label.text = kit.Name + "\n<size=13>" + kit.Tag + (kit.Linked ? "" : "  ·  soon") + "</size>";
+            label.text = kit.Name + "\n<size=13>" + kit.Tag + (soon ? "  ·  soon" : "") + "</size>";
             label.supportRichText = true;
-            label.color = kit.Linked ? Paper : new Color(Paper.r, Paper.g, Paper.b, 0.55f);
+            label.color = soon ? new Color(Paper.r, Paper.g, Paper.b, 0.55f) : Paper;
             if (picked)
                 image.color = new Color(Gold.r, Gold.g, Gold.b, 0.28f);
         }
@@ -273,13 +276,14 @@ namespace BattleTv.Menu
 
             var picked = ShowPick.Yours.Contains(kit.Id);
             var full = !picked && ShowPick.Yours.Count >= ShowPick.Mode;
-            var add = Button(_dossier, picked ? "Remove from team" : !kit.Linked ? "Not in the lane yet" : full ? "Team is full" : "Add to team",
-                new Vector2(0.04f, 1f), new Vector2(0.52f, 1f), kit.Linked && (picked || !full));
+            var laneOnly = !kit.Linked && ShowPick.Mode <= 1;
+            var add = Button(_dossier, picked ? "Remove from team" : laneOnly ? "Not in the lane yet" : full ? "Team is full" : "Add to team",
+                new Vector2(0.04f, 1f), new Vector2(0.52f, 1f), !laneOnly && (picked || !full));
             var addRect = add.GetComponent<RectTransform>();
             addRect.pivot = new Vector2(0f, 1f);
             addRect.anchoredPosition = new Vector2(12f, -8f);
             addRect.sizeDelta = new Vector2(280f, 42f);
-            add.interactable = kit.Linked && (picked || !full);
+            add.interactable = !laneOnly && (picked || !full);
             var id = kit.Id;
             add.onClick.AddListener(() =>
             {
