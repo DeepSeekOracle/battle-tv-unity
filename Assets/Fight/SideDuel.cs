@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace BattleTv.Fight
 {
@@ -49,6 +50,18 @@ namespace BattleTv.Fight
         public bool Alive => Hp > 0;
     }
 
+    /// <summary>
+    /// A hit the lane can show. The numbers are unchanged. This only records
+    /// what already happened so the view can put a flash and a figure on it.
+    /// </summary>
+    public struct Blow
+    {
+        public string Text;
+        public string Tone;
+        public string Target;
+        public double X;
+    }
+
     public static class SideDuel
     {
         public const double Lane = 18;
@@ -57,6 +70,25 @@ namespace BattleTv.Fight
         public const double ValeCharge = 1.15;
         public static double DoorX;
         public static double DoorT;
+        static readonly List<Blow> Pending = new List<Blow>(8);
+
+        public static void TakeBlows(List<Blow> into)
+        {
+            if (into == null)
+                return;
+            for (int i = 0; i < Pending.Count; i++)
+                into.Add(Pending[i]);
+            Pending.Clear();
+        }
+
+        static void Note(Body tgt, string text, string tone)
+        {
+            if (tgt == null)
+                return;
+            if (Pending.Count > 16)
+                Pending.RemoveAt(0);
+            Pending.Add(new Blow { Text = text, Tone = tone, Target = tgt.Name, X = tgt.X });
+        }
         const double ReachPad = 0.5;
         const double CoverCost = 12.1;
         const double BulwarkCost = 18.7;
@@ -158,6 +190,7 @@ namespace BattleTv.Fight
                 if (dmg < 0.5)
                 {
                     tgt.Callout = "block";
+                    Note(tgt, "block", "block");
                     return 0;
                 }
             }
@@ -170,6 +203,7 @@ namespace BattleTv.Fight
                 if (dmg < 0.5)
                 {
                     tgt.Callout = "ward";
+                    Note(tgt, "ward", "ward");
                     return 0;
                 }
             }
@@ -181,6 +215,10 @@ namespace BattleTv.Fight
             if (tgt.Hp < 0)
                 tgt.Hp = 0;
             tgt.Swing = 0.12;
+            bool killed = tgt.Hp <= 0;
+            Note(tgt, ((int)dmg) + (crit ? "!" : ""), crit ? "crit" : "hit");
+            if (killed)
+                Note(tgt, "DOWN", "down");
 
             if (melee && !reflect && src != null)
             {

@@ -36,6 +36,7 @@ namespace BattleTv.Menu.EditorTools
                 throw new FileNotFoundException("Ground ring sprite did not import.", "Assets/Art/Duel/vale-door/glow-white.png");
             var ringBackMat = RingMat("Assets/Fight/GroundRingBack.mat", 1f);
             var ringFrontMat = RingMat("Assets/Fight/GroundRingFront.mat", -1f);
+            var sparkMat = SparkMat("Assets/Fight/HitSpark.mat");
 
             var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
             RenderSettings.skybox = null;
@@ -130,8 +131,12 @@ namespace BattleTv.Menu.EditorTools
             ringFront.material = ringFrontMat;
             ringBack.transform.SetSiblingIndex(0);
             ringFront.transform.SetAsLastSibling();
+            var spark = Mark(plate, "HitSpark", glowSprite);
+            spark.material = sparkMat;
+            spark.transform.SetAsLastSibling();
             so.FindProperty("valeRingBack").objectReferenceValue = ringBack;
             so.FindProperty("valeRing").objectReferenceValue = ringFront;
+            so.FindProperty("hitSpark").objectReferenceValue = spark;
             so.FindProperty("valeOpen").objectReferenceValue = openHand;
             so.ApplyModifiedPropertiesWithoutUndo();
             UnityEventTools.AddPersistentListener(menu.onClick, view.BackToMenu);
@@ -177,6 +182,24 @@ namespace BattleTv.Menu.EditorTools
             settings.spriteMeshType = SpriteMeshType.FullRect;
             importer.SetTextureSettings(settings);
             importer.SaveAndReimport();
+        }
+
+        static Material SparkMat(string path)
+        {
+            var shader = AssetDatabase.LoadAssetAtPath<Shader>("Assets/Fight/HitSpark.shader");
+            if (shader == null)
+                throw new FileNotFoundException("Hit spark shader is missing.", "Assets/Fight/HitSpark.shader");
+            var mat = AssetDatabase.LoadAssetAtPath<Material>(path);
+            if (mat == null)
+            {
+                mat = new Material(shader) { name = Path.GetFileNameWithoutExtension(path) };
+                AssetDatabase.CreateAsset(mat, path);
+            }
+            else
+                mat.shader = shader;
+            EditorUtility.SetDirty(mat);
+            AssetDatabase.SaveAssets();
+            return mat;
         }
 
         static Material RingMat(string path, float half)
