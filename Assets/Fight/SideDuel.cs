@@ -101,7 +101,7 @@ namespace BattleTv.Fight
         public static Body Vale()
         {
             var body = Make("Vale", "Door Flesh · Bumper Thorn · Fair Plate",
-                895, 26, 0.72, 3.3, 8, 1.6, 0.15, 0.82, 0, 0, 3, 0.22, 0.30, 2.4);
+                895, 26, 0.72, 3.3, 8, 1.6, 0.15, 0.82, 0, 0, 3, 0.22, 0.30, 15.6);
             body.Wall = true;
             body.ManaMax = body.Mana = 60;
             body.ManaRegen = 4;
@@ -111,7 +111,7 @@ namespace BattleTv.Fight
         public static Body Brute()
         {
             var body = Make("Brute", "Fair Plate · Deeper Well · Bumper Thorn",
-                760, 34, 0.66, 2.0, 5, 1.5, 0.08, 0.92, 0.40, -0.12, 3, 0, 0.30, 15.6);
+                760, 34, 0.66, 2.0, 5, 1.5, 0.08, 0.92, 0.40, -0.12, 3, 0, 0.30, 2.4);
             body.Pound = true;
             body.Ward = true;
             body.ManaMax = body.Mana = 40;

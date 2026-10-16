@@ -236,23 +236,44 @@ namespace BattleTv.Fight
             if (image != null)
                 image.color = Color.Lerp(Color.white, new Color(1f, 0.94f, 0.82f), Mathf.Clamp01(flash));
             float give = recoil * 0.11f;
-            rect.localScale = new Vector3(1f + give, 1f - give, 1f);
+            // Vale's paintings face right, with the kite on her left forearm.
+            // Brute's painting faces left. A negative scale turns the same frames
+            // toward the other fighter. The mirror keeps the kite on that painted arm.
+            float face = 1f;
+            if (body.Name == "Vale" && _brute != null)
+                face = body.X <= _brute.X ? 1f : -1f;
+            else if (body.Name == "Brute" && _vale != null)
+                face = body.X >= _vale.X ? 1f : -1f;
+            rect.localScale = new Vector3(face * (1f + give), 1f - give, 1f);
+        }
+
+        static bool ValeOnLeft(RectTransform vale, RectTransform brute)
+        {
+            return vale.anchoredPosition.x <= brute.anchoredPosition.x;
+        }
+
+        static float Front(RectTransform rect, float home)
+        {
+            float reach = (1f - rect.pivot.x) * SpanX(rect);
+            float face = (rect.localScale.x < 0f ? -1f : 1f) * home;
+            return rect.anchoredPosition.x + face * reach;
         }
 
         void KeepShouldersApart()
         {
             if (valeBody == null || bruteBody == null)
                 return;
-            float valeRight = valeBody.anchoredPosition.x + (1f - valeBody.pivot.x) * SpanX(valeBody);
-            float bruteLeft = bruteBody.anchoredPosition.x - bruteBody.pivot.x * SpanX(bruteBody);
-            float air = bruteLeft - valeRight;
-            // Negative air is the fist crossing his chest. Stop the bodies before the torsos occupy the same space.
+            bool valeOnLeft = ValeOnLeft(valeBody, bruteBody);
+            float valeEdge = Front(valeBody, 1f);
+            float bruteEdge = Front(bruteBody, -1f);
+            float air = valeOnLeft ? bruteEdge - valeEdge : valeEdge - bruteEdge;
+            // Negative air is the fist crossing the other chest. Stop the bodies before the torsos occupy the same space.
             const float bury = -18f;
             if (air >= bury)
                 return;
             float push = (bury - air) * 0.5f;
-            valeBody.anchoredPosition += new Vector2(-push, 0f);
-            bruteBody.anchoredPosition += new Vector2(push, 0f);
+            valeBody.anchoredPosition += new Vector2(valeOnLeft ? -push : push, 0f);
+            bruteBody.anchoredPosition += new Vector2(valeOnLeft ? push : -push, 0f);
         }
 
         void ApplyWeight()
@@ -269,16 +290,17 @@ namespace BattleTv.Fight
                 return;
             if (_vale.Callout != "Punch" && _vale.Callout != "Shield Bash")
                 return;
-            float valeRight = valeBody.anchoredPosition.x + (1f - valeBody.pivot.x) * SpanX(valeBody);
-            float bruteLeft = bruteBody.anchoredPosition.x - bruteBody.pivot.x * SpanX(bruteBody);
-            float air = bruteLeft - valeRight;
+            bool valeOnLeft = ValeOnLeft(valeBody, bruteBody);
+            float valeEdge = Front(valeBody, 1f);
+            float bruteEdge = Front(bruteBody, -1f);
+            float air = valeOnLeft ? bruteEdge - valeEdge : valeEdge - bruteEdge;
             // The live range connects before the painted fist reaches his chest.
             // Pull only the punch pose, and only until the fist crosses his front.
             const float want = -14f;
             if (air <= want)
                 return;
             float pull = Mathf.Min(air - want, SpanX(valeBody) * 0.85f);
-            valeBody.anchoredPosition += new Vector2(pull, 0f);
+            valeBody.anchoredPosition += new Vector2(valeOnLeft ? pull : -pull, 0f);
         }
 
         static float SpanX(RectTransform rect)
