@@ -284,9 +284,9 @@ namespace BattleTv.Fight
                     int frame = Mathf.Clamp(Mathf.FloorToInt(_bruteClipT / _bruteClipDur * _bruteClip.Length), 0, _bruteClip.Length - 1);
                     if (_brute.Callout == "Heavy Sweep")
                     {
-                        // Hold the club up, then hold the bonk. Equal slices were too fast to read.
+                        // Overhead, then the club coming over, then the bonk. Equal slices were too fast to read.
                         float u = _bruteClipDur > 0.01f ? _bruteClipT / _bruteClipDur : 1f;
-                        frame = u < 0.52f ? 0 : _bruteClip.Length - 1;
+                        frame = u < 0.34f ? 0 : u < 0.62f ? 1 : _bruteClip.Length - 1;
                     }
                     if (_sparkLife > 0.01f && _sparkOn == "Vale" && (_brute.Callout == "Heavy Sweep" || _brute.Callout == "Brute Pound"))
                         frame = _bruteClip.Length - 1;
@@ -310,6 +310,11 @@ namespace BattleTv.Fight
                 pivotX = image.sprite.pivot.x / image.sprite.rect.width;
             rect.pivot = new Vector2(pivotX, 0f);
             float spriteH = height * Band * (body.Name == "Brute" ? 0.56f : 0.5f);
+            // The smash plate is taller than 702 so the painted club fits. The body
+            // on that plate is the same 677px as the other Brute frames, so grow the
+            // rect with the plate and the body stays the size he already is.
+            if (body.Name == "Brute" && image != null && image.sprite != null && image.sprite.rect.height > 720f)
+                spriteH *= image.sprite.rect.height / 702f;
             float aspect = 0.7f;
             if (image != null && image.sprite != null)
                 aspect = image.sprite.rect.width / image.sprite.rect.height;
