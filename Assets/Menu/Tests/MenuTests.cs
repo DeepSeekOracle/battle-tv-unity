@@ -431,6 +431,26 @@ namespace BattleTv.Menu.Tests
             Assert.AreEqual("Close", brute.Callout);
         }
 
+        [Test]
+        public void FighterFolderKeepsLyraApart()
+        {
+            var path = System.IO.Path.Combine(UnityEngine.Application.streamingAssetsPath, "fighters", "lyra", "entity.json");
+            Assert.IsTrue(System.IO.File.Exists(path), path);
+            var json = System.IO.File.ReadAllText(path);
+            Assert.IsTrue(json.Contains("\"lyra\""));
+            Assert.IsTrue(json.Contains("0.72"));
+            Assert.IsTrue(json.Contains("Spiral Note"));
+            Assert.IsTrue(json.Contains("Weave Bloom"));
+            Assert.IsFalse(json.Contains("Spiral Bloom"));
+            var note = System.IO.Path.Combine(UnityEngine.Application.streamingAssetsPath, "fighters", "lyra", "lyra-note-f01.png");
+            Assert.IsTrue(System.IO.File.Exists(note), note);
+            var father = System.IO.File.ReadAllText(System.IO.Path.Combine(UnityEngine.Application.streamingAssetsPath, "fighters", "lightfather", "entity.json"));
+            Assert.IsTrue(father.Contains("\u03949 Seal"));
+            var brute = System.IO.File.ReadAllText(System.IO.Path.Combine(UnityEngine.Application.streamingAssetsPath, "fighters", "brute", "entity.json"));
+            Assert.IsTrue(brute.Contains("0.6164"));
+            Assert.IsTrue(brute.Contains("brute-drag.png"));
+        }
+
         static void AssertFighters(MenuController.FitResult fit)
         {
             Assert.IsTrue(MenuController.FighterThirdStaysVisible(fit, MenuController.LeftFighterThird));

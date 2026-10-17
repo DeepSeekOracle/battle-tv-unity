@@ -48,8 +48,6 @@ namespace BattleTv.Menu.EditorTools
             var view = canvasObject.AddComponent<ArenaView>();
             var so = new SerializedObject(view);
             so.FindProperty("plate").objectReferenceValue = plate;
-            so.FindProperty("valeStill").objectReferenceValue = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Duel/vale.png");
-            so.FindProperty("bruteStill").objectReferenceValue = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Duel/brute.png");
             so.FindProperty("mark").objectReferenceValue = AssetDatabase.LoadAssetAtPath<Sprite>(MarkPath);
             so.FindProperty("barFrame").objectReferenceValue = HudSkin("bar-frame.png");
             so.FindProperty("pipFrame").objectReferenceValue = HudSkin("pip-frame.png");
@@ -59,105 +57,6 @@ namespace BattleTv.Menu.EditorTools
             so.FindProperty("fillStam").objectReferenceValue = HudSkin("fill-stam.png");
             so.FindProperty("fillBlock").objectReferenceValue = HudSkin("fill-block.png");
             so.FindProperty("fillDash").objectReferenceValue = HudSkin("fill-dash.png");
-            so.FindProperty("bruteRest").objectReferenceValue = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Duel/brute-drag.png");
-            so.FindProperty("bruteGrip").objectReferenceValue = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Duel/brute-grip.png");
-            AssignClip(so, "valeBash", Frames("vale-bash", 6));
-            AssignClip(so, "valePunch", Frames("vale-punch", 6));
-            AssignClip(so, "valeToss", Frames("vale-toss", 8));
-            AssignClip(so, "valeLine", Frames("vale-line", 5));
-            AssignClip(so, "valePlant", Frames("vale-plant", 4));
-            AssignClip(so, "valeDeath", Frames("vale-death", 4));
-            AssignClip(so, "valeWin", Frames("vale-win", 2));
-            AssignClip(so, "bruteSweep", Frames("brute-sweep", 8));
-            AssignClip(so, "brutePound", Frames("brute-pound", 2));
-            AssignClip(so, "bruteWard", Frames("brute-ward", 2));
-            AssignClip(so, "bruteClose", Frames("brute-close", 1));
-            AssignClip(so, "bruteDeath", Frames("brute-death", 3));
-            AssignClip(so, "bruteWin", Frames("brute-win", 2));
-            var father = "Assets/Art/Duel/lightfather.png";
-            Configure(father, true, 2048, true);
-            so.FindProperty("lightfatherStill").objectReferenceValue = LoadSprite(father);
-            AssignClip(so, "lfBolt", Cutout("lf-bolt", 4));
-            AssignClip(so, "lfSeal", Cutout("lf-seal", 3));
-            AssignClip(so, "lfProvenance", Cutout("lf-provenance", 3));
-            AssignClip(so, "lfCover", Cutout("lf-cover", 4));
-            AssignClip(so, "lfStandard", Cutout("lf-standard", 4));
-            AssignClip(so, "lfSlip", Cutout("lf-slip", 2));
-            AssignClip(so, "lfDeath", Cutout("lf-death", 1));
-            AssignClip(so, "lfWin", Cutout("lf-win", 1));
-            AssignClip(so, "valeWalk", Cutout("vale-walk", 8));
-            AssignClip(so, "bruteWalk", Cutout("brute-walk", 8));
-            AssignClip(so, "lfWalk", Cutout("lf-walk", 8));
-            var kael = "Assets/Art/Duel/kael.png";
-            Configure(kael, true, 2048, true);
-            so.FindProperty("kaelStill").objectReferenceValue = LoadSprite(kael);
-            AssignClip(so, "kaelShard", Cutout("kael-shard", 6));
-            AssignClip(so, "kaelRend", Cutout("kael-rend", 3));
-            AssignClip(so, "kaelWall", Cutout("kael-wall", 2));
-            AssignClip(so, "kaelCharge", Cutout("kael-charge", 2));
-            AssignClip(so, "kaelClose", Cutout("kael-close", 2));
-            AssignClip(so, "kaelDeath", Cutout("kael-death", 1));
-            AssignClip(so, "kaelWin", Cutout("kael-win", 1));
-            AssignClip(so, "kaelWalk", Cutout("kael-walk", 8));
-            var orin = "Assets/Art/Duel/orin.png";
-            Configure(orin, true, 2048, true);
-            so.FindProperty("orinStill").objectReferenceValue = LoadSprite(orin);
-            AssignClip(so, "orinShard", Cutout("orin-shard", 3));
-            AssignClip(so, "orinUnwrite", Cutout("orin-unwrite", 2));
-            AssignClip(so, "orinFlask", Cutout("orin-flask", 2));
-            AssignClip(so, "orinDrink", Cutout("orin-drink", 2));
-            AssignClip(so, "orinSlip", Cutout("orin-slip", 2));
-            AssignClip(so, "orinDeath", Cutout("orin-death", 1));
-            AssignClip(so, "orinWin", Cutout("orin-win", 1));
-            AssignClip(so, "orinWalk", Cutout("orin-walk", 8));
-            var nia = "Assets/Art/Duel/nia.png";
-            Configure(nia, true, 2048, true);
-            var niaIdle = LoadSprite(nia);
-            so.FindProperty("niaStill").objectReferenceValue = niaIdle;
-            // Idle frames reuse the still. A second copy of the same plate was pushing the WebGL data over GitHub's 100 MB limit.
-            var niaArrow = Cutout("nia-arrow", 3);
-            niaArrow[0] = niaIdle;
-            niaArrow[2] = niaIdle;
-            AssignClip(so, "niaArrow", niaArrow);
-            var niaPin = Cutout("nia-pin", 2);
-            niaPin[0] = niaIdle;
-            AssignClip(so, "niaPin", niaPin);
-            var niaDash = Cutout("nia-dash", 2);
-            niaDash[1] = niaIdle;
-            AssignClip(so, "niaDash", niaDash);
-            var niaRain = Cutout("nia-rain", 2);
-            niaRain[0] = niaIdle;
-            AssignClip(so, "niaRain", niaRain);
-            var niaSlip = Cutout("nia-slip", 2);
-            niaSlip[1] = niaIdle;
-            AssignClip(so, "niaSlip", niaSlip);
-            AssignClip(so, "niaDeath", Cutout("nia-death", 1));
-            AssignClip(so, "niaWin", Cutout("nia-win", 1));
-            AssignClip(so, "niaWalk", Cutout("nia-walk", 8));
-            var lyra = "Assets/Art/Duel/lyra.png";
-            Configure(lyra, true, 2048, true);
-            var lyraIdle = LoadSprite(lyra);
-            so.FindProperty("lyraStill").objectReferenceValue = lyraIdle;
-            // Idle frames reuse the still so the WebGL data file does not store the same plate again.
-            var lyraNote = Cutout("lyra-note", 3);
-            lyraNote[0] = lyraIdle;
-            lyraNote[2] = lyraIdle;
-            AssignClip(so, "lyraNote", lyraNote);
-            var lyraHymn = Cutout("lyra-hymn", 2);
-            lyraHymn[0] = lyraIdle;
-            AssignClip(so, "lyraHymn", lyraHymn);
-            var lyraChorus = Cutout("lyra-chorus", 2);
-            lyraChorus[0] = lyraIdle;
-            AssignClip(so, "lyraChorus", lyraChorus);
-            var lyraBloom = Cutout("lyra-bloom", 2);
-            lyraBloom[0] = lyraIdle;
-            AssignClip(so, "lyraBloom", lyraBloom);
-            var lyraSlip = Cutout("lyra-slip", 2);
-            lyraSlip[1] = lyraIdle;
-            AssignClip(so, "lyraSlip", lyraSlip);
-            AssignClip(so, "lyraDeath", Cutout("lyra-death", 1));
-            AssignClip(so, "lyraWin", Cutout("lyra-win", 1));
-            AssignClip(so, "lyraWalk", Cutout("lyra-walk", 8));
             var glow = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Duel/vale-door/glow-white.png");
             if (glow == null)
                 throw new FileNotFoundException("Sigil plate did not import.", "Assets/Art/Duel/vale-door/glow-white.png");
@@ -305,21 +204,6 @@ namespace BattleTv.Menu.EditorTools
             importer.textureCompression = alpha ? TextureImporterCompression.Uncompressed : TextureImporterCompression.CompressedHQ;
             importer.maxTextureSize = max;
             importer.filterMode = FilterMode.Bilinear;
-            // Sand bodies draw at about 170px. The source plates stay full size.
-            // The WebGL player caps those plates at 512 so the data file stays under GitHub's 100 MiB limit.
-            // Vale and Brute keep their existing import. Their lane sprites are taller than this cap.
-            var sandPlate = path.IndexOf("vale", System.StringComparison.OrdinalIgnoreCase) < 0
-                && path.IndexOf("brute", System.StringComparison.OrdinalIgnoreCase) < 0;
-            if (alpha && max >= 2048 && sandPlate)
-            {
-                var web = importer.GetPlatformTextureSettings("WebGL");
-                web.overridden = true;
-                web.maxTextureSize = 512;
-                web.textureCompression = TextureImporterCompression.Uncompressed;
-                web.format = TextureImporterFormat.RGBA32;
-                web.crunchedCompression = false;
-                importer.SetPlatformTextureSettings(web);
-            }
             var settings = new TextureImporterSettings();
             importer.ReadTextureSettings(settings);
             settings.spriteMeshType = SpriteMeshType.FullRect;

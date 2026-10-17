@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -11,14 +12,6 @@ namespace BattleTv.Menu
         static readonly Color Ink = new Color(0x1a / 255f, 0x12 / 255f, 0x06 / 255f, 1f);
         static readonly Color Paper = new Color(0xf6 / 255f, 0xe7 / 255f, 0xc1 / 255f, 1f);
         static readonly Color Panel = new Color(0.04f, 0.03f, 0.02f, 0.82f);
-
-        [SerializeField] Sprite valeStill;
-        [SerializeField] Sprite bruteStill;
-        [SerializeField] Sprite lightfatherStill;
-        [SerializeField] Sprite kaelStill;
-        [SerializeField] Sprite orinStill;
-        [SerializeField] Sprite niaStill;
-        [SerializeField] Sprite lyraStill;
 
         Font _font;
         RectTransform _list;
@@ -232,6 +225,8 @@ namespace BattleTv.Menu
             swatchRect.offsetMax = Vector2.zero;
             var face = swatch.AddComponent<Image>();
             var still = StillFor(kit.Id);
+            if (!FighterBodies.Settled(kit.Id))
+                StartCoroutine(WarmFace(kit.Id));
             face.sprite = still;
             face.color = still != null ? Color.white : Hex(kit.Color);
             face.preserveAspect = still != null;
@@ -350,23 +345,17 @@ namespace BattleTv.Menu
             });
         }
 
-        Sprite StillFor(string id)
+        static Sprite StillFor(string id)
         {
-            if (id == "vale")
-                return valeStill;
-            if (id == "brute")
-                return bruteStill;
-            if (id == "lightfather")
-                return lightfatherStill;
-            if (id == "kael")
-                return kaelStill;
-            if (id == "orin")
-                return orinStill;
-            if (id == "nia")
-                return niaStill;
-            if (id == "lyra")
-                return lyraStill;
-            return null;
+            var body = FighterBodies.Get(id);
+            return body != null ? body.Idle : null;
+        }
+
+        IEnumerator WarmFace(string id)
+        {
+            yield return FighterBodies.LoadIdle(id);
+            if (LaneRoster.ById(ShowPick.Inspect).Id != null)
+                Refresh();
         }
 
         static void PaintFilter(string label, bool on)

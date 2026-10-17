@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using BattleTv.Menu;
 using UnityEngine;
@@ -7,8 +8,8 @@ using UnityEngine.UI;
 namespace BattleTv.Fight
 {
     /// <summary>
-    /// Overhead sand. The plate is the night colosseum. Vale and Brute use the
-    /// painted bodies. Every other kit is a mark until that character is built.
+    /// Overhead sand. The plate is the night colosseum. A painted body is loaded
+    /// from that fighter's folder. Every other kit is a mark until that folder exists.
     /// </summary>
     public sealed class ArenaView : MonoBehaviour
     {
@@ -24,8 +25,6 @@ namespace BattleTv.Fight
         static readonly Color Paper = new Color(0xf6 / 255f, 0xe7 / 255f, 0xc1 / 255f, 1f);
 
         [SerializeField] RectTransform plate;
-        [SerializeField] Sprite valeStill;
-        [SerializeField] Sprite bruteStill;
         [SerializeField] Sprite mark;
         [SerializeField] Sprite barFrame;
         [SerializeField] Sprite pipFrame;
@@ -35,69 +34,6 @@ namespace BattleTv.Fight
         [SerializeField] Sprite fillStam;
         [SerializeField] Sprite fillBlock;
         [SerializeField] Sprite fillDash;
-        [SerializeField] Sprite bruteRest;
-        [SerializeField] Sprite bruteGrip;
-        [SerializeField] Sprite[] valeBash;
-        [SerializeField] Sprite[] valePunch;
-        [SerializeField] Sprite[] valeToss;
-        [SerializeField] Sprite[] valeLine;
-        [SerializeField] Sprite[] valePlant;
-        [SerializeField] Sprite[] valeDeath;
-        [SerializeField] Sprite[] valeWin;
-        [SerializeField] Sprite[] bruteSweep;
-        [SerializeField] Sprite[] brutePound;
-        [SerializeField] Sprite[] bruteWard;
-        [SerializeField] Sprite[] bruteClose;
-        [SerializeField] Sprite[] bruteDeath;
-        [SerializeField] Sprite[] bruteWin;
-        [SerializeField] Sprite lightfatherStill;
-        [SerializeField] Sprite[] lfBolt;
-        [SerializeField] Sprite[] lfSeal;
-        [SerializeField] Sprite[] lfProvenance;
-        [SerializeField] Sprite[] lfCover;
-        [SerializeField] Sprite[] lfStandard;
-        [SerializeField] Sprite[] lfSlip;
-        [SerializeField] Sprite[] lfDeath;
-        [SerializeField] Sprite[] lfWin;
-        [SerializeField] Sprite[] valeWalk;
-        [SerializeField] Sprite[] bruteWalk;
-        [SerializeField] Sprite[] lfWalk;
-        [SerializeField] Sprite kaelStill;
-        [SerializeField] Sprite[] kaelShard;
-        [SerializeField] Sprite[] kaelRend;
-        [SerializeField] Sprite[] kaelWall;
-        [SerializeField] Sprite[] kaelCharge;
-        [SerializeField] Sprite[] kaelClose;
-        [SerializeField] Sprite[] kaelDeath;
-        [SerializeField] Sprite[] kaelWin;
-        [SerializeField] Sprite[] kaelWalk;
-        [SerializeField] Sprite orinStill;
-        [SerializeField] Sprite[] orinShard;
-        [SerializeField] Sprite[] orinUnwrite;
-        [SerializeField] Sprite[] orinFlask;
-        [SerializeField] Sprite[] orinDrink;
-        [SerializeField] Sprite[] orinSlip;
-        [SerializeField] Sprite[] orinDeath;
-        [SerializeField] Sprite[] orinWin;
-        [SerializeField] Sprite[] orinWalk;
-        [SerializeField] Sprite niaStill;
-        [SerializeField] Sprite[] niaArrow;
-        [SerializeField] Sprite[] niaPin;
-        [SerializeField] Sprite[] niaDash;
-        [SerializeField] Sprite[] niaRain;
-        [SerializeField] Sprite[] niaSlip;
-        [SerializeField] Sprite[] niaDeath;
-        [SerializeField] Sprite[] niaWin;
-        [SerializeField] Sprite[] niaWalk;
-        [SerializeField] Sprite lyraStill;
-        [SerializeField] Sprite[] lyraNote;
-        [SerializeField] Sprite[] lyraHymn;
-        [SerializeField] Sprite[] lyraChorus;
-        [SerializeField] Sprite[] lyraBloom;
-        [SerializeField] Sprite[] lyraSlip;
-        [SerializeField] Sprite[] lyraDeath;
-        [SerializeField] Sprite[] lyraWin;
-        [SerializeField] Sprite[] lyraWalk;
         [SerializeField] Sprite sigilGlow;
         [SerializeField] Material sigilRingBack;
         [SerializeField] Material sigilRingFront;
@@ -119,6 +55,7 @@ namespace BattleTv.Fight
         Text _boardTitle;
         Text _boardDetail;
         bool _boardUp;
+        bool _ready;
         int _appliedW = -1;
         int _appliedH = -1;
         AudioSource _voice;
@@ -138,6 +75,7 @@ namespace BattleTv.Fight
             public float ClipT = -1f;
             public float ClipDur = 0.4f;
             public float Pivot = 0.5f;
+            public float Pace;
             public bool HoldClip;
             public string Pose = "";
             public double SeenHp = -1;
@@ -167,7 +105,7 @@ namespace BattleTv.Fight
             public Color Color;
         }
 
-        void Start()
+        IEnumerator Start()
         {
             _font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             if (IntroMusic.Current != null)
@@ -175,19 +113,32 @@ namespace BattleTv.Fight
             _voice = gameObject.AddComponent<AudioSource>();
             _voice.playOnAwake = false;
             _voice.spatialBlend = 0f;
+            var yours = new[] { "vale", "kael" };
+            var foes = new[] { "brute", "gate" };
+            var seed = 1;
             if (ShowPick.Mode > 1 && ShowPick.Yours.Count > 0 && ShowPick.Foes.Count == ShowPick.Yours.Count)
-                ArenaMatch.Begin(ShowPick.Yours, ShowPick.Foes, UnityEngine.Random.Range(1, 9999));
-            else
-                ArenaMatch.Begin(new[] { "vale", "kael" }, new[] { "brute", "gate" }, 1);
+            {
+                yours = ShowPick.Yours.ToArray();
+                foes = ShowPick.Foes.ToArray();
+                seed = UnityEngine.Random.Range(1, 9999);
+            }
+            var ids = new List<string>(yours.Length + foes.Length);
+            ids.AddRange(yours);
+            ids.AddRange(foes);
+            yield return FighterBodies.Load(ids);
+            ArenaMatch.Begin(yours, foes, seed);
             BuildChrome();
             Spawn();
             Play("fight", 0.45f);
+            _ready = true;
         }
 
         void Update()
         {
             var dt = Mathf.Min(Time.unscaledDeltaTime, 0.05f);
             Fit();
+            if (!_ready)
+                return;
             if (!_boardUp)
             {
                 var before = AliveCount();
@@ -250,10 +201,11 @@ namespace BattleTv.Fight
                 actor.Rect.sizeDelta = new Vector2(spriteH * aspect, spriteH);
                 actor.Rect.anchoredPosition = point;
                 var foe = NearestX(body);
+                var paintedBody = FighterBodies.Get(body.Id);
                 var face = 1f;
-                if (body.Id == "brute")
+                if (paintedBody != null && paintedBody.FlipWithFoe)
                     face = foe >= body.X ? -1f : 1f;
-                else if (body.Id == "vale" || body.Id == "lightfather" || body.Id == "kael" || body.Id == "orin" || body.Id == "nia" || body.Id == "lyra" || Still(body.Id) == null)
+                else
                     face = foe >= body.X ? 1f : -1f;
                 if (body.Alive)
                     actor.Rect.localScale = new Vector3(face, 1f, 1f);
@@ -273,7 +225,7 @@ namespace BattleTv.Fight
                     ArmEnd(actor, body, true);
                 actor.Heard = body.Swing;
                 ShowFrame(actor, body);
-                var pivot = (body.Id == "vale" || body.Id == "lightfather" || body.Id == "kael" || body.Id == "orin" || body.Id == "nia" || body.Id == "lyra") && actor.ClipT >= 0f
+                var pivot = paintedBody != null && paintedBody.ClipPivot && actor.ClipT >= 0f
                     ? actor.Pivot
                     : PivotX(body.Id, actor.Image);
                 actor.Rect.pivot = new Vector2(pivot, 0f);
@@ -861,23 +813,10 @@ namespace BattleTv.Fight
             return best;
         }
 
-        Sprite Still(string id)
+        static Sprite Still(string id)
         {
-            if (id == "vale")
-                return valeStill;
-            if (id == "brute")
-                return bruteRest != null ? bruteRest : bruteStill;
-            if (id == "lightfather")
-                return lightfatherStill;
-            if (id == "kael")
-                return kaelStill;
-            if (id == "orin")
-                return orinStill;
-            if (id == "nia")
-                return niaStill;
-            if (id == "lyra")
-                return lyraStill;
-            return null;
+            var body = FighterBodies.Get(id);
+            return body != null ? body.Idle : null;
         }
 
         void EnsureActors()
@@ -956,124 +895,25 @@ namespace BattleTv.Fight
 
         void Arm(Actor actor, ArenaBody body)
         {
-            var call = body.Callout ?? "";
-            if (body.Id == "vale")
-            {
-                if (call == "Shield Bash" || call == "Shield Hook")
-                    ArmClip(actor, valeBash, 0.4f, 0.39f, call);
-                else if (call == "Cleave" || call == "Punch")
-                    ArmClip(actor, valePunch, 0.34f, 0.37f, call);
-                else if (call == "Cover")
-                    ArmClip(actor, valeToss, 0.5f, 0.3f, call);
-                else if (call == "Bulwark")
-                    ArmClip(actor, valeLine, 0.5f, 0.54f, call);
-                else if (call == "Shield Wall")
-                    ArmClip(actor, valePlant, 0.4f, 0.56f, call);
-            }
-            else if (body.Id == "brute")
-            {
-                if (call == "Heavy Sweep")
-                    ArmClip(actor, bruteSweep, 1.42f, 0f, call);
-                else if (call == "Ground Pound")
-                    ArmClip(actor, brutePound, 0.7f, 0f, call);
-                else if (call == "Ward Field")
-                    ArmClip(actor, bruteWard, 0.55f, 0f, call);
-                else if (call == "Close" || call == "Slip")
-                    ArmClip(actor, bruteClose, 0.35f, 0f, call);
-                else if (call == "Iron Grip")
-                    ArmClip(actor, bruteGrip == null ? null : new[] { bruteGrip }, 0.4f, 0f, call);
-            }
-            else if (body.Id == "lightfather")
-            {
-                if (call == "Seal Bolt")
-                    ArmClip(actor, lfBolt, 0.42f, 0.5f, call);
-                else if (call == "Δ9 Seal")
-                    ArmClip(actor, lfSeal, 0.70f, 0.5f, call);
-                else if (call == "Provenance")
-                    ArmClip(actor, lfProvenance, 0.80f, 0.5f, call);
-                else if (call == "Cover")
-                    ArmClip(actor, lfCover, 0.50f, 0.5f, call);
-                else if (call == "Standard Raised")
-                    ArmClip(actor, lfStandard, 0.55f, 0.5f, call);
-                else if (call == "Slip" || call == "Close")
-                    ArmClip(actor, lfSlip, 0.35f, 0.5f, call);
-            }
-            else if (body.Id == "kael")
-            {
-                if (call == "Shard Volley")
-                    ArmClip(actor, kaelShard, 0.72f, 0.5f, call);
-                else if (call == "Rend")
-                    ArmClip(actor, kaelRend, 0.42f, 0.5f, call);
-                else if (call == "Shield Wall")
-                    ArmClip(actor, kaelWall, 0.50f, 0.5f, call);
-                else if (call == "Squire's Charge")
-                    ArmClip(actor, kaelCharge, 0.40f, 0.5f, call);
-                else if (call == "Close" || call == "Slip")
-                    ArmClip(actor, kaelClose, 0.35f, 0.5f, call);
-            }
-            else if (body.Id == "orin")
-            {
-                if (call == "Sigil Shard")
-                    ArmClip(actor, orinShard, 0.36f, 0.5f, call);
-                else if (call == "Unwrite")
-                    ArmClip(actor, orinUnwrite, 0.45f, 0.5f, call);
-                else if (call == "Resonance Flask")
-                    ArmClip(actor, orinFlask, 0.45f, 0.5f, call);
-                else if (call == "Chorus Flask")
-                    ArmClip(actor, orinDrink, 0.50f, 0.5f, call);
-                else if (call == "Slip" || call == "Close")
-                    ArmClip(actor, orinSlip, 0.35f, 0.5f, call);
-            }
-            else if (body.Id == "nia")
-            {
-                if (call == "Path Arrow")
-                    ArmClip(actor, niaArrow, 0.50f, 0.5f, call);
-                else if (call == "Pinning Volley")
-                    ArmClip(actor, niaPin, 0.52f, 0.5f, call);
-                else if (call == "Dash")
-                    ArmClip(actor, niaDash, 0.42f, 0.5f, call);
-                else if (call == "Needle Rain")
-                    ArmClip(actor, niaRain, 0.52f, 0.5f, call);
-                else if (call == "Slip" || call == "Close")
-                    ArmClip(actor, niaSlip, 0.35f, 0.5f, call);
-            }
-            else if (body.Id == "lyra")
-            {
-                if (call == "Spiral Note")
-                    ArmClip(actor, lyraNote, 0.48f, 0.5f, call);
-                else if (call == "Hymn")
-                    ArmClip(actor, lyraHymn, 0.52f, 0.5f, call);
-                else if (call == "Spiral Chorus")
-                    ArmClip(actor, lyraChorus, 0.52f, 0.5f, call);
-                else if (call == "Weave Bloom")
-                    ArmClip(actor, lyraBloom, 0.52f, 0.5f, call);
-                else if (call == "Slip" || call == "Close")
-                    ArmClip(actor, lyraSlip, 0.35f, 0.5f, call);
-            }
+            var painted = FighterBodies.Get(body.Id);
+            var clip = painted != null ? painted.Find(body.Callout) : null;
+            if (clip == null)
+                return;
+            ArmClip(actor, clip.Sprites, clip.Seconds, clip.Pivot, clip.Pace, body.Callout);
         }
 
         void ArmEnd(Actor actor, ArenaBody body, bool win)
         {
-            if (body.Id == "vale")
-                ArmClip(actor, win ? valeWin : valeDeath, win ? 1.15f : 1.6f, win ? 0.40f : 0.42f, win ? "win" : "death");
-            else if (body.Id == "brute")
-                ArmClip(actor, win ? bruteWin : bruteDeath, win ? 1.15f : 1.55f, 0f, win ? "win" : "death");
-            else if (body.Id == "lightfather")
-                ArmClip(actor, win ? lfWin : lfDeath, win ? 1.15f : 1.55f, 0.5f, win ? "win" : "death");
-            else if (body.Id == "kael")
-                ArmClip(actor, win ? kaelWin : kaelDeath, win ? 1.15f : 1.55f, 0.5f, win ? "win" : "death");
-            else if (body.Id == "orin")
-                ArmClip(actor, win ? orinWin : orinDeath, win ? 1.15f : 1.55f, 0.5f, win ? "win" : "death");
-            else if (body.Id == "nia")
-                ArmClip(actor, win ? niaWin : niaDeath, win ? 1.15f : 1.55f, 0.5f, win ? "win" : "death");
-            else if (body.Id == "lyra")
-                ArmClip(actor, win ? lyraWin : lyraDeath, win ? 1.15f : 1.55f, 0.5f, win ? "win" : "death");
+            var painted = FighterBodies.Get(body.Id);
+            var clip = painted != null ? painted.End(win) : null;
+            if (clip != null)
+                ArmClip(actor, clip.Sprites, clip.Seconds, clip.Pivot, clip.Pace, win ? "win" : "death");
             else
                 actor.Pose = win ? "win" : "death";
             actor.HoldClip = true;
         }
 
-        static void ArmClip(Actor actor, Sprite[] frames, float duration, float pivot, string pose)
+        static void ArmClip(Actor actor, Sprite[] frames, float duration, float pivot, float pace, string pose)
         {
             if (frames == null || frames.Length == 0 || frames[0] == null)
                 return;
@@ -1081,6 +921,7 @@ namespace BattleTv.Fight
             actor.ClipDur = duration;
             actor.ClipT = 0f;
             actor.Pivot = pivot;
+            actor.Pace = pace;
             actor.Pose = pose;
         }
 
@@ -1092,10 +933,10 @@ namespace BattleTv.Fight
             {
                 var u = actor.ClipDur > 0.01f ? actor.ClipT / actor.ClipDur : 1f;
                 var frame = Mathf.Clamp(Mathf.FloorToInt(u * actor.Clip.Length), 0, actor.Clip.Length - 1);
-                if (body.Id == "brute" && body.Callout == "Heavy Sweep" && !actor.HoldClip)
+                if (actor.Pace > 0.01f && !actor.HoldClip)
                 {
                     var last = actor.Clip.Length - 1;
-                    frame = u >= 0.72f ? last : Mathf.Clamp(Mathf.FloorToInt((u / 0.72f) * last), 0, last);
+                    frame = u >= actor.Pace ? last : Mathf.Clamp(Mathf.FloorToInt((u / actor.Pace) * last), 0, last);
                 }
                 if (actor.Clip[frame] != null)
                     actor.Image.sprite = actor.Clip[frame];
@@ -1153,40 +994,16 @@ namespace BattleTv.Fight
             actor.WalkT += dt;
         }
 
-        Sprite[] WalkOf(string id)
+        static Sprite[] WalkOf(string id)
         {
-            if (id == "vale")
-                return valeWalk;
-            if (id == "brute")
-                return bruteWalk;
-            if (id == "lightfather")
-                return lfWalk;
-            if (id == "kael")
-                return kaelWalk;
-            if (id == "orin")
-                return orinWalk;
-            if (id == "nia")
-                return niaWalk;
-            if (id == "lyra")
-                return lyraWalk;
-            return null;
+            var body = FighterBodies.Get(id);
+            return body != null && body.Walk != null ? body.Walk.Sprites : null;
         }
 
         static float WalkDur(string id)
         {
-            if (id == "brute")
-                return 0.84f;
-            if (id == "lightfather")
-                return 0.72f;
-            if (id == "kael")
-                return 0.76f;
-            if (id == "orin")
-                return 0.80f;
-            if (id == "nia")
-                return 0.58f;
-            if (id == "lyra")
-                return 0.72f;
-            return 0.62f;
+            var body = FighterBodies.Get(id);
+            return body != null ? body.WalkSeconds : 0.62f;
         }
 
         void BuildChrome()

@@ -1,0 +1,135 @@
+{
+    "id":  "brute",
+    "flip":  "with",
+    "clipPivot":  false,
+    "walk":  0.84,
+    "idle":  "brute-drag.png",
+    "idlePivot":  0.6164,
+    "clips":  [
+                  {
+                      "name":  "Heavy Sweep",
+                      "seconds":  1.42,
+                      "pivot":  0,
+                      "frames":  [
+                                     "brute-sweep-f00.png",
+                                     "brute-sweep-f01.png",
+                                     "brute-sweep-f02.png",
+                                     "brute-sweep-f03.png",
+                                     "brute-sweep-f04.png",
+                                     "brute-sweep-f05.png",
+                                     "brute-sweep-f06.png",
+                                     "brute-sweep-f07.png"
+                                 ],
+                      "pace":  0.72,
+                      "pivots":  [
+                                     0.5857,
+                                     0.5125,
+                                     0.5695,
+                                     0.6026,
+                                     0.7377,
+                                     0.7256,
+                                     0.7357,
+                                     0.7407
+                                 ]
+                  },
+                  {
+                      "name":  "Ground Pound",
+                      "seconds":  0.7,
+                      "pivot":  0,
+                      "frames":  [
+                                     "brute-pound-f00.png",
+                                     "brute-pound-f01.png"
+                                 ],
+                      "pivots":  [
+                                     0.6164,
+                                     0.8372
+                                 ]
+                  },
+                  {
+                      "name":  "Ward Field",
+                      "seconds":  0.55,
+                      "pivot":  0,
+                      "frames":  [
+                                     "brute-ward-f00.png",
+                                     "brute-ward-f01.png"
+                                 ],
+                      "pivots":  [
+                                     0.6164,
+                                     0.6164
+                                 ]
+                  },
+                  {
+                      "name":  "Close",
+                      "seconds":  0.35,
+                      "pivot":  0,
+                      "frames":  [
+                                     "brute-close-f00.png"
+                                 ],
+                      "pivots":  [
+                                     0.6318
+                                 ]
+                  },
+                  {
+                      "name":  "Slip",
+                      "seconds":  0.35,
+                      "pivot":  0,
+                      "frames":  [
+                                     "brute-close-f00.png"
+                                 ],
+                      "pivots":  [
+                                     0.6318
+                                 ]
+                  },
+                  {
+                      "name":  "Iron Grip",
+                      "seconds":  0.4,
+                      "pivot":  0,
+                      "frames":  [
+                                     "brute-grip.png"
+                                 ]
+                  },
+                  {
+                      "name":  "walk",
+                      "seconds":  0.84,
+                      "pivot":  0.5,
+                      "frames":  [
+                                     "brute-walk-f00.png",
+                                     "brute-walk-f01.png",
+                                     "brute-walk-f02.png",
+                                     "brute-walk-f03.png",
+                                     "brute-walk-f04.png",
+                                     "brute-walk-f05.png",
+                                     "brute-walk-f06.png",
+                                     "brute-walk-f07.png"
+                                 ]
+                  },
+                  {
+                      "name":  "death",
+                      "seconds":  1.55,
+                      "pivot":  0,
+                      "frames":  [
+                                     "brute-death-f00.png",
+                                     "brute-death-f01.png",
+                                     "brute-death-f02.png"
+                                 ],
+                      "pivots":  [
+                                     0.5502,
+                                     0.5491,
+                                     0.5497
+                                 ]
+                  },
+                  {
+                      "name":  "win",
+                      "seconds":  1.15,
+                      "pivot":  0,
+                      "frames":  [
+                                     "brute-win-f00.png",
+                                     "brute-win-f01.png"
+                                 ],
+                      "pivots":  [
+                                     0.48,
+                                     0.4801
+                                 ]
+                  }
+              ]
+}

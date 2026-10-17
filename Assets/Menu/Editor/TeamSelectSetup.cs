@@ -59,36 +59,7 @@ namespace BattleTv.Menu.EditorTools
             fitObject.FindProperty("rest").objectReferenceValue = restPair.player;
             fitObject.ApplyModifiedPropertiesWithoutUndo();
 
-            var team = canvasObject.AddComponent<TeamSelectController>();
-            var teamObject = new SerializedObject(team);
-            teamObject.FindProperty("valeStill").objectReferenceValue = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Duel/vale.png");
-            teamObject.FindProperty("bruteStill").objectReferenceValue = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Duel/brute.png");
-            ArenaSceneSetup.ImportFatherStill();
-            var father = ArenaSceneSetup.LoadPlate("Assets/Art/Duel/lightfather.png");
-            if (father == null)
-                throw new FileNotFoundException("Lightfather still did not import.", "Assets/Art/Duel/lightfather.png");
-            teamObject.FindProperty("lightfatherStill").objectReferenceValue = father;
-            ArenaSceneSetup.ImportKael();
-            var kael = ArenaSceneSetup.LoadPlate("Assets/Art/Duel/kael.png");
-            if (kael == null)
-                throw new FileNotFoundException("Kael still did not import.", "Assets/Art/Duel/kael.png");
-            teamObject.FindProperty("kaelStill").objectReferenceValue = kael;
-            ArenaSceneSetup.ImportOrin();
-            var orin = ArenaSceneSetup.LoadPlate("Assets/Art/Duel/orin.png");
-            if (orin == null)
-                throw new FileNotFoundException("Orin still did not import.", "Assets/Art/Duel/orin.png");
-            teamObject.FindProperty("orinStill").objectReferenceValue = orin;
-            ArenaSceneSetup.ImportNia();
-            var nia = ArenaSceneSetup.LoadPlate("Assets/Art/Duel/nia.png");
-            if (nia == null)
-                throw new FileNotFoundException("Nia still did not import.", "Assets/Art/Duel/nia.png");
-            teamObject.FindProperty("niaStill").objectReferenceValue = nia;
-            ArenaSceneSetup.ImportLyra();
-            var lyra = ArenaSceneSetup.LoadPlate("Assets/Art/Duel/lyra.png");
-            if (lyra == null)
-                throw new FileNotFoundException("Lyra still did not import.", "Assets/Art/Duel/lyra.png");
-            teamObject.FindProperty("lyraStill").objectReferenceValue = lyra;
-            teamObject.ApplyModifiedPropertiesWithoutUndo();
+            canvasObject.AddComponent<TeamSelectController>();
 
             new GameObject("EventSystem", typeof(EventSystem), typeof(StandaloneInputModule));
 
