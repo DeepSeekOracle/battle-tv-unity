@@ -68,6 +68,11 @@ namespace BattleTv.Menu.EditorTools
             if (father == null)
                 throw new FileNotFoundException("Lightfather still did not import.", "Assets/Art/Duel/lightfather.png");
             teamObject.FindProperty("lightfatherStill").objectReferenceValue = father;
+            ArenaSceneSetup.ImportKael();
+            var kael = ArenaSceneSetup.LoadPlate("Assets/Art/Duel/kael.png");
+            if (kael == null)
+                throw new FileNotFoundException("Kael still did not import.", "Assets/Art/Duel/kael.png");
+            teamObject.FindProperty("kaelStill").objectReferenceValue = kael;
             teamObject.ApplyModifiedPropertiesWithoutUndo();
 
             new GameObject("EventSystem", typeof(EventSystem), typeof(StandaloneInputModule));

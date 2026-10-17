@@ -88,6 +88,17 @@ namespace BattleTv.Menu.EditorTools
             AssignClip(so, "valeWalk", Cutout("vale-walk", 8));
             AssignClip(so, "bruteWalk", Cutout("brute-walk", 8));
             AssignClip(so, "lfWalk", Cutout("lf-walk", 8));
+            var kael = "Assets/Art/Duel/kael.png";
+            Configure(kael, true, 2048, true);
+            so.FindProperty("kaelStill").objectReferenceValue = LoadSprite(kael);
+            AssignClip(so, "kaelShard", Cutout("kael-shard", 3));
+            AssignClip(so, "kaelRend", Cutout("kael-rend", 3));
+            AssignClip(so, "kaelWall", Cutout("kael-wall", 2));
+            AssignClip(so, "kaelCharge", Cutout("kael-charge", 2));
+            AssignClip(so, "kaelClose", Cutout("kael-close", 2));
+            AssignClip(so, "kaelDeath", Cutout("kael-death", 1));
+            AssignClip(so, "kaelWin", Cutout("kael-win", 1));
+            AssignClip(so, "kaelWalk", Cutout("kael-walk", 8));
             var glow = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Duel/vale-door/glow-white.png");
             if (glow == null)
                 throw new FileNotFoundException("Sigil plate did not import.", "Assets/Art/Duel/vale-door/glow-white.png");
@@ -161,6 +172,11 @@ namespace BattleTv.Menu.EditorTools
         public static void ImportFatherStill()
         {
             Configure("Assets/Art/Duel/lightfather.png", true, 2048, true);
+        }
+
+        public static void ImportKael()
+        {
+            Configure("Assets/Art/Duel/kael.png", true, 2048, true);
         }
 
         public static Sprite LoadPlate(string path)

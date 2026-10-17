@@ -62,6 +62,15 @@ namespace BattleTv.Fight
         [SerializeField] Sprite[] valeWalk;
         [SerializeField] Sprite[] bruteWalk;
         [SerializeField] Sprite[] lfWalk;
+        [SerializeField] Sprite kaelStill;
+        [SerializeField] Sprite[] kaelShard;
+        [SerializeField] Sprite[] kaelRend;
+        [SerializeField] Sprite[] kaelWall;
+        [SerializeField] Sprite[] kaelCharge;
+        [SerializeField] Sprite[] kaelClose;
+        [SerializeField] Sprite[] kaelDeath;
+        [SerializeField] Sprite[] kaelWin;
+        [SerializeField] Sprite[] kaelWalk;
         [SerializeField] Sprite sigilGlow;
         [SerializeField] Material sigilRingBack;
         [SerializeField] Material sigilRingFront;
@@ -217,7 +226,7 @@ namespace BattleTv.Fight
                 var face = 1f;
                 if (body.Id == "brute")
                     face = foe >= body.X ? -1f : 1f;
-                else if (body.Id == "vale" || body.Id == "lightfather" || Still(body.Id) == null)
+                else if (body.Id == "vale" || body.Id == "lightfather" || body.Id == "kael" || Still(body.Id) == null)
                     face = foe >= body.X ? 1f : -1f;
                 if (body.Alive)
                     actor.Rect.localScale = new Vector3(face, 1f, 1f);
@@ -237,7 +246,7 @@ namespace BattleTv.Fight
                     ArmEnd(actor, body, true);
                 actor.Heard = body.Swing;
                 ShowFrame(actor, body);
-                var pivot = (body.Id == "vale" || body.Id == "lightfather") && actor.ClipT >= 0f
+                var pivot = (body.Id == "vale" || body.Id == "lightfather" || body.Id == "kael") && actor.ClipT >= 0f
                     ? actor.Pivot
                     : PivotX(body.Id, actor.Image);
                 actor.Rect.pivot = new Vector2(pivot, 0f);
@@ -665,6 +674,8 @@ namespace BattleTv.Fight
                 return bruteRest != null ? bruteRest : bruteStill;
             if (id == "lightfather")
                 return lightfatherStill;
+            if (id == "kael")
+                return kaelStill;
             return null;
         }
 
@@ -786,6 +797,19 @@ namespace BattleTv.Fight
                 else if (call == "Slip" || call == "Close")
                     ArmClip(actor, lfSlip, 0.35f, 0.5f, call);
             }
+            else if (body.Id == "kael")
+            {
+                if (call == "Shard Volley")
+                    ArmClip(actor, kaelShard, 0.36f, 0.5f, call);
+                else if (call == "Rend")
+                    ArmClip(actor, kaelRend, 0.42f, 0.5f, call);
+                else if (call == "Shield Wall")
+                    ArmClip(actor, kaelWall, 0.50f, 0.5f, call);
+                else if (call == "Squire's Charge")
+                    ArmClip(actor, kaelCharge, 0.40f, 0.5f, call);
+                else if (call == "Close" || call == "Slip")
+                    ArmClip(actor, kaelClose, 0.35f, 0.5f, call);
+            }
         }
 
         void ArmEnd(Actor actor, ArenaBody body, bool win)
@@ -796,6 +820,8 @@ namespace BattleTv.Fight
                 ArmClip(actor, win ? bruteWin : bruteDeath, win ? 1.15f : 1.55f, 0f, win ? "win" : "death");
             else if (body.Id == "lightfather")
                 ArmClip(actor, win ? lfWin : lfDeath, win ? 1.15f : 1.55f, 0.5f, win ? "win" : "death");
+            else if (body.Id == "kael")
+                ArmClip(actor, win ? kaelWin : kaelDeath, win ? 1.15f : 1.55f, 0.5f, win ? "win" : "death");
             else
                 actor.Pose = win ? "win" : "death";
             actor.HoldClip = true;
@@ -889,6 +915,8 @@ namespace BattleTv.Fight
                 return bruteWalk;
             if (id == "lightfather")
                 return lfWalk;
+            if (id == "kael")
+                return kaelWalk;
             return null;
         }
 
@@ -898,6 +926,8 @@ namespace BattleTv.Fight
                 return 0.84f;
             if (id == "lightfather")
                 return 0.72f;
+            if (id == "kael")
+                return 0.76f;
             return 0.62f;
         }
 
