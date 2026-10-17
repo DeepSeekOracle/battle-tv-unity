@@ -83,6 +83,11 @@ namespace BattleTv.Menu.EditorTools
             if (nia == null)
                 throw new FileNotFoundException("Nia still did not import.", "Assets/Art/Duel/nia.png");
             teamObject.FindProperty("niaStill").objectReferenceValue = nia;
+            ArenaSceneSetup.ImportLyra();
+            var lyra = ArenaSceneSetup.LoadPlate("Assets/Art/Duel/lyra.png");
+            if (lyra == null)
+                throw new FileNotFoundException("Lyra still did not import.", "Assets/Art/Duel/lyra.png");
+            teamObject.FindProperty("lyraStill").objectReferenceValue = lyra;
             teamObject.ApplyModifiedPropertiesWithoutUndo();
 
             new GameObject("EventSystem", typeof(EventSystem), typeof(StandaloneInputModule));

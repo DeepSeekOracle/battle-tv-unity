@@ -134,6 +134,30 @@ namespace BattleTv.Menu.EditorTools
             AssignClip(so, "niaDeath", Cutout("nia-death", 1));
             AssignClip(so, "niaWin", Cutout("nia-win", 1));
             AssignClip(so, "niaWalk", Cutout("nia-walk", 8));
+            var lyra = "Assets/Art/Duel/lyra.png";
+            Configure(lyra, true, 2048, true);
+            var lyraIdle = LoadSprite(lyra);
+            so.FindProperty("lyraStill").objectReferenceValue = lyraIdle;
+            // Idle frames reuse the still so the WebGL data file does not store the same plate again.
+            var lyraNote = Cutout("lyra-note", 3);
+            lyraNote[0] = lyraIdle;
+            lyraNote[2] = lyraIdle;
+            AssignClip(so, "lyraNote", lyraNote);
+            var lyraHymn = Cutout("lyra-hymn", 2);
+            lyraHymn[0] = lyraIdle;
+            AssignClip(so, "lyraHymn", lyraHymn);
+            var lyraChorus = Cutout("lyra-chorus", 2);
+            lyraChorus[0] = lyraIdle;
+            AssignClip(so, "lyraChorus", lyraChorus);
+            var lyraBloom = Cutout("lyra-bloom", 2);
+            lyraBloom[0] = lyraIdle;
+            AssignClip(so, "lyraBloom", lyraBloom);
+            var lyraSlip = Cutout("lyra-slip", 2);
+            lyraSlip[1] = lyraIdle;
+            AssignClip(so, "lyraSlip", lyraSlip);
+            AssignClip(so, "lyraDeath", Cutout("lyra-death", 1));
+            AssignClip(so, "lyraWin", Cutout("lyra-win", 1));
+            AssignClip(so, "lyraWalk", Cutout("lyra-walk", 8));
             var glow = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Duel/vale-door/glow-white.png");
             if (glow == null)
                 throw new FileNotFoundException("Sigil plate did not import.", "Assets/Art/Duel/vale-door/glow-white.png");
@@ -222,6 +246,11 @@ namespace BattleTv.Menu.EditorTools
         public static void ImportNia()
         {
             Configure("Assets/Art/Duel/nia.png", true, 2048, true);
+        }
+
+        public static void ImportLyra()
+        {
+            Configure("Assets/Art/Duel/lyra.png", true, 2048, true);
         }
 
         public static Sprite LoadPlate(string path)

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Lyra animation card</title>
+<style>
+  body { margin: 0; background: #140806; color: #f6e7c1; font: 16px/1.4 Georgia, serif; }
+  main { max-width: 1180px; margin: 0 auto; padding: 28px 20px 64px; }
+  h1 { font-weight: normal; letter-spacing: 0.08em; text-transform: uppercase; font-size: 22px; margin: 0 0 6px; }
+  h2 { font-size: 18px; font-weight: normal; margin: 28px 0 8px; color: #67e8f9; }
+  p, li { max-width: 78ch; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { border-bottom: 1px solid rgba(103,232,249,0.35); text-align: left; padding: 6px 8px; vertical-align: top; }
+  th { color: #67e8f9; font-weight: normal; letter-spacing: 0.06em; text-transform: uppercase; font-size: 12px; }
+  .row { display: grid; grid-template-columns: 220px 1fr; gap: 16px; margin: 22px 0; padding-top: 12px; border-top: 1px solid rgba(246,231,193,0.18); }
+  img { width: 220px; height: auto; background: #000; display: block; }
+  .tag { color: #67e8f9; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Lyra · Spiral Bard</h1>
+  <p>This card is the only pose list. A later frame has to match one of these keys. Native facing is right. The whole sprite flips. One lyre. The gold circlet with the cyan stone stays on.</p>
+  <table>
+    <tr><th>Book</th><th>Value</th></tr>
+    <tr><td>Basic</td><td>Spiral Note · the flying note leaves the lyre · it is not painted on the body</td></tr>
+    <tr><td>Body</td><td>645 health · 28 damage · 0.84 attacks/s · speed 3.4 · armor 3 · range 7.8 · mana 135 · regen 11</td></tr>
+    <tr><td>Crit / cooldown</td><td>0.16 crit · 0.76 cooldown scale</td></tr>
+    <tr><td>Cards</td><td>Manaflow · Regen · Standard</td></tr>
+    <tr><td>Moves</td><td>Hymn · Spiral Chorus · Weave Bloom</td></tr>
+    <tr><td>Stride</td><td>Slip · she is a gun · 30s · cost 8</td></tr>
+  </table>
+
+  <h2>What stays off the body</h2>
+  <ul>
+    <li>The Spiral Note in flight leaves the lyre. The pluck keeps one lyre in her hands.</li>
+    <li>Hymn's stun ring is the ground ring already drawn for an aura. Her mouth is open and the lyre is at her chest.</li>
+    <li>Spiral Chorus mends and hastes the line. The mend mark stays off the body. Her open hand reaches forward and the lyre rests low.</li>
+    <li>Weave Bloom's regrowth stays off the body. She leans and lowers one hand. The other hand keeps the lyre.</li>
+    <li>Slip's streak is the lance already drawn for a gun's corner step. She has no separate dash move.</li>
+  </ul>
+
+  <h2>Keys</h2>
+  <div class="row"><img src="idle.png" alt="Idle"><div><div class="tag">Idle · feet pivot</div><p>Rest. One lyre across the body, both boots planted. This frame opens Spiral Note, Hymn, Spiral Chorus, and Weave Bloom.</p></div></div>
+  <div class="row"><img src="walk-a.png" alt="Walk"><div><div class="tag">Walk · 8 frames · 0.72s · feet pivot · loop</div><p>Contact. One boot reaches. The lyre stays in her hands. The clip is lyra-walk f00 through f07. These four keys are f00, f02, f04, and f06.</p></div></div>
+  <div class="row"><img src="walk-b.png" alt="Walk pass"><div><div class="tag">Walk · pass</div><p>The rear boot swings through. The bob and the lyre stay with her.</p></div></div>
+  <div class="row"><img src="walk-c.png" alt="Walk other"><div><div class="tag">Walk · other contact</div><p>The other boot leads. Same height, same lyre, same foot line as the idle.</p></div></div>
+  <div class="row"><img src="walk-d.png" alt="Walk return"><div><div class="tag">Walk · return</div><p>Passing back toward the first contact. The next frame is the loop.</p></div></div>
+  <div class="row"><img src="note.png" alt="Spiral Note"><div><div class="tag">Spiral Note · frame 2 of 3 · 0.48s · feet pivot</div><p>The pluck. Both hands on the one lyre, strings lit. Frame 1 and frame 3 are idle. The note that flies is not on this sprite.</p></div></div>
+  <div class="row"><img src="hymn.png" alt="Hymn"><div><div class="tag">Hymn · frame 2 of 2 · 0.52s · feet pivot</div><p>Mouth open, lyre held at the chest. The stun ring is not on this sprite. This is not the win.</p></div></div>
+  <div class="row"><img src="chorus.png" alt="Spiral Chorus"><div><div class="tag">Spiral Chorus · frame 2 of 2 · 0.52s · feet pivot</div><p>Lyre low in one hand, the other hand open and forward. The mend is not on this sprite.</p></div></div>
+  <div class="row"><img src="bloom.png" alt="Weave Bloom"><div><div class="tag">Weave Bloom · frame 2 of 2 · 0.52s · feet pivot</div><p>A lean, one hand lowered, the lyre kept in the other. The bloom is not on this sprite.</p></div></div>
+  <div class="row"><img src="slip.png" alt="Slip"><div><div class="tag">Slip · frame 1 of 2 · 0.35s · feet pivot</div><p>The step through. Front boot forward, one lyre across the body. Frame 2 is idle.</p></div></div>
+  <div class="row"><img src="death.png" alt="Death"><div><div class="tag">Death · last frame · 1.55s · hold · feet pivot</div><p>Down on her side, eyes closed, one lyre on the ground by her open hand. The clip holds this frame. She is not scaled back up to standing height.</p></div></div>
+  <div class="row"><img src="win.png" alt="Win"><div><div class="tag">Win · last frame · 1.15s · hold · feet pivot</div><p>One lyre overhead, both boots planted. This is not Hymn: the hymn keeps the lyre at the chest with her mouth open.</p></div></div>
+</main>
+</body>
+</html>
