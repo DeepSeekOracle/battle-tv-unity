@@ -230,3 +230,12 @@ Pack "sancora" "against" $true 0.72 "sancora.png" @(
     @{ name = "death"; seconds = 1.55; pivot = 0.50; frames = (Frames "sancora-death" 1) }
     @{ name = "win"; seconds = 1.15; pivot = 0.50; frames = (Frames "sancora-win" 1) }
 )
+Pack "wraith" "against" $true 0.72 "wraith.png" @(
+    @{ name = "Wraith Bolt"; seconds = 0.50; pivot = 0.50; frames = @("IDLE", "wraith-bolt/f01.png") }
+    @{ name = "Wail"; seconds = 0.50; pivot = 0.50; frames = @("IDLE", "wraith-wail/f01.png") }
+    @{ name = "Drain Cloud"; seconds = 0.52; pivot = 0.50; frames = @("IDLE", "wraith-cloud/f01.png") }
+    @{ name = "Slip"; seconds = 0.35; pivot = 0.50; frames = @("wraith-slip/f00.png", "IDLE") }
+    @{ name = "walk"; seconds = 0.72; pivot = 0.50; frames = @("IDLE", "wraith-walk/f00.png") }
+    @{ name = "death"; seconds = 1.55; pivot = 0.50; frames = (Frames "wraith-death" 1) }
+    @{ name = "win"; seconds = 1.15; pivot = 0.50; frames = (Frames "wraith-win" 1) }
+)

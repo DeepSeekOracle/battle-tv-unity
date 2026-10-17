@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Wraith animation card</title>
+<style>
+  body { margin: 0; background: #10141c; color: #f6e7c1; font: 16px/1.4 Georgia, serif; }
+  main { max-width: 1180px; margin: 0 auto; padding: 28px 20px 64px; }
+  h1 { font-weight: normal; letter-spacing: 0.08em; text-transform: uppercase; font-size: 22px; margin: 0 0 6px; }
+  h2 { font-size: 18px; font-weight: normal; margin: 28px 0 8px; color: #c4b5fd; }
+  p, li { max-width: 78ch; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { border-bottom: 1px solid rgba(196,181,253,0.35); text-align: left; padding: 6px 8px; vertical-align: top; }
+  th { color: #c4b5fd; font-weight: normal; letter-spacing: 0.06em; text-transform: uppercase; font-size: 12px; }
+  .row { display: grid; grid-template-columns: 220px 1fr; gap: 16px; margin: 22px 0; padding-top: 12px; border-top: 1px solid rgba(246,231,193,0.18); }
+  img { width: 220px; height: auto; background: #000; display: block; }
+  .tag { color: #c4b5fd; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Wraith · Crypt Fodder</h1>
+  <p>This card is the only pose list. A later frame has to match one of these keys. Native facing is right. The whole sprite flips. Pale ice-blue face in a dark hood, tattered pale-blue and violet shroud, no hands. The hem is the foot line. Wraith is a gun, so the corner step is Slip. There is no move named Dash and no Close key.</p>
+  <table>
+    <tr><th>Book</th><th>Value</th></tr>
+    <tr><td>Basic</td><td>Wraith Bolt · range 8.0</td></tr>
+    <tr><td>Body</td><td>650 health · 31 damage · 0.86 attacks/s · speed 2.6 · armor 4 · range 8.0 · mana 60 · regen 7</td></tr>
+    <tr><td>Crit / cooldown</td><td>0.10 crit · 0.88 cooldown scale</td></tr>
+    <tr><td>Cards</td><td>Haste · Nimble · Leech</td></tr>
+    <tr><td>Moves</td><td>Wail · Drain Cloud</td></tr>
+    <tr><td>Stride</td><td>Slip · a gun · 30s · cost 8</td></tr>
+  </table>
+  <h2>What stays off the body</h2>
+  <ul>
+    <li>Wraith Bolt is a violet wisp. The shroud does not grow a hand to throw it.</li>
+    <li>Wail is the cry. The ring is the howl on the ground, not a second body.</li>
+    <li>Drain Cloud keeps that book name. The cloud on the shroud is the cast. Drain's own cloud picture stays Drain's.</li>
+  </ul>
+  <h2>Keys</h2>
+  <div class="row"><img src="idle.png" alt=""><div><p class="tag">Idle</p><p>Still hood, face to the right, hem on the foot line.</p></div></div>
+  <div class="row"><img src="bolt.png" alt=""><div><p class="tag">Wraith Bolt</p><p>Idle, then the wisp leaves the hood, then idle. 0.50s.</p></div></div>
+  <div class="row"><img src="wail.png" alt=""><div><p class="tag">Wail</p><p>Idle, then the mouth opens and the cloth flares, then idle. 0.50s.</p></div></div>
+  <div class="row"><img src="cloud.png" alt=""><div><p class="tag">Drain Cloud</p><p>Idle, then the violet cloud leaves the shroud, then idle. 0.52s.</p></div></div>
+  <div class="row"><img src="slip.png" alt=""><div><p class="tag">Slip</p><p>The shroud stretches toward the right, then idle. 0.35s. Corner step only.</p></div></div>
+  <div class="row"><img src="walk-a.png" alt=""><div><p class="tag">Walk</p><p>Idle, then one drift with the hem lifted. 0.72s. Do not copy it into a second step.</p></div></div>
+  <div class="row"><img src="death.png" alt=""><div><p class="tag">Death</p><p>The shroud pools on the foot line. 1.55s. It is not scaled up to standing height.</p></div></div>
+  <div class="row"><img src="win.png" alt=""><div><p class="tag">Win</p><p>The hood lifts. 1.15s.</p></div></div>
+</main>
+</body>
+</html>

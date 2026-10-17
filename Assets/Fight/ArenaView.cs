@@ -301,6 +301,10 @@ namespace BattleTv.Fight
                     Push(1, at.X, at.Y, at.X, at.Y, 0.55f, radius, color);
                 if (body.Id == "seidon" && mv != null && mv.Id == "undertow")
                     Push(1, at.X, at.Y, at.X, at.Y, 0.55f, radius, color);
+                if (body.Id == "wraith" && mv != null && mv.Id == "wail")
+                    Push(1, body.X, body.Y, body.X, body.Y, 0.55f, radius, color);
+                if (body.Id == "wraith" && mv != null && mv.Id == "draincloud")
+                    Push(5, at.X, at.Y, at.X, at.Y, 0.45f, radius * 0.45f, color);
             }
             else if (shape == "beam" && foe != null)
                 Push(4, body.X, body.Y, foe.X, foe.Y, 0.32f, 18f, color);
@@ -456,6 +460,8 @@ namespace BattleTv.Fight
                     PlaceTideBolt(bolt, at, width, height);
                 else if (bolt.Src != null && bolt.Src.Id == "sancora")
                     PlaceFlask(bolt, at, width, height);
+                else if (bolt.Src != null && bolt.Src.Id == "wraith")
+                    PlaceWisp(bolt, at, width, height);
                 else
                 {
                     var aim = -(float)bolt.Angle * Mathf.Rad2Deg;
@@ -813,6 +819,20 @@ namespace BattleTv.Fight
                 Place(sigilLance, mid, new Vector2(len, 5f), ang, rose, 1f, false);
             PlaceRing(tip, 34f, gold, 1f, false);
             Place(sigilEmber, hand, new Vector2(18f, 18f), 0f, rose, 0.8f, false);
+        }
+
+        void PlaceWisp(ArenaBolt bolt, Vector2 at, float width, float height)
+        {
+            var aim = -(float)bolt.Angle;
+            var dir = new Vector2(Mathf.Cos(aim), Mathf.Sin(aim));
+            var tail = at - dir * 42f;
+            var mid = (at + tail) * 0.5f;
+            var ang = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+            var violet = new Color(0.77f, 0.71f, 0.99f, 1f);
+            var pale = new Color(0.93f, 0.90f, 1f, 1f);
+            Place(sigilLance, mid, new Vector2(42f, 7f), ang, violet, 1f, false);
+            PlaceRing(at, 30f, pale, 1f, false);
+            Place(sigilEmber, at, new Vector2(16f, 16f), 0f, violet, 0.9f, false);
         }
 
         Vector2 FlaskHand(ArenaBody body, Vector2 feet)

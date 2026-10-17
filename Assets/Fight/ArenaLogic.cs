@@ -1400,6 +1400,7 @@ namespace BattleTv.Fight
             Add(map, "seal9|Δ9 Seal|aura|self|20|6|0.9|r=6,stun=0.9,self.aegis=0.18,self.heal=0.06");
             Add(map, "provenance|Provenance|revive|deadally|40|30|0.30|");
             Add(map, "wail|Wail|aura|self|12|6|0.6|r=6,weak=0.3:6,root=0.9");
+            Add(map, "draincloud|Drain Cloud|blast|clump|12|7|1.05|r=2.4,burn=6:5,slow=0.4:5");
             Add(map, "pound|Ground Pound|aura|self|10|0|1.15|r=3,knock=2,stun=0.5");
             Add(map, "impfire|Imp Fire|bolt|enemy|8|8|1.2|burn=6:4,slow=0.4:4");
             Add(map, "lobstone|Lob Stone|lob|clump|9|11|1.4|r=2.2");

@@ -538,6 +538,10 @@ namespace BattleTv.Fight
                     Push(1, at.X, at.Y, at.X, at.Y, 0.55f, radius, color);
                 if (body.Id == "seidon" && mv != null && mv.Id == "undertow")
                     Push(1, at.X, at.Y, at.X, at.Y, 0.55f, radius, color);
+                if (body.Id == "wraith" && mv != null && mv.Id == "wail")
+                    Push(1, body.X, body.Y, body.X, body.Y, 0.55f, radius, color);
+                if (body.Id == "wraith" && mv != null && mv.Id == "draincloud")
+                    Push(5, at.X, at.Y, at.X, at.Y, 0.45f, radius * 0.45f, color);
             }
             else if (shape == "beam" && foe != null)
                 Push(4, body.X, body.Y, foe.X, foe.Y, 0.32f, 18f, color);
@@ -708,6 +712,8 @@ namespace BattleTv.Fight
                     PlaceTideBolt(bolt, at, width, height);
                 else if (bolt.Src != null && bolt.Src.Id == "sancora")
                     PlaceFlask(bolt, at, width, height);
+                else if (bolt.Src != null && bolt.Src.Id == "wraith")
+                    PlaceWisp(bolt, at, width, height);
                 else
                     Place(_bolt, at, new Vector2(46f, 14f), -(float)bolt.Angle * Mathf.Rad2Deg, color, 1f, false);
             }
@@ -888,6 +894,17 @@ namespace BattleTv.Fight
             var rose = new Color(0.93f, 0.28f, 0.72f, 1f);
             Shot(hand, tip, rose, gold, 6f, 3f, 12f, 12f, 18f, 140f);
             PlaceRing(tip, 34f, gold, 1f, false);
+        }
+
+        void PlaceWisp(ArenaBolt bolt, Vector2 at, float width, float height)
+        {
+            var aim = -(float)bolt.Angle;
+            var dir = new Vector2(Mathf.Cos(aim), Mathf.Sin(aim));
+            var tail = at - dir * 42f;
+            var violet = new Color(0.77f, 0.71f, 0.99f, 1f);
+            var pale = new Color(0.93f, 0.90f, 1f, 1f);
+            Shot(tail, at, violet, pale, 8f, 3f, 14f, 14f, 16f, 120f);
+            PlaceRing(at, 30f, pale, 1f, false);
         }
 
         void Shot(Vector2 hand, Vector2 tip, Color color, Color hot, float thick, float core, float tipW, float tipH, float handSize, float flashLen)
