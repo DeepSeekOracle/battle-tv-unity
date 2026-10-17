@@ -311,6 +311,8 @@ namespace BattleTv.Fight
                     Push(1, body.X, body.Y, body.X, body.Y, 0.48f, radius, color);
                 if (body.Id == "gate" && mv != null && mv.Id == "gate_haul" && foe != null)
                     Push(4, foe.X, foe.Y, body.X, body.Y, 0.28f, 20f, color);
+                if (body.Id == "crown" && mv != null && mv.Id == "decree" && foe != null)
+                    Push(1, foe.X, foe.Y, foe.X, foe.Y, 0.42f, radius, color);
                 if (body.Id == "hurler" && mv != null && mv.Id == "pound")
                     Push(1, body.X, body.Y, body.X, body.Y, 0.48f, radius, color);
             }
@@ -337,10 +339,16 @@ namespace BattleTv.Fight
                         Push(5, foe.X, foe.Y, foe.X, foe.Y, 0.24f, 36f, color);
                     if (body.Id == "gate")
                         Push(1, foe.X, foe.Y, foe.X, foe.Y, 0.32f, 70f, color);
+                    if (body.Id == "crown")
+                        Push(1, foe.X, foe.Y, foe.X, foe.Y, 0.30f, 60f, color);
                 }
             }
             else if (shape == "bolt" || shape == "multi" || shape == "lob")
+            {
                 Push(5, body.X, body.Y, body.X, body.Y, 0.14f, 28f, color);
+                if (body.Id == "crown" && mv != null && (mv.Id == "regalvolley" || mv.Id == "lobstone"))
+                    Push(5, body.X, body.Y, body.X, body.Y, 0.28f, 36f, color);
+            }
             else if (shape == "revive")
                 Push(2, body.X, body.Y, body.X, body.Y, 0.7f, 120f, color);
             else if (shape == "blink" || shape == "stride")
@@ -475,6 +483,8 @@ namespace BattleTv.Fight
                 else if (bolt.Lob && bolt.Src != null && bolt.Src.Id == "seidon")
                     PlaceRing(at, 64f, new Color(0.13f, 0.83f, 0.93f, 1f), 1f, false);
                 else if (bolt.Lob && bolt.Src != null && bolt.Src.Id == "hurler")
+                    PlaceStone(bolt, at, width, height);
+                else if (bolt.Lob && bolt.Src != null && bolt.Src.Id == "crown")
                     PlaceStone(bolt, at, width, height);
                 else if (bolt.Lob)
                     Place(sigilEmber, at, new Vector2(26f, 26f), 0f, color, 1f, false);

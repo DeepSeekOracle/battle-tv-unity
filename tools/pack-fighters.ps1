@@ -296,3 +296,14 @@ Pack "gate" "against" $true 0.72 "gate.png" @(
     @{ name = "death"; seconds = 1.55; pivot = 0.50; frames = (Frames "gate-death" 1) }
     @{ name = "win"; seconds = 1.15; pivot = 0.50; frames = (Frames "gate-win" 1) }
 )
+
+Pack "crown" "against" $true 0.72 "crown.png" @(
+    @{ name = "Regal Fist"; seconds = 0.50; pivot = 0.50; frames = @("IDLE", "crown-fist/f01.png") }
+    @{ name = "Regal Volley"; seconds = 0.50; pivot = 0.50; frames = @("IDLE", "crown-volley/f01.png") }
+    @{ name = "Lob Stone"; seconds = 0.50; pivot = 0.50; frames = @("IDLE", "crown-lob/f01.png") }
+    @{ name = "Decree"; seconds = 0.52; pivot = 0.50; frames = @("IDLE", "crown-decree/f01.png") }
+    @{ name = "Close"; seconds = 0.35; pivot = 0.50; frames = @("crown-close/f00.png", "IDLE") }
+    @{ name = "walk"; seconds = 0.72; pivot = 0.50; frames = @("IDLE", "crown-walk/f00.png") }
+    @{ name = "death"; seconds = 1.55; pivot = 0.50; frames = (Frames "crown-death" 1) }
+    @{ name = "win"; seconds = 1.15; pivot = 0.50; frames = (Frames "crown-win" 1) }
+)

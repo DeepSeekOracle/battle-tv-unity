@@ -1,0 +1,17 @@
+{
+    "id": "crown",
+    "flip": "against",
+    "clipPivot": true,
+    "walk": 0.72,
+    "idle": "crown.png",
+    "clips": [
+        { "name": "Regal Fist", "seconds": 0.50, "pivot": 0.5, "frames": ["crown.png", "crown-fist-f01.png"] },
+        { "name": "Regal Volley", "seconds": 0.50, "pivot": 0.5, "frames": ["crown.png", "crown-volley-f01.png"] },
+        { "name": "Lob Stone", "seconds": 0.50, "pivot": 0.5, "frames": ["crown.png", "crown-lob-f01.png"] },
+        { "name": "Decree", "seconds": 0.52, "pivot": 0.5, "frames": ["crown.png", "crown-decree-f01.png"] },
+        { "name": "Close", "seconds": 0.35, "pivot": 0.5, "frames": ["crown-close-f00.png", "crown.png"] },
+        { "name": "walk", "seconds": 0.72, "pivot": 0.5, "frames": ["crown.png", "crown-walk-f00.png"] },
+        { "name": "death", "seconds": 1.55, "pivot": 0.5, "frames": ["crown-death-f00.png"] },
+        { "name": "win", "seconds": 1.15, "pivot": 0.5, "frames": ["crown-win-f00.png"] }
+    ]
+}
