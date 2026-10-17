@@ -1,0 +1,99 @@
+{
+    "id":  "kael",
+    "flip":  "against",
+    "clipPivot":  true,
+    "walk":  0.76,
+    "idle":  "kael.png",
+    "clips":  [
+                  {
+                      "name":  "Shard Volley",
+                      "seconds":  0.72,
+                      "pivot":  0.5,
+                      "frames":  [
+                                     "kael-shard-f00.png",
+                                     "kael-shard-f01.png",
+                                     "kael-shard-f02.png",
+                                     "kael-shard-f03.png",
+                                     "kael-shard-f04.png",
+                                     "kael-shard-f05.png"
+                                 ]
+                  },
+                  {
+                      "name":  "Rend",
+                      "seconds":  0.42,
+                      "pivot":  0.5,
+                      "frames":  [
+                                     "kael-rend-f00.png",
+                                     "kael-rend-f01.png",
+                                     "kael-rend-f02.png"
+                                 ]
+                  },
+                  {
+                      "name":  "Shield Wall",
+                      "seconds":  0.5,
+                      "pivot":  0.5,
+                      "frames":  [
+                                     "kael-wall-f00.png",
+                                     "kael-wall-f01.png"
+                                 ]
+                  },
+                  {
+                      "name":  "Squire\u0027s Charge",
+                      "seconds":  0.4,
+                      "pivot":  0.5,
+                      "frames":  [
+                                     "kael-charge-f00.png",
+                                     "kael-charge-f01.png"
+                                 ]
+                  },
+                  {
+                      "name":  "Close",
+                      "seconds":  0.35,
+                      "pivot":  0.5,
+                      "frames":  [
+                                     "kael-close-f00.png",
+                                     "kael-close-f01.png"
+                                 ]
+                  },
+                  {
+                      "name":  "Slip",
+                      "seconds":  0.35,
+                      "pivot":  0.5,
+                      "frames":  [
+                                     "kael-close-f00.png",
+                                     "kael-close-f01.png"
+                                 ]
+                  },
+                  {
+                      "name":  "walk",
+                      "seconds":  0.76,
+                      "pivot":  0.5,
+                      "frames":  [
+                                     "kael-walk-f00.png",
+                                     "kael-walk-f01.png",
+                                     "kael-walk-f02.png",
+                                     "kael-walk-f03.png",
+                                     "kael-walk-f04.png",
+                                     "kael-walk-f05.png",
+                                     "kael-walk-f06.png",
+                                     "kael-walk-f07.png"
+                                 ]
+                  },
+                  {
+                      "name":  "death",
+                      "seconds":  1.55,
+                      "pivot":  0.5,
+                      "frames":  [
+                                     "kael-death-f00.png"
+                                 ]
+                  },
+                  {
+                      "name":  "win",
+                      "seconds":  1.15,
+                      "pivot":  0.5,
+                      "frames":  [
+                                     "kael-win-f00.png"
+                                 ]
+                  }
+              ]
+}

@@ -1,0 +1,95 @@
+{
+    "id":  "orin",
+    "flip":  "against",
+    "clipPivot":  true,
+    "walk":  0.8,
+    "idle":  "orin.png",
+    "clips":  [
+                  {
+                      "name":  "Sigil Shard",
+                      "seconds":  0.36,
+                      "pivot":  0.5,
+                      "frames":  [
+                                     "orin-shard-f00.png",
+                                     "orin-shard-f01.png",
+                                     "orin-shard-f02.png"
+                                 ]
+                  },
+                  {
+                      "name":  "Unwrite",
+                      "seconds":  0.45,
+                      "pivot":  0.5,
+                      "frames":  [
+                                     "orin-unwrite-f00.png",
+                                     "orin-unwrite-f01.png"
+                                 ]
+                  },
+                  {
+                      "name":  "Resonance Flask",
+                      "seconds":  0.45,
+                      "pivot":  0.5,
+                      "frames":  [
+                                     "orin-flask-f00.png",
+                                     "orin-flask-f01.png"
+                                 ]
+                  },
+                  {
+                      "name":  "Chorus Flask",
+                      "seconds":  0.5,
+                      "pivot":  0.5,
+                      "frames":  [
+                                     "orin-drink-f00.png",
+                                     "orin-drink-f01.png"
+                                 ]
+                  },
+                  {
+                      "name":  "Slip",
+                      "seconds":  0.35,
+                      "pivot":  0.5,
+                      "frames":  [
+                                     "orin-slip-f00.png",
+                                     "orin-slip-f01.png"
+                                 ]
+                  },
+                  {
+                      "name":  "Close",
+                      "seconds":  0.35,
+                      "pivot":  0.5,
+                      "frames":  [
+                                     "orin-slip-f00.png",
+                                     "orin-slip-f01.png"
+                                 ]
+                  },
+                  {
+                      "name":  "walk",
+                      "seconds":  0.8,
+                      "pivot":  0.5,
+                      "frames":  [
+                                     "orin-walk-f00.png",
+                                     "orin-walk-f01.png",
+                                     "orin-walk-f02.png",
+                                     "orin-walk-f03.png",
+                                     "orin-walk-f04.png",
+                                     "orin-walk-f05.png",
+                                     "orin-walk-f06.png",
+                                     "orin-walk-f07.png"
+                                 ]
+                  },
+                  {
+                      "name":  "death",
+                      "seconds":  1.55,
+                      "pivot":  0.5,
+                      "frames":  [
+                                     "orin-death-f00.png"
+                                 ]
+                  },
+                  {
+                      "name":  "win",
+                      "seconds":  1.15,
+                      "pivot":  0.5,
+                      "frames":  [
+                                     "orin-win-f00.png"
+                                 ]
+                  }
+              ]
+}

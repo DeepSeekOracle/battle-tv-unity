@@ -1,0 +1,95 @@
+{
+    "id":  "nia",
+    "flip":  "against",
+    "clipPivot":  true,
+    "walk":  0.58,
+    "idle":  "nia.png",
+    "clips":  [
+                  {
+                      "name":  "Path Arrow",
+                      "seconds":  0.5,
+                      "pivot":  0.5,
+                      "frames":  [
+                                     "nia.png",
+                                     "nia-arrow-f01.png",
+                                     "nia.png"
+                                 ]
+                  },
+                  {
+                      "name":  "Pinning Volley",
+                      "seconds":  0.52,
+                      "pivot":  0.5,
+                      "frames":  [
+                                     "nia.png",
+                                     "nia-pin-f01.png"
+                                 ]
+                  },
+                  {
+                      "name":  "Dash",
+                      "seconds":  0.42,
+                      "pivot":  0.5,
+                      "frames":  [
+                                     "nia-dash-f00.png",
+                                     "nia.png"
+                                 ]
+                  },
+                  {
+                      "name":  "Needle Rain",
+                      "seconds":  0.52,
+                      "pivot":  0.5,
+                      "frames":  [
+                                     "nia.png",
+                                     "nia-rain-f01.png"
+                                 ]
+                  },
+                  {
+                      "name":  "Slip",
+                      "seconds":  0.35,
+                      "pivot":  0.5,
+                      "frames":  [
+                                     "nia-slip-f00.png",
+                                     "nia.png"
+                                 ]
+                  },
+                  {
+                      "name":  "Close",
+                      "seconds":  0.35,
+                      "pivot":  0.5,
+                      "frames":  [
+                                     "nia-slip-f00.png",
+                                     "nia.png"
+                                 ]
+                  },
+                  {
+                      "name":  "walk",
+                      "seconds":  0.58,
+                      "pivot":  0.5,
+                      "frames":  [
+                                     "nia-walk-f00.png",
+                                     "nia-walk-f01.png",
+                                     "nia-walk-f02.png",
+                                     "nia-walk-f03.png",
+                                     "nia-walk-f04.png",
+                                     "nia-walk-f05.png",
+                                     "nia-walk-f06.png",
+                                     "nia-walk-f07.png"
+                                 ]
+                  },
+                  {
+                      "name":  "death",
+                      "seconds":  1.55,
+                      "pivot":  0.5,
+                      "frames":  [
+                                     "nia-death-f00.png"
+                                 ]
+                  },
+                  {
+                      "name":  "win",
+                      "seconds":  1.15,
+                      "pivot":  0.5,
+                      "frames":  [
+                                     "nia-win-f00.png"
+                                 ]
+                  }
+              ]
+}
