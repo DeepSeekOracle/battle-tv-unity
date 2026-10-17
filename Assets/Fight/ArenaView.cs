@@ -71,6 +71,15 @@ namespace BattleTv.Fight
         [SerializeField] Sprite[] kaelDeath;
         [SerializeField] Sprite[] kaelWin;
         [SerializeField] Sprite[] kaelWalk;
+        [SerializeField] Sprite orinStill;
+        [SerializeField] Sprite[] orinShard;
+        [SerializeField] Sprite[] orinUnwrite;
+        [SerializeField] Sprite[] orinFlask;
+        [SerializeField] Sprite[] orinDrink;
+        [SerializeField] Sprite[] orinSlip;
+        [SerializeField] Sprite[] orinDeath;
+        [SerializeField] Sprite[] orinWin;
+        [SerializeField] Sprite[] orinWalk;
         [SerializeField] Sprite sigilGlow;
         [SerializeField] Material sigilRingBack;
         [SerializeField] Material sigilRingFront;
@@ -226,7 +235,7 @@ namespace BattleTv.Fight
                 var face = 1f;
                 if (body.Id == "brute")
                     face = foe >= body.X ? -1f : 1f;
-                else if (body.Id == "vale" || body.Id == "lightfather" || body.Id == "kael" || Still(body.Id) == null)
+                else if (body.Id == "vale" || body.Id == "lightfather" || body.Id == "kael" || body.Id == "orin" || Still(body.Id) == null)
                     face = foe >= body.X ? 1f : -1f;
                 if (body.Alive)
                     actor.Rect.localScale = new Vector3(face, 1f, 1f);
@@ -246,7 +255,7 @@ namespace BattleTv.Fight
                     ArmEnd(actor, body, true);
                 actor.Heard = body.Swing;
                 ShowFrame(actor, body);
-                var pivot = (body.Id == "vale" || body.Id == "lightfather" || body.Id == "kael") && actor.ClipT >= 0f
+                var pivot = (body.Id == "vale" || body.Id == "lightfather" || body.Id == "kael" || body.Id == "orin") && actor.ClipT >= 0f
                     ? actor.Pivot
                     : PivotX(body.Id, actor.Image);
                 actor.Rect.pivot = new Vector2(pivot, 0f);
@@ -431,6 +440,8 @@ namespace BattleTv.Fight
                     Place(sigilEmber, at, new Vector2(26f, 26f), 0f, color, 1f, false);
                 else if (bolt.Src != null && bolt.Src.Id == "lightfather")
                     PlaceSealBolt(bolt, at, width, height, color);
+                else if (bolt.Src != null && bolt.Src.Id == "orin")
+                    PlaceSigilShard(bolt, at, width, height);
                 else
                 {
                     var aim = -(float)bolt.Angle * Mathf.Rad2Deg;
@@ -518,6 +529,60 @@ namespace BattleTv.Fight
                     {
                         nx = 0.30f;
                         ny = 0.73f;
+                    }
+                }
+                return feet + new Vector2(face * w * nx, h * ny);
+            }
+            return feet + new Vector2(0f, 48f);
+        }
+
+        void PlaceSigilShard(ArenaBolt bolt, Vector2 at, float width, float height)
+        {
+            // The sim bolt leaves the feet. The picture leaves the cyan crystal.
+            var feet = OnSand(bolt.Src.X, bolt.Src.Y, width, height);
+            var hand = Crystal(bolt.Src, feet);
+            var tip = at + (hand - feet);
+            var delta = tip - hand;
+            var len = delta.magnitude;
+            var ang = Mathf.Atan2(delta.y, delta.x) * Mathf.Rad2Deg;
+            var mid = (hand + tip) * 0.5f;
+            var cyan = new Color(0.35f, 0.86f, 1f, 1f);
+            var hot = new Color(0.9f, 0.98f, 1f, 1f);
+            var gold = new Color(1f, 0.86f, 0.35f, 1f);
+            if (len > 12f)
+            {
+                Place(sigilBolt, mid, new Vector2(len, 22f), ang, cyan, 0.95f, false);
+                Place(sigilLance, mid, new Vector2(len, 8f), ang, gold, 1f, false);
+            }
+            Place(sigilBolt, tip, new Vector2(48f, 18f), ang, hot, 1f, false);
+            Place(sigilEmber, tip, new Vector2(22f, 22f), 0f, cyan, 1f, false);
+            Place(sigilEmber, hand, new Vector2(36f, 36f), 0f, cyan, 1f, false);
+            var flash = Mathf.Clamp01(1f - len / 180f);
+            if (flash > 0.02f)
+                Place(sigilBurst, hand, new Vector2(Mathf.Lerp(40f, 88f, flash), Mathf.Lerp(40f, 88f, flash)), 0f, cyan, 0.45f + 0.4f * flash, false);
+        }
+
+        Vector2 Crystal(ArenaBody body, Vector2 feet)
+        {
+            for (var i = 0; i < _actors.Count; i++)
+            {
+                var actor = _actors[i];
+                if (actor.Body != body || actor.Rect == null)
+                    continue;
+                var face = actor.Rect.localScale.x >= 0f ? 1f : -1f;
+                var w = actor.Rect.sizeDelta.x;
+                var h = actor.Rect.sizeDelta.y;
+                // Measured on the 1329x1177 idle, pivot at the feet. The thrust frame sits further forward.
+                var nx = 0.254f;
+                var ny = 0.628f;
+                if (actor.Pose == "Sigil Shard" && actor.Clip != null && actor.Clip.Length > 0 && actor.ClipT >= 0f)
+                {
+                    var u = actor.ClipDur > 0.01f ? actor.ClipT / actor.ClipDur : 1f;
+                    var frame = Mathf.Clamp(Mathf.FloorToInt(u * actor.Clip.Length), 0, actor.Clip.Length - 1);
+                    if (frame == 1)
+                    {
+                        nx = 0.317f;
+                        ny = 0.681f;
                     }
                 }
                 return feet + new Vector2(face * w * nx, h * ny);
@@ -676,6 +741,8 @@ namespace BattleTv.Fight
                 return lightfatherStill;
             if (id == "kael")
                 return kaelStill;
+            if (id == "orin")
+                return orinStill;
             return null;
         }
 
@@ -810,6 +877,19 @@ namespace BattleTv.Fight
                 else if (call == "Close" || call == "Slip")
                     ArmClip(actor, kaelClose, 0.35f, 0.5f, call);
             }
+            else if (body.Id == "orin")
+            {
+                if (call == "Sigil Shard")
+                    ArmClip(actor, orinShard, 0.36f, 0.5f, call);
+                else if (call == "Unwrite")
+                    ArmClip(actor, orinUnwrite, 0.45f, 0.5f, call);
+                else if (call == "Resonance Flask")
+                    ArmClip(actor, orinFlask, 0.45f, 0.5f, call);
+                else if (call == "Chorus Flask")
+                    ArmClip(actor, orinDrink, 0.50f, 0.5f, call);
+                else if (call == "Slip" || call == "Close")
+                    ArmClip(actor, orinSlip, 0.35f, 0.5f, call);
+            }
         }
 
         void ArmEnd(Actor actor, ArenaBody body, bool win)
@@ -822,6 +902,8 @@ namespace BattleTv.Fight
                 ArmClip(actor, win ? lfWin : lfDeath, win ? 1.15f : 1.55f, 0.5f, win ? "win" : "death");
             else if (body.Id == "kael")
                 ArmClip(actor, win ? kaelWin : kaelDeath, win ? 1.15f : 1.55f, 0.5f, win ? "win" : "death");
+            else if (body.Id == "orin")
+                ArmClip(actor, win ? orinWin : orinDeath, win ? 1.15f : 1.55f, 0.5f, win ? "win" : "death");
             else
                 actor.Pose = win ? "win" : "death";
             actor.HoldClip = true;
@@ -917,6 +999,8 @@ namespace BattleTv.Fight
                 return lfWalk;
             if (id == "kael")
                 return kaelWalk;
+            if (id == "orin")
+                return orinWalk;
             return null;
         }
 
@@ -928,6 +1012,8 @@ namespace BattleTv.Fight
                 return 0.72f;
             if (id == "kael")
                 return 0.76f;
+            if (id == "orin")
+                return 0.80f;
             return 0.62f;
         }
 

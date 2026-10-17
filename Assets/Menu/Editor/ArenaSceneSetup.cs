@@ -99,6 +99,17 @@ namespace BattleTv.Menu.EditorTools
             AssignClip(so, "kaelDeath", Cutout("kael-death", 1));
             AssignClip(so, "kaelWin", Cutout("kael-win", 1));
             AssignClip(so, "kaelWalk", Cutout("kael-walk", 8));
+            var orin = "Assets/Art/Duel/orin.png";
+            Configure(orin, true, 2048, true);
+            so.FindProperty("orinStill").objectReferenceValue = LoadSprite(orin);
+            AssignClip(so, "orinShard", Cutout("orin-shard", 3));
+            AssignClip(so, "orinUnwrite", Cutout("orin-unwrite", 2));
+            AssignClip(so, "orinFlask", Cutout("orin-flask", 2));
+            AssignClip(so, "orinDrink", Cutout("orin-drink", 2));
+            AssignClip(so, "orinSlip", Cutout("orin-slip", 2));
+            AssignClip(so, "orinDeath", Cutout("orin-death", 1));
+            AssignClip(so, "orinWin", Cutout("orin-win", 1));
+            AssignClip(so, "orinWalk", Cutout("orin-walk", 8));
             var glow = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Duel/vale-door/glow-white.png");
             if (glow == null)
                 throw new FileNotFoundException("Sigil plate did not import.", "Assets/Art/Duel/vale-door/glow-white.png");
@@ -177,6 +188,11 @@ namespace BattleTv.Menu.EditorTools
         public static void ImportKael()
         {
             Configure("Assets/Art/Duel/kael.png", true, 2048, true);
+        }
+
+        public static void ImportOrin()
+        {
+            Configure("Assets/Art/Duel/orin.png", true, 2048, true);
         }
 
         public static Sprite LoadPlate(string path)

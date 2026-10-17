@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Orin animation card</title>
+<style>
+  body { margin: 0; background: #140806; color: #f6e7c1; font: 16px/1.4 Georgia, serif; }
+  main { max-width: 1180px; margin: 0 auto; padding: 28px 20px 64px; }
+  h1 { font-weight: normal; letter-spacing: 0.08em; text-transform: uppercase; font-size: 22px; margin: 0 0 6px; }
+  h2 { font-size: 18px; font-weight: normal; margin: 28px 0 8px; color: #fbbf24; }
+  p, li { max-width: 78ch; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { border-bottom: 1px solid rgba(251,191,36,0.35); text-align: left; padding: 6px 8px; vertical-align: top; }
+  th { color: #fbbf24; font-weight: normal; letter-spacing: 0.06em; text-transform: uppercase; font-size: 12px; }
+  .row { display: grid; grid-template-columns: 220px 1fr; gap: 16px; margin: 22px 0; padding-top: 12px; border-top: 1px solid rgba(246,231,193,0.18); }
+  img { width: 220px; height: auto; background: #000; display: block; }
+  .tag { color: #fbbf24; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Orin · Black Sigil</h1>
+  <p>This card is the only pose list. A later frame has to match one of these keys. Native facing is right. The whole sprite flips. One staff. The flask is only on Resonance Flask and Chorus Flask.</p>
+  <table>
+    <tr><th>Book</th><th>Value</th></tr>
+    <tr><td>Basic</td><td>Sigil Shard · the flying shard leaves the crystal · it is not painted on the body</td></tr>
+    <tr><td>Body</td><td>600 health · 34 damage · 0.86 attacks/s · speed 2.9 · armor 2 · range 8.2 · mana 150 · regen 12</td></tr>
+    <tr><td>Crit / cooldown</td><td>0.12 crit · 0.78 cooldown scale</td></tr>
+    <tr><td>Cards</td><td>Might · Focus · Manaflow</td></tr>
+    <tr><td>Moves</td><td>Unwrite · Resonance Flask · Chorus Flask</td></tr>
+    <tr><td>Stride</td><td>Slip · he is a gun · 30s · cost 8</td></tr>
+  </table>
+
+  <h2>What stays off the body</h2>
+  <ul>
+    <li>The Sigil Shard in flight leaves the crystal. The contact frame only thrusts the staff.</li>
+    <li>Unwrite's blast is the ground burst. The open palm stays empty.</li>
+    <li>Resonance Flask's burst and the weakness mark stay off the sprite. The corked flask is on this key.</li>
+    <li>Chorus Flask's heal pulses are the ally ring. The drink stays at his mouth on this key.</li>
+    <li>Slip's streak is the lance already drawn for a gun's corner step.</li>
+  </ul>
+
+  <h2>Keys</h2>
+  <div class="row"><img src="idle.png" alt="Idle"><div><div class="tag">Idle · feet pivot</div><p>Rest. One staff across the body, crystal forward, both boots planted. This frame opens Sigil Shard, Unwrite, Resonance Flask, and Chorus Flask.</p></div></div>
+  <div class="row"><img src="walk-a.png" alt="Walk"><div><div class="tag">Walk · 8 frames · 0.80s · feet pivot · loop</div><p>Contact. One boot reaches. The staff stays in one hand. The clip is orin-walk f00 through f07. These four keys are f00, f02, f04, and f06.</p></div></div>
+  <div class="row"><img src="walk-b.png" alt="Walk pass"><div><div class="tag">Walk · pass</div><p>The rear boot swings through. The hood and the staff stay with him.</p></div></div>
+  <div class="row"><img src="walk-c.png" alt="Walk other"><div><div class="tag">Walk · other contact</div><p>The other boot leads. Same height, same staff, same foot line as the idle.</p></div></div>
+  <div class="row"><img src="walk-d.png" alt="Walk return"><div><div class="tag">Walk · return</div><p>Passing back toward the first contact. The next frame is the loop.</p></div></div>
+  <div class="row"><img src="shard.png" alt="Sigil Shard"><div><div class="tag">Sigil Shard · frame 2 of 3 · 0.36s · feet pivot</div><p>The staff is level and the crystal is bright. Frame 1 and frame 3 are idle. The shard that flies is the view picture from this crystal.</p></div></div>
+  <div class="row"><img src="unwrite.png" alt="Unwrite"><div><div class="tag">Unwrite · frame 2 of 2 · 0.45s · feet pivot</div><p>One staff low in the rear hand. The forward palm is open. The blast is not on this sprite.</p></div></div>
+  <div class="row"><img src="flask.png" alt="Resonance Flask"><div><div class="tag">Resonance Flask · frame 2 of 2 · 0.45s · feet pivot</div><p>One staff across the body. A corked flask leaves the open forward hand.</p></div></div>
+  <div class="row"><img src="drink.png" alt="Chorus Flask"><div><div class="tag">Chorus Flask · frame 2 of 2 · 0.50s · feet pivot</div><p>He drinks from the flask at his mouth. The staff is lowered in the other hand. The heal ring is not on this sprite.</p></div></div>
+  <div class="row"><img src="slip.png" alt="Slip"><div><div class="tag">Slip · frame 1 of 2 · 0.35s · feet pivot</div><p>The step through. Front boot forward, one staff across the chest. Frame 2 is idle.</p></div></div>
+  <div class="row"><img src="death.png" alt="Death"><div><div class="tag">Death · last frame · 1.55s · hold · feet pivot</div><p>Down on his side, eyes closed, one staff in the open hand along the ground. The clip holds this frame. He is not scaled back up to standing height.</p></div></div>
+  <div class="row"><img src="win.png" alt="Win"><div><div class="tag">Win · last frame · 1.15s · hold · feet pivot</div><p>Chin up, one staff overhead, both boots planted. This is not Unwrite: Unwrite keeps the palm open and the staff low.</p></div></div>
+</main>
+</body>
+</html>

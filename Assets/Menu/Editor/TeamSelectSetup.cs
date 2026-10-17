@@ -73,6 +73,11 @@ namespace BattleTv.Menu.EditorTools
             if (kael == null)
                 throw new FileNotFoundException("Kael still did not import.", "Assets/Art/Duel/kael.png");
             teamObject.FindProperty("kaelStill").objectReferenceValue = kael;
+            ArenaSceneSetup.ImportOrin();
+            var orin = ArenaSceneSetup.LoadPlate("Assets/Art/Duel/orin.png");
+            if (orin == null)
+                throw new FileNotFoundException("Orin still did not import.", "Assets/Art/Duel/orin.png");
+            teamObject.FindProperty("orinStill").objectReferenceValue = orin;
             teamObject.ApplyModifiedPropertiesWithoutUndo();
 
             new GameObject("EventSystem", typeof(EventSystem), typeof(StandaloneInputModule));
