@@ -22,8 +22,10 @@ namespace BattleTv.Menu
         Text _status;
         Button _fight;
         Text _fightLabel;
+        ScrollRect _rosterScroll;
         readonly List<Button> _modes = new List<Button>(4);
-        float _listScroll;
+        readonly HashSet<string> _warming = new HashSet<string>();
+        float _rosterNorm = 1f;
 
         void Start()
         {
@@ -88,6 +90,7 @@ namespace BattleTv.Menu
             });
 
             _list = Scroll(shell.transform, "Roster", new Vector2(0f, 0.16f), new Vector2(0.40f, 0.77f), true);
+            _rosterScroll = _list.parent.parent.GetComponent<ScrollRect>();
             _dossier = Scroll(shell.transform, "Dossier", new Vector2(0.41f, 0.16f), new Vector2(1f, 0.855f), false);
 
             var foot = PanelBox(shell.transform, "Foot", new Vector2(0f, 0f), new Vector2(1f, 0.15f));
@@ -154,9 +157,7 @@ namespace BattleTv.Menu
             _need.text = block ?? (ShowPick.Mode <= 1
                 ? "Blind draw. Both sides stay on their own."
                 : "Blind draw onto the sand. A mark stands in until that body is painted.");
-            _status.text = block == null
-                ? Clip(_status, ShowPick.Label(ShowPick.Mode) + "  ·  " + Names(ShowPick.Yours))
-                : "Lane not ready";
+            _status.text = Clip(_status, block ?? (ShowPick.Label(ShowPick.Mode) + "  ·  " + Names(ShowPick.Yours)));
             _fight.interactable = block == null;
             if (_fightLabel != null)
                 _fightLabel.text = block == null ? "FIGHT" : "NOT READY";
@@ -167,8 +168,8 @@ namespace BattleTv.Menu
             PaintFilter("Creatures", ShowPick.Filter == "beast");
             PaintFilter("Beasts", ShowPick.Filter == "pet");
 
-            if (_list != null)
-                _listScroll = _list.anchoredPosition.y;
+            if (_rosterScroll != null)
+                _rosterNorm = _rosterScroll.verticalNormalizedPosition;
             Wipe(_list);
             Wipe(_dossier);
             Wipe(_tray);
@@ -180,7 +181,9 @@ namespace BattleTv.Menu
             _list.sizeDelta = new Vector2(0f, height);
             if (listLayout != null)
                 listLayout.padding = new RectOffset(6, 6, 6, 6);
-            _list.anchoredPosition = new Vector2(0f, _listScroll);
+            Canvas.ForceUpdateCanvases();
+            if (_rosterScroll != null)
+                _rosterScroll.verticalNormalizedPosition = _rosterNorm;
 
             Dossier(looking);
             if (ShowPick.Yours.Count == 0)
@@ -200,7 +203,7 @@ namespace BattleTv.Menu
         {
             var picked = ShowPick.Yours.Contains(kit.Id);
             var on = ShowPick.Inspect == kit.Id;
-            var soon = !kit.Linked && ShowPick.Mode <= 1;
+            var soon = !LaneRoster.InLane(kit.Id) && ShowPick.Mode <= 1;
             var row = Child(_list, kit.Id);
             var rect = row.GetComponent<RectTransform>();
             rect.sizeDelta = new Vector2(0f, 58f);
@@ -209,12 +212,18 @@ namespace BattleTv.Menu
             layout.minHeight = 58f;
             var image = row.AddComponent<Image>();
             image.color = on ? new Color(0.18f, 0.12f, 0.05f, 0.95f) : new Color(0.08f, 0.06f, 0.04f, 0.9f);
+            row.AddComponent<RectMask2D>();
             var button = row.AddComponent<Button>();
             button.targetGraphic = image;
             var id = kit.Id;
             button.onClick.AddListener(() =>
             {
                 ShowPick.Inspect = id;
+                if (ShowPick.Mode <= 1 && !ShowPick.Yours.Contains(id))
+                {
+                    ShowPick.Clear();
+                    ShowPick.Toggle(id);
+                }
                 Refresh();
             });
             var swatch = Child(row.transform, "Swatch");
@@ -225,7 +234,7 @@ namespace BattleTv.Menu
             swatchRect.offsetMax = Vector2.zero;
             var face = swatch.AddComponent<Image>();
             var still = StillFor(kit.Id);
-            if (!FighterBodies.Settled(kit.Id))
+            if (!FighterBodies.Settled(kit.Id) && _warming.Add(kit.Id))
                 StartCoroutine(WarmFace(kit.Id));
             face.sprite = still;
             face.color = still != null ? Color.white : Hex(kit.Color);
@@ -270,7 +279,7 @@ namespace BattleTv.Menu
             lines.Add("");
             lines.Add(kit.Counter);
             lines.Add("");
-            lines.Add(kit.Linked ? "In the lane." : "Not in the lane yet.");
+            lines.Add(LaneRoster.Painted(kit.Id) ? "Painted body." : "Book body. The picture is still a mark.");
             lines.Add("Basic attack: " + kit.Atk);
             lines.Add("");
             lines.Add("Health " + kit.Hp + "    Damage " + kit.Dmg.ToString("0.#") + "    Attacks " + kit.Rate.ToString("0.00") + "/s");
@@ -297,17 +306,21 @@ namespace BattleTv.Menu
 
             var picked = ShowPick.Yours.Contains(kit.Id);
             var full = !picked && ShowPick.Yours.Count >= ShowPick.Mode;
-            var laneOnly = !kit.Linked && ShowPick.Mode <= 1;
-            var add = Button(_dossier, picked ? "Remove from team" : laneOnly ? "Not in the lane yet" : full ? "Team is full" : "Add to team",
-                new Vector2(0.04f, 1f), new Vector2(0.52f, 1f), !laneOnly && (picked || !full));
+            var laneOnly = !LaneRoster.InLane(kit.Id) && ShowPick.Mode <= 1;
+            var swap = ShowPick.Mode <= 1 && full;
+            var open = !laneOnly && (picked || !full || swap);
+            var add = Button(_dossier, picked ? "Remove from team" : laneOnly ? "Not in the lane yet" : open ? "Add to team" : "Team is full",
+                new Vector2(0.04f, 1f), new Vector2(0.52f, 1f), open);
             var addRect = add.GetComponent<RectTransform>();
             addRect.pivot = new Vector2(0f, 1f);
             addRect.anchoredPosition = new Vector2(12f, -8f);
             addRect.sizeDelta = new Vector2(280f, 42f);
-            add.interactable = !laneOnly && (picked || !full);
+            add.interactable = open;
             var id = kit.Id;
             add.onClick.AddListener(() =>
             {
+                if (ShowPick.Mode <= 1 && !ShowPick.Yours.Contains(id))
+                    ShowPick.Clear();
                 if (ShowPick.Toggle(id))
                     Refresh();
             });
@@ -354,8 +367,24 @@ namespace BattleTv.Menu
         IEnumerator WarmFace(string id)
         {
             yield return FighterBodies.LoadIdle(id);
-            if (LaneRoster.ById(ShowPick.Inspect).Id != null)
-                Refresh();
+            _warming.Remove(id);
+            if (_list == null)
+                yield break;
+            var row = _list.Find(id);
+            if (row == null)
+                yield break;
+            var swatch = row.Find("Swatch");
+            if (swatch == null)
+                yield break;
+            var face = swatch.GetComponent<Image>();
+            if (face == null)
+                yield break;
+            var still = StillFor(id);
+            if (still == null)
+                yield break;
+            face.sprite = still;
+            face.color = Color.white;
+            face.preserveAspect = true;
         }
 
         static void PaintFilter(string label, bool on)

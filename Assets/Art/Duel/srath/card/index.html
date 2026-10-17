@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Srath animation card</title>
+<style>
+  body { margin: 0; background: #06140c; color: #f6e7c1; font: 16px/1.4 Georgia, serif; }
+  main { max-width: 1180px; margin: 0 auto; padding: 28px 20px 64px; }
+  h1 { font-weight: normal; letter-spacing: 0.08em; text-transform: uppercase; font-size: 22px; margin: 0 0 6px; }
+  h2 { font-size: 18px; font-weight: normal; margin: 28px 0 8px; color: #86efac; }
+  p, li { max-width: 78ch; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { border-bottom: 1px solid rgba(134,239,172,0.35); text-align: left; padding: 6px 8px; vertical-align: top; }
+  th { color: #86efac; font-weight: normal; letter-spacing: 0.06em; text-transform: uppercase; font-size: 12px; }
+  .row { display: grid; grid-template-columns: 220px 1fr; gap: 16px; margin: 22px 0; padding-top: 12px; border-top: 1px solid rgba(246,231,193,0.18); }
+  img { width: 220px; height: auto; background: #000; display: block; }
+  .tag { color: #86efac; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Srath · Shadow Needle</h1>
+  <p>This card is the only pose list. A later frame has to match one of these keys. Native facing is right. The whole sprite flips. Deep green hood, cloth mask, amber eyes, one silver needle, bare feet. Srath is a gun, so the corner step is Slip. Her own move named Dash is the swift lean, not that step.</p>
+  <table>
+    <tr><th>Book</th><th>Value</th></tr>
+    <tr><td>Basic</td><td>Needle · leaves the hand · range 7.6</td></tr>
+    <tr><td>Body</td><td>550 health · 29 damage · 0.90 attacks/s · speed 4.2 · armor 2 · range 7.6 · mana 80 · regen 7</td></tr>
+    <tr><td>Crit / cooldown</td><td>0.20 crit · 0.82 cooldown scale</td></tr>
+    <tr><td>Cards</td><td>Veil Step · Tithe Sense · Echo Round</td></tr>
+    <tr><td>Moves</td><td>Doublespeak · Needle Rain · Dash</td></tr>
+    <tr><td>Stride</td><td>Slip · she is a gun · 30s · cost 8</td></tr>
+  </table>
+
+  <h2>What stays off the body</h2>
+  <ul>
+    <li>Needle is one silver shot. It leaves the extended hand. It is not painted as extra metal on the cloak.</li>
+    <li>Needle Rain is the spread. The body only lifts the open hand. The needles are not on this sprite.</li>
+    <li>Doublespeak is the veil. The hood stays on, the mask stays on, and the amber eyes stay. The veil is the ring, not a glow painted onto the body.</li>
+    <li>Dash is the named swift lean. Slip is the corner step. They are different keys.</li>
+  </ul>
+
+  <h2>Keys</h2>
+  <div class="row"><img src="idle.png" alt="Idle"><div><div class="tag">Idle · feet pivot</div><p>Rest. Hood up, mask on, needle low in one hand, the other fist closed, both feet planted. This frame opens Needle, Doublespeak, and Needle Rain.</p></div></div>
+  <div class="row"><img src="walk-a.png" alt="Walk contact"><div><div class="tag">Walk · contact · 0.48s · feet pivot</div><p>One stride. The right foot leads and the back foot reaches. The needle stays in the hand. The fight clip is idle, then this stride. An opposite contact is not on this card, so do not copy this stride and call it the other step.</p></div></div>
+  <div class="row"><img src="needle.png" alt="Needle"><div><div class="tag">Needle · frame 2 of 3 · 0.50s · feet pivot</div><p>The leading arm reaches and the needle points ahead, still in the hand. The other fist stays back. Frame 1 and frame 3 are idle.</p></div></div>
+  <div class="row"><img src="rain.png" alt="Needle Rain"><div><div class="tag">Needle Rain · frame 2 of 2 · 0.52s · feet pivot</div><p>The free hand is raised and open. The needle hand stays low. Frame 1 is idle. The spread is not on this sprite.</p></div></div>
+  <div class="row"><img src="speak.png" alt="Doublespeak"><div><div class="tag">Doublespeak · frame 2 of 2 · 0.50s · feet pivot</div><p>Hood dipped, mask and amber eyes still there, needle in the hand, both feet planted. Frame 1 is idle.</p></div></div>
+  <div class="row"><img src="dash.png" alt="Dash"><div><div class="tag">Dash · frame 1 of 2 · 0.42s · feet pivot</div><p>The named swift lean. The body tips forward and one foot reaches. Frame 2 is idle. This is not Slip.</p></div></div>
+  <div class="row"><img src="slip.png" alt="Slip"><div><div class="tag">Slip · frame 1 of 2 · 0.35s · feet pivot</div><p>The corner step. Low, needle forward, both feet down. Frame 2 is idle. There is no Close key.</p></div></div>
+  <div class="row"><img src="death.png" alt="Death"><div><div class="tag">Death · last frame · 1.55s · hold · feet pivot</div><p>Down in the lower part of the canvas, hood and mask still on, needle still in the hand. The clip holds this frame. The body is not scaled back up to standing height.</p></div></div>
+  <div class="row"><img src="win.png" alt="Win"><div><div class="tag">Win · last frame · 1.15s · hold · feet pivot</div><p>Needle raised, the other fist closed, both feet planted. This is not Dash and not Needle.</p></div></div>
+</main>
+</body>
+</html>

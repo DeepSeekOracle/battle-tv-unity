@@ -130,6 +130,20 @@ namespace BattleTv.Fight
 
         void Start()
         {
+            if (FolderCard())
+            {
+                _folderDrive = true;
+                HideBakedProps();
+                RouteNewToons();
+                _voice = gameObject.AddComponent<AudioSource>();
+                _voice.playOnAwake = false;
+                _voice.spatialBlend = 0f;
+                BindStageFilm();
+                if (BattleTv.Menu.IntroMusic.Current != null)
+                    BattleTv.Menu.IntroMusic.Current.SetMuted(true);
+                gameObject.AddComponent<FolderDuel>();
+                return;
+            }
             SideDuel.TakeBlows(_inbox);
             _inbox.Clear();
             SideDuel.ResetLane();
@@ -206,6 +220,13 @@ namespace BattleTv.Fight
             SceneManager.LoadScene("Duel");
         }
 
+        public void NextShow()
+        {
+            if (ShowPick.Autonomous)
+                ShowPick.AdvanceCard();
+            SceneManager.LoadScene("Duel");
+        }
+
         public void BackToMenu()
         {
             ShowPick.LeaveToMode();
@@ -248,8 +269,73 @@ namespace BattleTv.Fight
             }
         }
 
+        internal bool FolderDrive => _folderDrive;
+        internal RectTransform StagePlate => plate;
+        internal RectTransform LeftBody => valeBody;
+        internal RectTransform RightBody => bruteBody;
+        internal LaneHud LeftHud => valeHud;
+        internal LaneHud RightHud => bruteHud;
+        internal Text ClockLabel => clock;
+        internal Text CalloutLabel => callout;
+        internal Sprite Glow => valeRing != null ? valeRing.sprite : null;
+
+        internal void ShowFolderBoard(string title, string detail)
+        {
+            _boardTitle = title;
+            _boardDetail = detail;
+            _lastLine = title;
+            ShowBoard();
+        }
+
+        bool _folderDrive;
+
+        static bool FolderCard()
+        {
+            return ShowPick.Mode <= 1
+                && ShowPick.Yours.Count == 1
+                && ShowPick.Foes.Count == 1
+                && !ShowPick.PaintsValeAndBrute()
+                && LaneRoster.InLane(ShowPick.Yours[0])
+                && LaneRoster.InLane(ShowPick.Foes[0]);
+        }
+
+        void HideBakedProps()
+        {
+            HideImage(valeBody);
+            HideImage(bruteBody);
+            if (valeDoor != null)
+                valeDoor.enabled = false;
+            if (valeRingBack != null)
+                valeRingBack.enabled = false;
+            if (valeRing != null)
+                valeRing.enabled = false;
+            if (poundLine != null)
+                poundLine.enabled = false;
+            if (gripRocks != null)
+                gripRocks.enabled = false;
+            if (dashDust != null)
+                dashDust.enabled = false;
+            if (hitSpark != null)
+                hitSpark.enabled = false;
+        }
+
+        static void HideImage(RectTransform body)
+        {
+            if (body == null)
+                return;
+            var image = body.GetComponent<Image>();
+            if (image != null)
+                image.enabled = false;
+        }
+
         void Update()
         {
+            if (_folderDrive)
+            {
+                Fit();
+                TickShow(Mathf.Min(Time.unscaledDeltaTime, 0.05f));
+                return;
+            }
             float frameDt = Mathf.Min(Time.unscaledDeltaTime, 0.05f);
             bool frozen = _hitStop > 0f;
             if (frozen)
@@ -279,15 +365,7 @@ namespace BattleTv.Fight
                 if (_dashT >= 0f)
                     _dashT += frameDt;
             }
-            if (_boardUp && ShowPick.Autonomous)
-            {
-                _chainT += frameDt;
-                if (_chainT >= 4.5f)
-                {
-                    _chainT = -1f;
-                    Replay();
-                }
-            }
+            TickShow(frameDt);
             _wardPulse += frameDt;
             Fit();
             if (!frozen && !_over && _vale != null && _brute != null)
@@ -1042,6 +1120,17 @@ namespace BattleTv.Fight
             _boardWait = wait + 0.35f;
         }
 
+        void TickShow(float dt)
+        {
+            if (!_boardUp || !ShowPick.Autonomous)
+                return;
+            _chainT += dt;
+            if (_chainT < 4.5f)
+                return;
+            _chainT = -1f;
+            NextShow();
+        }
+
         void ShowBoard()
         {
             _boardUp = true;
@@ -1194,7 +1283,7 @@ namespace BattleTv.Fight
             _clipT = 0f;
         }
 
-        void Fit()
+        internal void Fit()
         {
             if (plate == null)
                 return;

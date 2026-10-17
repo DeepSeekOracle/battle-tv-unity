@@ -138,15 +138,17 @@ namespace BattleTv.Fight
         public static readonly List<ArenaBolt> Bolts = new List<ArenaBolt>(16);
         public static double Time;
         public static bool Over;
+        public static bool Lane;
         public static string Title = "";
         public static string Detail = "";
 
-        public static void Begin(IList<string> yours, IList<string> foes, int seed)
+        public static void Begin(IList<string> yours, IList<string> foes, int seed, bool lane = false)
         {
             Bodies.Clear();
             Bolts.Clear();
             Time = 0;
             Over = false;
+            Lane = lane;
             Title = "";
             Detail = "";
             ArenaLogic.Reset(seed);
@@ -164,6 +166,11 @@ namespace BattleTv.Fight
             ArenaLogic.Advance(dt);
             for (var n = 0; n < 3; n++)
                 Ease();
+            if (Lane)
+            {
+                for (var i = 0; i < Bodies.Count; i++)
+                    Hold(Bodies[i]);
+            }
             if (Time >= SideDuel.HardStop)
                 Close("Neither side fell.", "The sand is a draw.");
             else if (SideDown(0) && SideDown(1))
@@ -193,7 +200,7 @@ namespace BattleTv.Fight
                     Team = team,
                     Slot = slot,
                     X = (team == 0 ? 3 : MapW - 4) * Tile,
-                    Y = (3 + slot * 4) * Tile
+                    Y = Lane ? WorldH * 0.5 : (3 + slot * 4) * Tile
                 };
                 ArenaLogic.Dress(body, kit);
                 Bodies.Add(body);
@@ -226,7 +233,7 @@ namespace BattleTv.Fight
                     if (!b.Alive)
                         continue;
                     var dx = b.X - a.X;
-                    var dy = b.Y - a.Y;
+                    var dy = Lane ? 0 : b.Y - a.Y;
                     var dist = Math.Sqrt(dx * dx + dy * dy);
                     if (dist >= Sep || dist < 0.001)
                         continue;
@@ -251,6 +258,8 @@ namespace BattleTv.Fight
                 body.X = WorldW - Inset;
             if (body.Y > WorldH - Inset)
                 body.Y = WorldH - Inset;
+            if (Lane)
+                body.Y = WorldH * 0.5;
         }
 
         static bool SideDown(int team)

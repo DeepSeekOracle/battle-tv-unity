@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Kairos animation card</title>
+<style>
+  body { margin: 0; background: #120818; color: #f6e7c1; font: 16px/1.4 Georgia, serif; }
+  main { max-width: 1180px; margin: 0 auto; padding: 28px 20px 64px; }
+  h1 { font-weight: normal; letter-spacing: 0.08em; text-transform: uppercase; font-size: 22px; margin: 0 0 6px; }
+  h2 { font-size: 18px; font-weight: normal; margin: 28px 0 8px; color: #c4b5fd; }
+  p, li { max-width: 78ch; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { border-bottom: 1px solid rgba(196,181,253,0.35); text-align: left; padding: 6px 8px; vertical-align: top; }
+  th { color: #c4b5fd; font-weight: normal; letter-spacing: 0.06em; text-transform: uppercase; font-size: 12px; }
+  .row { display: grid; grid-template-columns: 220px 1fr; gap: 16px; margin: 22px 0; padding-top: 12px; border-top: 1px solid rgba(246,231,193,0.18); }
+  img { width: 220px; height: auto; background: #000; display: block; }
+  .tag { color: #c4b5fd; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Kairos · Hour Mage</h1>
+  <p>This card is the only pose list. A later frame has to match one of these keys. Native facing is right. The whole sprite flips. White hair, a gold clock on the brow, purple and gold robe, dark shoes, a clock staff, and one glass vial. Kairos is a gun, so the corner step is Slip. He has no move named Dash.</p>
+  <table>
+    <tr><th>Book</th><th>Value</th></tr>
+    <tr><td>Basic</td><td>Hour Bolt · leaves the clock · range 8.4</td></tr>
+    <tr><td>Body</td><td>600 health · 33 damage · 0.82 attacks/s · speed 3.3 · armor 2 · range 8.4 · mana 155 · regen 13</td></tr>
+    <tr><td>Crit / cooldown</td><td>0.14 crit · 0.74 cooldown scale</td></tr>
+    <tr><td>Cards</td><td>Right-Time Hands · Chorus Charge · Overclock</td></tr>
+    <tr><td>Moves</td><td>Right-Time · Borrowed Second · Δ9 Seal</td></tr>
+    <tr><td>Stride</td><td>Slip · he is a gun · 30s · cost 8</td></tr>
+  </table>
+
+  <h2>What stays off the body</h2>
+  <ul>
+    <li>Hour Bolt is a halo that leaves the clock. It is not painted in the air in front of the staff.</li>
+    <li>Right-Time slows the clump. The ring is not painted on the robe.</li>
+    <li>Borrowed Second resets cooldowns. The clock ring is the effect.</li>
+    <li>Δ9 Seal keeps that book name. The seal ring is not a glow painted onto the body. This is the same move Lightfather carries, drawn on Kairos's own pose.</li>
+  </ul>
+
+  <h2>Keys</h2>
+  <div class="row"><img src="idle.png" alt="Idle"><div><div class="tag">Idle · feet pivot</div><p>Staff upright, vial in the other hand, both shoes planted. This frame opens Hour Bolt, Right-Time, Borrowed Second, and Δ9 Seal.</p></div></div>
+  <div class="row"><img src="walk-a.png" alt="Walk contact"><div><div class="tag">Walk · contact · 0.72s · feet pivot</div><p>One stride. The right shoe leads. The staff and the vial stay in the hands. The fight clip is idle, then this stride. An opposite contact is not on this card.</p></div></div>
+  <div class="row"><img src="bolt.png" alt="Hour Bolt"><div><div class="tag">Hour Bolt · frame 2 of 3 · 0.50s · feet pivot</div><p>The staff reaches forward and the clock points ahead. The vial stays in the other hand. Frame 1 and frame 3 are idle.</p></div></div>
+  <div class="row"><img src="time.png" alt="Right-Time"><div><div class="tag">Right-Time · frame 2 of 2 · 0.52s · feet pivot</div><p>The staff is lifted and the clock is above the head. The vial stays in the other hand. Frame 1 is idle.</p></div></div>
+  <div class="row"><img src="borrow.png" alt="Borrowed Second"><div><div class="tag">Borrowed Second · frame 2 of 2 · 0.50s · feet pivot</div><p>The vial is raised beside the face. The staff stays upright in the other hand. Frame 1 is idle.</p></div></div>
+  <div class="row"><img src="seal.png" alt="Delta 9 Seal"><div><div class="tag">Δ9 Seal · frame 2 of 2 · 0.70s · feet pivot</div><p>Both hands hold the staff upright, and the vial is tucked with them. Frame 1 is idle. The book name stays Δ9 Seal.</p></div></div>
+  <div class="row"><img src="slip.png" alt="Slip"><div><div class="tag">Slip · frame 1 of 2 · 0.35s · feet pivot</div><p>The corner step. Low, staff tipped forward, vial still held. Frame 2 is idle. There is no Close key and no Dash key.</p></div></div>
+  <div class="row"><img src="death.png" alt="Death"><div><div class="tag">Death · last frame · 1.55s · hold · feet pivot</div><p>Down in the lower part of the canvas. The staff and the vial are with the body. The clip holds this frame. The body is not scaled back up to standing height.</p></div></div>
+  <div class="row"><img src="win.png" alt="Win"><div><div class="tag">Win · last frame · 1.15s · hold · feet pivot</div><p>The clock staff is raised. The vial stays in the other hand. Both shoes are planted. This is not Right-Time.</p></div></div>
+</main>
+</body>
+</html>

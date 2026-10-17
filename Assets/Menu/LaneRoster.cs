@@ -64,8 +64,8 @@ namespace BattleTv.Menu
     }
 
     /// <summary>
-    /// The live 33-kit book. Linked is the plug. A kit enters the side lane only
-    /// when Linked is true and the duel view has a body for that id.
+    /// The live 33-kit book. Linked stays Vale and Brute, the baked side-lane pair.
+    /// A painted folder also enters 1v1. An unpainted kit stays a sand mark.
     /// </summary>
     public static class LaneRoster
     {
@@ -119,6 +119,96 @@ namespace BattleTv.Menu
                     list[w++] = All[i];
             }
             return list;
+        }
+
+        /// <summary>
+        /// Show order for endless 1v1. Append a painted id here when that folder is ready.
+        /// Vale and Brute stay first so the opening card is the baked lane.
+        /// </summary>
+        static readonly string[] ShowOrder =
+        {
+            "vale", "brute", "lightfather", "kael", "orin", "nia", "lyra", "arkos", "d9ra", "srath", "kairos"
+        };
+
+        /// <summary>
+        /// Every book kit can be fielded in 1v1, 2v2, 3v3, and 5v5.
+        /// A kit without a folder still fights. Its picture is a mark until it is painted.
+        /// </summary>
+        public static bool InLane(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+                return false;
+            return ById(id).Id != null;
+        }
+
+        /// <summary>
+        /// A painted folder. The endless 1v1 show uses this list. LinkedCount stays Vale and Brute.
+        /// </summary>
+        public static bool Painted(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+                return false;
+            for (var i = 0; i < ShowOrder.Length; i++)
+            {
+                if (ShowOrder[i] == id)
+                    return true;
+            }
+            return false;
+        }
+
+        public static string[] LaneIds()
+        {
+            var list = new List<string>(ShowOrder.Length);
+            for (var i = 0; i < ShowOrder.Length; i++)
+            {
+                if (InLane(ShowOrder[i]))
+                    list.Add(ShowOrder[i]);
+            }
+            for (var i = 0; i < All.Length; i++)
+            {
+                if (!All[i].Linked)
+                    continue;
+                var have = false;
+                for (var j = 0; j < list.Count; j++)
+                {
+                    if (list[j] == All[i].Id)
+                        have = true;
+                }
+                if (!have)
+                    list.Add(All[i].Id);
+            }
+            return list.ToArray();
+        }
+
+        public static string[] BlindLane(IList<string> yours, int count, Random rng)
+        {
+            var pool = new List<string>();
+            for (var i = 0; i < All.Length; i++)
+            {
+                if (!InLane(All[i].Id))
+                    continue;
+                var taken = false;
+                for (var y = 0; y < yours.Count; y++)
+                {
+                    if (yours[y] == All[i].Id)
+                        taken = true;
+                }
+                if (!taken)
+                    pool.Add(All[i].Id);
+            }
+            if (pool.Count < count || rng == null)
+                return null;
+            for (var i = pool.Count - 1; i > 0; i--)
+            {
+                var j = rng.Next(i + 1);
+                var swap = pool[i];
+                pool[i] = pool[j];
+                pool[j] = swap;
+            }
+            var draw = new string[count];
+            for (var i = 0; i < count; i++)
+                draw[i] = pool[i];
+            return draw;
         }
 
         public static string[] LinkedIds()

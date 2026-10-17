@@ -72,6 +72,7 @@ Pack "vale" "against" $true 0.62 "vale.png" @(
     @{ name = "Cover"; seconds = 0.50; pivot = 0.30; frames = (Frames "vale-toss" 8) }
     @{ name = "Bulwark"; seconds = 0.50; pivot = 0.54; frames = (Frames "vale-line" 5) }
     @{ name = "Shield Wall"; seconds = 0.40; pivot = 0.56; frames = (Frames "vale-plant" 4) }
+    @{ name = "Close"; seconds = 0.40; pivot = 0.39; frames = (Frames "vale-bash" 6) }
     @{ name = "walk"; seconds = 0.62; pivot = 0.50; frames = (Frames "vale-walk" 8) }
     @{ name = "death"; seconds = 1.60; pivot = 0.42; frames = (Frames "vale-death" 4) }
     @{ name = "win"; seconds = 1.15; pivot = 0.40; frames = (Frames "vale-win" 2) }
@@ -162,4 +163,37 @@ Pack "arkos" "against" $true 0.74 "arkos.png" @(
     @{ name = "walk"; seconds = 0.74; pivot = 0.50; frames = (Frames "arkos-walk" 4) }
     @{ name = "death"; seconds = 1.55; pivot = 0.50; frames = (Frames "arkos-death" 1) }
     @{ name = "win"; seconds = 1.15; pivot = 0.50; frames = (Frames "arkos-win" 1) }
+)
+
+Pack "d9ra" "against" $true 0.48 "d9ra.png" @(
+    @{ name = "Wolf Fist"; seconds = 0.42; pivot = 0.50; frames = @("IDLE", "d9ra-fist/f01.png", "IDLE") }
+    @{ name = "Shockwave"; seconds = 0.52; pivot = 0.50; frames = @("IDLE", "d9ra-shock/f01.png") }
+    @{ name = "Wolf Fury"; seconds = 0.50; pivot = 0.50; frames = @("IDLE", "d9ra-fury/f01.png") }
+    @{ name = "Squire's Charge"; seconds = 0.40; pivot = 0.50; frames = @("IDLE", "d9ra-charge/f01.png") }
+    @{ name = "Close"; seconds = 0.35; pivot = 0.50; frames = @("d9ra-close/f00.png", "IDLE") }
+    @{ name = "walk"; seconds = 0.48; pivot = 0.50; frames = @("IDLE", "d9ra-walk/f00.png") }
+    @{ name = "death"; seconds = 1.55; pivot = 0.50; frames = (Frames "d9ra-death" 1) }
+    @{ name = "win"; seconds = 1.15; pivot = 0.50; frames = (Frames "d9ra-win" 1) }
+)
+
+Pack "srath" "against" $true 0.48 "srath.png" @(
+    @{ name = "Needle"; seconds = 0.50; pivot = 0.50; frames = @("IDLE", "srath-needle/f01.png", "IDLE") }
+    @{ name = "Doublespeak"; seconds = 0.50; pivot = 0.50; frames = @("IDLE", "srath-speak/f01.png") }
+    @{ name = "Needle Rain"; seconds = 0.52; pivot = 0.50; frames = @("IDLE", "srath-rain/f01.png") }
+    @{ name = "Dash"; seconds = 0.42; pivot = 0.50; frames = @("srath-dash/f00.png", "IDLE") }
+    @{ name = "Slip"; seconds = 0.35; pivot = 0.50; frames = @("srath-slip/f00.png", "IDLE") }
+    @{ name = "walk"; seconds = 0.48; pivot = 0.50; frames = @("IDLE", "srath-walk/f00.png") }
+    @{ name = "death"; seconds = 1.55; pivot = 0.50; frames = (Frames "srath-death" 1) }
+    @{ name = "win"; seconds = 1.15; pivot = 0.50; frames = (Frames "srath-win" 1) }
+)
+
+Pack "kairos" "against" $true 0.72 "kairos.png" @(
+    @{ name = "Hour Bolt"; seconds = 0.50; pivot = 0.50; frames = @("IDLE", "kairos-bolt/f01.png", "IDLE") }
+    @{ name = "Right-Time"; seconds = 0.52; pivot = 0.50; frames = @("IDLE", "kairos-time/f01.png") }
+    @{ name = "Borrowed Second"; seconds = 0.50; pivot = 0.50; frames = @("IDLE", "kairos-borrow/f01.png") }
+    @{ name = ([string]([char]0x0394) + "9 Seal"); seconds = 0.70; pivot = 0.50; frames = @("IDLE", "kairos-seal/f01.png") }
+    @{ name = "Slip"; seconds = 0.35; pivot = 0.50; frames = @("kairos-slip/f00.png", "IDLE") }
+    @{ name = "walk"; seconds = 0.72; pivot = 0.50; frames = @("IDLE", "kairos-walk/f00.png") }
+    @{ name = "death"; seconds = 1.55; pivot = 0.50; frames = (Frames "kairos-death" 1) }
+    @{ name = "win"; seconds = 1.15; pivot = 0.50; frames = (Frames "kairos-win" 1) }
 )

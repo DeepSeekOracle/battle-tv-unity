@@ -295,6 +295,10 @@ namespace BattleTv.Fight
             {
                 var at = shape == "blast" && foe != null ? foe : body;
                 Push(3, at.X, at.Y, at.X, at.Y, 0.5f, radius, color);
+                if (body.Id == "d9ra" && shape == "aura")
+                    Push(1, body.X, body.Y, body.X, body.Y, 0.42f, radius, color);
+                if (body.Id == "kairos" && mv != null && (mv.Id == "righttime" || mv.Id == "seal9"))
+                    Push(1, at.X, at.Y, at.X, at.Y, 0.55f, radius, color);
             }
             else if (shape == "beam" && foe != null)
                 Push(4, body.X, body.Y, foe.X, foe.Y, 0.32f, 18f, color);
@@ -309,11 +313,15 @@ namespace BattleTv.Fight
                 Push(2, body.X, body.Y, body.X, body.Y, 0.7f, 120f, color);
             else if (shape == "blink" || shape == "stride")
                 Push(3, body.X, body.Y, body.X, body.Y, 0.35f, 80f, color);
+            else if (body.Id == "d9ra" && mv != null && mv.Id == "wolffury")
+                Push(1, body.X, body.Y, body.X, body.Y, 0.5f, 110f, color);
             else
             {
                 var ward = Has(st, self, true);
                 var mend = Has(st, self, false);
                 Push(ward && !mend ? 3 : 2, body.X, body.Y, body.X, body.Y, 0.45f, ward ? 110f : 80f, color);
+                if (body.Id == "kairos" && mv != null && mv.Id == "borrow")
+                    Push(1, body.X, body.Y, body.X, body.Y, 0.45f, 90f, color);
             }
         }
 
@@ -396,6 +404,10 @@ namespace BattleTv.Fight
                 }
                 if (body.Stun > 0.05 || body.Root > 0.05)
                     PlaceRing(feet + new Vector2(0f, rise), 70f, color, 0.75f, false);
+                if (body.Id == "d9ra" && body.RageT > 0.05)
+                    PlaceRing(feet, 110f, color, 0.7f, true);
+                if (body.Id == "srath" && body.VeilT > 0.05)
+                    PlaceRing(feet, 96f, color, 0.65f, true);
                 if (body.RegenT > 0.05 || body.HasteT > 0.05 || body.SwiftT > 0.05 || body.VeilT > 0.05)
                     Place(sigilMend, feet + new Vector2(0f, rise * 0.45f), new Vector2(78f, 36f), 0f, color, 0.55f, false);
                 if (body.BurnT > 0.05 || body.BleedT > 0.05)
@@ -418,6 +430,10 @@ namespace BattleTv.Fight
                     PlacePathArrow(bolt, at, width, height);
                 else if (bolt.Src != null && bolt.Src.Id == "lyra")
                     PlaceSpiralNote(bolt, at, width, height);
+                else if (bolt.Src != null && bolt.Src.Id == "srath")
+                    PlaceNeedle(bolt, at, width, height);
+                else if (bolt.Src != null && bolt.Src.Id == "kairos")
+                    PlaceHourBolt(bolt, at, width, height);
                 else
                 {
                     var aim = -(float)bolt.Angle * Mathf.Rad2Deg;
@@ -667,6 +683,102 @@ namespace BattleTv.Fight
                     {
                         nx = 0.320f;
                         ny = 0.678f;
+                    }
+                }
+                return feet + new Vector2(face * w * nx, h * ny);
+            }
+            return feet + new Vector2(0f, 48f);
+        }
+
+        void PlaceNeedle(ArenaBolt bolt, Vector2 at, float width, float height)
+        {
+            var feet = OnSand(bolt.Src.X, bolt.Src.Y, width, height);
+            var hand = NeedleHand(bolt.Src, feet);
+            var tip = at + (hand - feet);
+            var delta = tip - hand;
+            var len = delta.magnitude;
+            var ang = Mathf.Atan2(delta.y, delta.x) * Mathf.Rad2Deg;
+            var mid = (hand + tip) * 0.5f;
+            var green = new Color(0.525f, 0.937f, 0.675f, 1f);
+            var hot = new Color(0.93f, 0.96f, 0.94f, 1f);
+            if (len > 12f)
+            {
+                Place(sigilBolt, mid, new Vector2(len, 8f), ang, green, 1f, false);
+                Place(sigilLance, mid, new Vector2(len, 3f), ang, hot, 1f, false);
+            }
+            Place(sigilBolt, tip, new Vector2(18f, 6f), ang, hot, 1f, false);
+            Place(sigilEmber, hand, new Vector2(12f, 12f), 0f, green, 0.7f, false);
+        }
+
+        Vector2 NeedleHand(ArenaBody body, Vector2 feet)
+        {
+            for (var i = 0; i < _actors.Count; i++)
+            {
+                var actor = _actors[i];
+                if (actor.Body != body || actor.Rect == null)
+                    continue;
+                var face = actor.Rect.localScale.x >= 0f ? 1f : -1f;
+                var w = actor.Rect.sizeDelta.x;
+                var h = actor.Rect.sizeDelta.y;
+                var nx = 0.12f;
+                var ny = 0.42f;
+                if (actor.Clip != null && actor.Clip.Length > 0 && actor.ClipT >= 0f)
+                {
+                    var u = actor.ClipDur > 0.01f ? actor.ClipT / actor.ClipDur : 1f;
+                    var frame = Mathf.Clamp(Mathf.FloorToInt(u * actor.Clip.Length), 0, actor.Clip.Length - 1);
+                    if (frame == 1 && actor.Pose == "Needle")
+                    {
+                        nx = 0.412f;
+                        ny = 0.754f;
+                    }
+                    else if (frame == 1 && actor.Pose == "Needle Rain")
+                    {
+                        nx = -0.109f;
+                        ny = 0.913f;
+                    }
+                }
+                return feet + new Vector2(face * w * nx, h * ny);
+            }
+            return feet + new Vector2(0f, 48f);
+        }
+
+        void PlaceHourBolt(ArenaBolt bolt, Vector2 at, float width, float height)
+        {
+            var feet = OnSand(bolt.Src.X, bolt.Src.Y, width, height);
+            var hand = HourHand(bolt.Src, feet);
+            var tip = at + (hand - feet);
+            var delta = tip - hand;
+            var len = delta.magnitude;
+            var ang = Mathf.Atan2(delta.y, delta.x) * Mathf.Rad2Deg;
+            var mid = (hand + tip) * 0.5f;
+            var gold = new Color(0.92f, 0.76f, 0.28f, 1f);
+            var pale = new Color(0.86f, 0.78f, 1f, 1f);
+            if (len > 12f)
+                Place(sigilLance, mid, new Vector2(len, 4f), ang, gold, 1f, false);
+            PlaceRing(tip, 42f, pale, 1f, false);
+            Place(sigilEmber, hand, new Vector2(16f, 16f), 0f, gold, 0.8f, false);
+        }
+
+        Vector2 HourHand(ArenaBody body, Vector2 feet)
+        {
+            for (var i = 0; i < _actors.Count; i++)
+            {
+                var actor = _actors[i];
+                if (actor.Body != body || actor.Rect == null)
+                    continue;
+                var face = actor.Rect.localScale.x >= 0f ? 1f : -1f;
+                var w = actor.Rect.sizeDelta.x;
+                var h = actor.Rect.sizeDelta.y;
+                var nx = 0.02f;
+                var ny = 0.62f;
+                if (actor.Clip != null && actor.Clip.Length > 0 && actor.ClipT >= 0f)
+                {
+                    var u = actor.ClipDur > 0.01f ? actor.ClipT / actor.ClipDur : 1f;
+                    var frame = Mathf.Clamp(Mathf.FloorToInt(u * actor.Clip.Length), 0, actor.Clip.Length - 1);
+                    if (frame == 1 && actor.Pose == "Hour Bolt")
+                    {
+                        nx = 0.46f;
+                        ny = 0.60f;
                     }
                 }
                 return feet + new Vector2(face * w * nx, h * ny);

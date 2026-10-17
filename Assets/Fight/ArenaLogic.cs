@@ -8,7 +8,8 @@ namespace BattleTv.Fight
     /// The sand runs the live arena's hands. Book stats, card mods, move shapes,
     /// armor, ward share, and the kit-order cast are the same laws as the main
     /// ring. The pit has no interior stone, so the squad's formation layer is
-    /// not copied. The side lane stays in SideDuel.
+    /// not copied. Vale versus Brute stays in SideDuel. Any other painted 1v1
+    /// runs this book on ArenaMatch.Lane.
     /// </summary>
     public static class ArenaLogic
     {
@@ -320,7 +321,7 @@ namespace BattleTv.Fight
                 dist = 1;
             var gap = (Math.Min(Math.Max(e.Range, foe.Range), 2.4) + 0.85) * ArenaMatch.Tile;
             var landX = foe.X + dx / dist * gap;
-            var landY = foe.Y + dy / dist * gap;
+            var landY = ArenaMatch.Lane ? e.Y : foe.Y + dy / dist * gap;
             var held = new ArenaBody { X = landX, Y = landY };
             ArenaMatch.Hold(held);
             if ((held.X - foe.X) * dx + (held.Y - foe.Y) * dy <= 0)
@@ -1035,6 +1036,15 @@ namespace BattleTv.Fight
 
         static void Shove(ArenaBody e, ArenaBody from, double px, bool pull)
         {
+            if (ArenaMatch.Lane)
+            {
+                var dir = Math.Sign(pull ? from.X - e.X : e.X - from.X);
+                if (dir == 0)
+                    dir = 1;
+                e.X += dir * px;
+                ArenaMatch.Hold(e);
+                return;
+            }
             var ang = Math.Atan2(pull ? from.Y - e.Y : e.Y - from.Y, pull ? from.X - e.X : e.X - from.X);
             e.X += Math.Cos(ang) * px;
             e.Y += Math.Sin(ang) * px;

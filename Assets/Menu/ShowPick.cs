@@ -14,6 +14,8 @@ namespace BattleTv.Menu
         public static bool Autonomous;
         public static int Reign;
         public static string ReignId = "";
+        static int _showCursor;
+        static string _pendingWinner = "";
 
         public static void BeginDraft(int mode)
         {
@@ -44,7 +46,7 @@ namespace BattleTv.Menu
             var kit = LaneRoster.ById(id);
             if (kit.Id == null)
                 return false;
-            if (Mode <= 1 && !kit.Linked)
+            if (Mode <= 1 && !LaneRoster.InLane(id))
                 return false;
             if (Yours.Count >= Mode)
                 return false;
@@ -71,22 +73,16 @@ namespace BattleTv.Menu
                 rng = new Random();
             Yours.Clear();
             Foes.Clear();
-            var linked = new List<string>();
-            var rest = new List<string>();
+            var lane = new List<string>();
             var all = LaneRoster.All;
             for (var i = 0; i < all.Length; i++)
             {
-                if (all[i].Linked)
-                    linked.Add(all[i].Id);
-                else
-                    rest.Add(all[i].Id);
+                if (LaneRoster.InLane(all[i].Id))
+                    lane.Add(all[i].Id);
             }
-            Shuffle(linked, rng);
-            Shuffle(rest, rng);
-            for (var i = 0; i < linked.Count && Yours.Count < Mode; i++)
-                Yours.Add(linked[i]);
-            for (var i = 0; i < rest.Count && Yours.Count < Mode; i++)
-                Yours.Add(rest[i]);
+            Shuffle(lane, rng);
+            for (var i = 0; i < lane.Count && Yours.Count < Mode; i++)
+                Yours.Add(lane[i]);
             if (Yours.Count > 0)
                 Inspect = Yours[0];
         }
@@ -103,7 +99,7 @@ namespace BattleTv.Menu
                 var kit = LaneRoster.ById(Yours[i]);
                 if (kit.Id == null)
                     return (Yours[i] ?? "That kit") + " is not in the book.";
-                if (Mode <= 1 && !kit.Linked)
+                if (Mode <= 1 && !LaneRoster.InLane(Yours[i]))
                     return (kit.Name ?? Yours[i]) + " is not in the lane yet.";
             }
             if (Mode > 1)
@@ -126,9 +122,12 @@ namespace BattleTv.Menu
                 return false;
             if (rng == null)
                 rng = new Random();
+            var classic = Mode <= 1 && Yours.Count == 1 && (Yours[0] == "vale" || Yours[0] == "brute");
             var foe = Mode > 1
                 ? LaneRoster.BlindBook(Yours, Mode, rng)
-                : LaneRoster.Blind(Yours, Mode, rng);
+                : classic
+                    ? LaneRoster.Blind(Yours, Mode, rng)
+                    : LaneRoster.BlindLane(Yours, Mode, rng);
             if (foe == null)
             {
                 block = "Not enough other kits for a blind side.";
@@ -136,13 +135,20 @@ namespace BattleTv.Menu
             }
             for (var i = 0; i < foe.Length; i++)
                 Foes.Add(foe[i]);
-            if (Mode <= 1 && !PaintsValeAndBrute())
+            if (Mode <= 1 && !LanePair())
             {
                 Foes.Clear();
-                block = "The lane is still one painted body each. Vale and Brute are the bodies in the side view.";
+                block = "That body is not painted for the side lane yet.";
                 return false;
             }
             return true;
+        }
+
+        static bool LanePair()
+        {
+            if (Mode != 1 || Yours.Count != 1 || Foes.Count != 1)
+                return false;
+            return LaneRoster.InLane(Yours[0]) && LaneRoster.InLane(Foes[0]);
         }
 
         public static bool PaintsValeAndBrute()
@@ -162,10 +168,67 @@ namespace BattleTv.Menu
             Mode = 1;
             Reign = 0;
             ReignId = "";
+            _pendingWinner = "";
+            _showCursor = 1;
+            var roster = LaneRoster.LaneIds();
+            for (var i = 0; i < roster.Length; i++)
+            {
+                if (roster[i] == "brute")
+                    _showCursor = i;
+            }
             Yours.Clear();
             Foes.Clear();
             Yours.Add("vale");
             Foes.Add("brute");
+            return true;
+        }
+
+        /// <summary>
+        /// The winner stays. The next painted body in show order steps in.
+        /// A draw advances the pair. The opening card is still Vale versus Brute.
+        /// </summary>
+        public static bool AdvanceCard()
+        {
+            if (!Autonomous)
+                return false;
+            var roster = LaneRoster.LaneIds();
+            if (roster.Length < 2)
+                return false;
+            var stay = "";
+            if (!string.IsNullOrEmpty(_pendingWinner) && LaneRoster.InLane(_pendingWinner))
+                stay = _pendingWinner;
+            _pendingWinner = "";
+            string foe;
+            if (stay.Length > 0)
+            {
+                foe = "";
+                for (var n = 0; n < roster.Length; n++)
+                {
+                    _showCursor = (_showCursor + 1) % roster.Length;
+                    if (roster[_showCursor] != stay)
+                    {
+                        foe = roster[_showCursor];
+                        break;
+                    }
+                }
+                if (foe.Length == 0)
+                    return false;
+                Yours.Clear();
+                Foes.Clear();
+                Yours.Add(stay);
+                Foes.Add(foe);
+            }
+            else
+            {
+                _showCursor = (_showCursor + 1) % roster.Length;
+                var lead = roster[_showCursor];
+                foe = roster[(_showCursor + 1) % roster.Length];
+                Yours.Clear();
+                Foes.Clear();
+                Yours.Add(lead);
+                Foes.Add(foe);
+            }
+            Mode = 1;
             return true;
         }
 
@@ -174,6 +237,8 @@ namespace BattleTv.Menu
             Autonomous = false;
             Reign = 0;
             ReignId = "";
+            _pendingWinner = "";
+            _showCursor = 0;
             Yours.Clear();
             Foes.Clear();
         }
@@ -198,8 +263,14 @@ namespace BattleTv.Menu
 
         public static void RememberResult(string winnerId)
         {
-            if (!Autonomous || string.IsNullOrEmpty(winnerId))
+            if (!Autonomous)
                 return;
+            if (string.IsNullOrEmpty(winnerId))
+            {
+                _pendingWinner = "";
+                return;
+            }
+            _pendingWinner = winnerId;
             if (winnerId == ReignId)
                 Reign++;
             else

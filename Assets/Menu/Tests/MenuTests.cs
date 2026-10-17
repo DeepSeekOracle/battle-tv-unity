@@ -283,10 +283,10 @@ namespace BattleTv.Menu.Tests
 
             ShowPick.Clear();
             ShowPick.BeginDraft(1);
-            Assert.IsFalse(ShowPick.Toggle("kael"));
-            ShowPick.Yours.Add("kael");
-            Assert.IsFalse(ShowPick.TryField(new System.Random(3), out block));
-            StringAssert.Contains("not in the lane", block);
+            Assert.IsTrue(ShowPick.Toggle("gate"));
+            Assert.IsTrue(ShowPick.TryField(new System.Random(3), out block), block);
+            Assert.AreEqual(1, ShowPick.Foes.Count);
+            Assert.AreNotEqual("gate", ShowPick.Foes[0]);
 
             ShowPick.Clear();
             ShowPick.BeginDraft(2);
@@ -346,11 +346,236 @@ namespace BattleTv.Menu.Tests
         }
 
         [Test]
+        public void AutoShowRotatesPaintedCards()
+        {
+            var roster = LaneRoster.LaneIds();
+            Assert.AreEqual(11, roster.Length);
+            Assert.AreEqual("vale", roster[0]);
+            Assert.AreEqual("brute", roster[1]);
+            Assert.AreEqual("kairos", roster[roster.Length - 1]);
+            Assert.IsTrue(LaneRoster.InLane("gate"));
+            Assert.IsFalse(LaneRoster.Painted("gate"));
+            Assert.IsTrue(LaneRoster.Painted("d9ra"));
+            Assert.IsTrue(LaneRoster.Painted("srath"));
+            Assert.IsTrue(LaneRoster.Painted("kairos"));
+            Assert.IsTrue(LaneRoster.InLane("justicae"));
+            Assert.IsFalse(LaneRoster.Painted("justicae"));
+
+            Assert.IsTrue(ShowPick.BeginAutonomous(new System.Random(5)));
+            Assert.AreEqual("vale", ShowPick.Yours[0]);
+            Assert.AreEqual("brute", ShowPick.Foes[0]);
+            ShowPick.RememberResult("vale");
+            Assert.AreEqual(1, ShowPick.Reign);
+            Assert.IsTrue(ShowPick.AdvanceCard());
+            Assert.AreEqual("vale", ShowPick.Yours[0]);
+            Assert.AreEqual("lightfather", ShowPick.Foes[0]);
+            Assert.IsFalse(ShowPick.PaintsValeAndBrute());
+
+            var seen = new System.Collections.Generic.HashSet<string>();
+            seen.Add("vale");
+            seen.Add("lightfather");
+            var guard = 0;
+            while (seen.Count < roster.Length && guard < 24)
+            {
+                var champ = ShowPick.Yours[0];
+                ShowPick.RememberResult(champ);
+                Assert.IsTrue(ShowPick.AdvanceCard());
+                Assert.AreEqual(champ, ShowPick.Yours[0]);
+                Assert.IsTrue(LaneRoster.InLane(ShowPick.Foes[0]));
+                Assert.AreNotEqual(champ, ShowPick.Foes[0]);
+                seen.Add(ShowPick.Foes[0]);
+                guard++;
+            }
+            Assert.AreEqual(roster.Length, seen.Count);
+
+            ShowPick.RememberResult(null);
+            Assert.IsTrue(ShowPick.AdvanceCard());
+            Assert.IsTrue(LaneRoster.InLane(ShowPick.Yours[0]));
+            Assert.IsTrue(LaneRoster.InLane(ShowPick.Foes[0]));
+            Assert.AreNotEqual(ShowPick.Yours[0], ShowPick.Foes[0]);
+            ShowPick.StopShow();
+            Assert.IsFalse(ShowPick.AdvanceCard());
+        }
+
+        [Test]
+        public void PaintedLaneFightsFinish()
+        {
+            var cards = new[]
+            {
+                "lightfather", "kael",
+                "kael", "orin",
+                "orin", "nia",
+                "nia", "lyra",
+                "lyra", "arkos",
+                "arkos", "vale",
+                "brute", "lightfather",
+                "vale", "nia",
+                "d9ra", "kael",
+                "srath", "nia",
+                "kairos", "srath"
+            };
+            for (var c = 0; c < cards.Length; c += 2)
+                FinishLane(cards[c], cards[c + 1], 20 + c);
+            ArenaMatch.Begin(new[] { "vale" }, new[] { "brute" }, 1);
+            Assert.IsFalse(ArenaMatch.Lane);
+        }
+
+        static void FinishLane(string left, string right, int seed)
+        {
+            ArenaMatch.Begin(new[] { left }, new[] { right }, seed, true);
+            Assert.IsTrue(ArenaMatch.Lane, left);
+            Assert.AreEqual(left, ArenaMatch.Bodies[0].Id);
+            Assert.AreEqual(right, ArenaMatch.Bodies[1].Id);
+            var line = ArenaMatch.Bodies[0].Y;
+            var start = ArenaMatch.Bodies[0].Hp + ArenaMatch.Bodies[1].Hp;
+            var casts = ArenaLogic.Casts;
+            var spoke = false;
+            var steps = 0;
+            while (!ArenaMatch.Over && steps < 13000)
+            {
+                ArenaMatch.Step(0.05);
+                steps++;
+                for (var i = 0; i < ArenaMatch.Bodies.Count; i++)
+                {
+                    var body = ArenaMatch.Bodies[i];
+                    if (!string.IsNullOrEmpty(body.Callout))
+                        spoke = true;
+                    Assert.AreEqual(line, body.Y, 0.01, body.Id);
+                    Assert.GreaterOrEqual(body.X, ArenaMatch.Inset - 0.01, body.Id);
+                    Assert.LessOrEqual(body.X, ArenaMatch.WorldW - ArenaMatch.Inset + 0.01, body.Id);
+                }
+            }
+            Assert.IsTrue(ArenaMatch.Over, left + " vs " + right);
+            Assert.Greater(ArenaLogic.Casts, casts, left + " vs " + right);
+            Assert.IsTrue(spoke, left + " vs " + right);
+            double later = 0;
+            var leftUp = false;
+            var rightUp = false;
+            for (var i = 0; i < ArenaMatch.Bodies.Count; i++)
+            {
+                var body = ArenaMatch.Bodies[i];
+                later += body.Hp;
+                if (!body.Alive)
+                    continue;
+                if (body.Team == 0)
+                    leftUp = true;
+                else
+                    rightUp = true;
+            }
+            Assert.Less(later, start, left + " vs " + right);
+            Assert.IsTrue(leftUp != rightUp || ArenaMatch.Time >= SideDuel.HardStop - 0.1, left + " vs " + right);
+        }
+
+        [Test]
+        public void PaintedChampionsEnterTheSideLane()
+        {
+            Assert.AreEqual(2, LaneRoster.LinkedCount);
+            Assert.IsFalse(LaneRoster.ById("kael").Linked);
+            Assert.IsFalse(LaneRoster.ById("arkos").Linked);
+            Assert.IsFalse(LaneRoster.ById("d9ra").Linked);
+            Assert.IsFalse(LaneRoster.ById("srath").Linked);
+            Assert.IsFalse(LaneRoster.ById("kairos").Linked);
+            var painted = new[] { "lightfather", "kael", "orin", "nia", "lyra", "arkos", "d9ra", "srath", "kairos" };
+            for (var i = 0; i < painted.Length; i++)
+            {
+                var id = painted[i];
+                Assert.IsTrue(LaneRoster.InLane(id), id);
+                ShowPick.Clear();
+                ShowPick.BeginDraft(1);
+                Assert.IsTrue(ShowPick.Toggle(id), id);
+                Assert.IsTrue(ShowPick.TryField(new System.Random(11), out var block), id + " " + block);
+                Assert.AreEqual(1, ShowPick.Foes.Count);
+                Assert.IsTrue(LaneRoster.InLane(ShowPick.Foes[0]), id);
+                Assert.AreNotEqual(id, ShowPick.Foes[0]);
+                Assert.IsFalse(ShowPick.PaintsValeAndBrute());
+            }
+            ShowPick.Clear();
+            ShowPick.BeginDraft(1);
+            Assert.IsTrue(ShowPick.Toggle("vale"));
+            Assert.IsTrue(ShowPick.TryField(new System.Random(1), out var classic));
+            Assert.IsNull(classic);
+            Assert.AreEqual("brute", ShowPick.Foes[0]);
+            Assert.IsTrue(ShowPick.PaintsValeAndBrute());
+
+            ArenaMatch.Begin(new[] { "kael" }, new[] { "lyra" }, 4, true);
+            Assert.IsTrue(ArenaMatch.Lane);
+            Assert.AreEqual(2, ArenaMatch.Bodies.Count);
+            var line = ArenaMatch.Bodies[0].Y;
+            Assert.AreEqual(line, ArenaMatch.Bodies[1].Y, 0.01);
+            Assert.IsFalse(ArenaMatch.Bodies[0].Gun);
+            Assert.IsTrue(ArenaMatch.Bodies[1].Gun);
+            for (var step = 0; step < 90; step++)
+                ArenaMatch.Step(0.05);
+            Assert.AreEqual(line, ArenaMatch.Bodies[0].Y, 0.01);
+            Assert.AreEqual(line, ArenaMatch.Bodies[1].Y, 0.01);
+            Assert.Greater(System.Math.Abs(ArenaMatch.Bodies[0].X - ArenaMatch.Bodies[1].X), 1);
+            ArenaMatch.Begin(new[] { "vale" }, new[] { "brute" }, 1);
+            Assert.IsFalse(ArenaMatch.Lane);
+            ShowPick.StopShow();
+        }
+
+        [Test]
+        public void BookKitsFieldEveryMode()
+        {
+            var modes = new[] { 1, 2, 3, 5 };
+            for (var m = 0; m < modes.Length; m++)
+            {
+                var mode = modes[m];
+                for (var i = 0; i < LaneRoster.All.Length; i++)
+                {
+                    var id = LaneRoster.All[i].Id;
+                    ShowPick.Clear();
+                    ShowPick.BeginDraft(mode);
+                    Assert.IsTrue(ShowPick.Toggle(id), id + " mode " + mode);
+                    var n = 1;
+                    for (var j = 0; n < mode && j < LaneRoster.All.Length; j++)
+                    {
+                        if (LaneRoster.All[j].Id == id)
+                            continue;
+                        Assert.IsTrue(ShowPick.Toggle(LaneRoster.All[j].Id), LaneRoster.All[j].Id);
+                        n++;
+                    }
+                    Assert.AreEqual(mode, ShowPick.Yours.Count, id);
+                    Assert.IsTrue(ShowPick.TryField(new System.Random(mode * 100 + i), out var block), id + " " + block);
+                    Assert.AreEqual(mode, ShowPick.Foes.Count, id);
+                    var lane = mode == 1;
+                    ArenaMatch.Begin(ShowPick.Yours, ShowPick.Foes, 3, lane);
+                    Assert.AreEqual(mode * 2, ArenaMatch.Bodies.Count, id);
+                    Assert.AreEqual(lane, ArenaMatch.Lane, id);
+                    for (var b = 0; b < ArenaMatch.Bodies.Count; b++)
+                    {
+                        var body = ArenaMatch.Bodies[b];
+                        Assert.Greater(body.Moves.Count, 0, body.Id);
+                        if (lane)
+                            Assert.AreEqual(ArenaMatch.WorldH * 0.5, body.Y, 0.01, body.Id);
+                    }
+                }
+            }
+            var pastThePair = false;
+            for (var s = 1; s <= 12; s++)
+            {
+                ShowPick.Clear();
+                ShowPick.BeginDraft(2);
+                ShowPick.RandomDraw(new System.Random(s));
+                Assert.AreEqual(2, ShowPick.Yours.Count);
+                if (ShowPick.Yours[0] != "vale" && ShowPick.Yours[0] != "brute")
+                    pastThePair = true;
+                if (ShowPick.Yours[1] != "vale" && ShowPick.Yours[1] != "brute")
+                    pastThePair = true;
+            }
+            Assert.IsTrue(pastThePair);
+            ShowPick.StopShow();
+        }
+
+        [Test]
         public void ArenaFieldUsesTheBook()
         {
             ShowPick.Clear();
             ShowPick.BeginDraft(1);
-            Assert.IsFalse(ShowPick.Toggle("kael"));
+            Assert.IsTrue(ShowPick.Toggle("kael"));
+            ShowPick.Clear();
+            Assert.IsTrue(ShowPick.Toggle("gate"));
+            ShowPick.Clear();
 
             ShowPick.Clear();
             ShowPick.BeginDraft(2);
@@ -432,6 +657,111 @@ namespace BattleTv.Menu.Tests
         }
 
         [Test]
+        public void PaintedRosterDashes()
+        {
+            var ids = LaneRoster.LaneIds();
+            Assert.AreEqual(11, ids.Length);
+            for (var i = 0; i < ids.Length; i++)
+            {
+                Leap(ids[i], true, false);
+                Leap(ids[i], false, false);
+                Leap(ids[i], true, true);
+                Leap(ids[i], false, true);
+                LeapVertical(ids[i], true);
+                LeapVertical(ids[i], false);
+            }
+            Sprint("nia");
+            Sprint("arkos");
+            Sprint("srath");
+            var vale = System.IO.File.ReadAllText(System.IO.Path.Combine(
+                UnityEngine.Application.streamingAssetsPath, "fighters", "vale", "entity.json"));
+            Assert.IsTrue(vale.Contains("\"Close\""));
+            Assert.IsTrue(vale.Contains("vale-bash-f00.png"));
+        }
+
+        static void Leap(string id, bool leftWall, bool lane)
+        {
+            var foeId = id == "vale" ? "brute" : "vale";
+            ArenaMatch.Begin(new[] { id }, new[] { foeId }, 4, lane);
+            var e = ArenaMatch.Bodies[0];
+            var foe = ArenaMatch.Bodies[1];
+            var y = ArenaMatch.WorldH * 0.5;
+            e.X = leftWall ? ArenaMatch.Inset : ArenaMatch.WorldW - ArenaMatch.Inset;
+            e.Y = y;
+            foe.X = e.X + (leftWall ? 70 : -70);
+            foe.Y = y;
+            e.Mana = e.ManaMax;
+            foe.Mana = 0;
+            var expect = e.Gun ? "Slip" : "Close";
+            ArenaMatch.Step(0.05);
+            var where = id + (leftWall ? " left " : " right ") + (lane ? "lane" : "sand");
+            if (leftWall)
+                Assert.Greater(e.X, foe.X, where);
+            else
+                Assert.Less(e.X, foe.X, where);
+            Assert.AreEqual(expect, e.Callout, where);
+            Assert.AreEqual(30, e.StrideCd, 0.01, where);
+            Assert.AreEqual(e.ManaMax - 8, e.Mana, 0.01, where);
+            if (lane)
+                Assert.AreEqual(y, e.Y, 0.01, where);
+            ArenaMatch.Step(0.05);
+            Assert.Greater(e.StrideCd, 20, where);
+        }
+
+        static void LeapVertical(string id, bool top)
+        {
+            var foeId = id == "vale" ? "brute" : "vale";
+            ArenaMatch.Begin(new[] { id }, new[] { foeId }, 4, false);
+            var e = ArenaMatch.Bodies[0];
+            var foe = ArenaMatch.Bodies[1];
+            var x = ArenaMatch.WorldW * 0.5;
+            e.X = x;
+            e.Y = top ? ArenaMatch.Inset : ArenaMatch.WorldH - ArenaMatch.Inset;
+            foe.X = x;
+            foe.Y = e.Y + (top ? 70 : -70);
+            e.Mana = e.ManaMax;
+            foe.Mana = 0;
+            ArenaMatch.Step(0.05);
+            var where = id + (top ? " top" : " bottom");
+            if (top)
+                Assert.Greater(e.Y, foe.Y, where);
+            else
+                Assert.Less(e.Y, foe.Y, where);
+            Assert.AreEqual(e.Gun ? "Slip" : "Close", e.Callout, where);
+            Assert.AreEqual(30, e.StrideCd, 0.01, where);
+        }
+
+        static void Sprint(string id)
+        {
+            ArenaMatch.Begin(new[] { id }, new[] { "brute" }, 6, true);
+            var e = ArenaMatch.Bodies[0];
+            var foe = ArenaMatch.Bodies[1];
+            var y = ArenaMatch.WorldH * 0.5;
+            e.X = ArenaMatch.WorldW * 0.5;
+            e.Y = y;
+            foe.X = e.X + 80;
+            foe.Y = y;
+            e.Mana = e.ManaMax;
+            foe.Mana = 0;
+            var found = false;
+            for (var i = 0; i < e.Moves.Count; i++)
+            {
+                if (e.Moves[i].Name == "Dash")
+                    found = true;
+                else
+                    e.Cds[i] = 99;
+            }
+            Assert.IsTrue(found, id);
+            var before = e.X;
+            ArenaMatch.Step(0.05);
+            Assert.AreEqual("Dash", e.Callout, id);
+            Assert.Greater(e.SwiftT, 2, id);
+            Assert.AreEqual(before, e.X, 0.01, id);
+            Assert.AreEqual(y, e.Y, 0.01, id);
+            Assert.AreEqual(e.ManaMax - System.Math.Min(6 * 1.1, 40), e.Mana, 0.01, id);
+        }
+
+        [Test]
         public void FighterFolderKeepsLyraApart()
         {
             var path = System.IO.Path.Combine(UnityEngine.Application.streamingAssetsPath, "fighters", "lyra", "entity.json");
@@ -457,6 +787,32 @@ namespace BattleTv.Menu.Tests
             Assert.IsTrue(arkos.Contains("Close"));
             Assert.IsFalse(arkos.Contains("Slip"));
             Assert.IsTrue(System.IO.File.Exists(System.IO.Path.Combine(UnityEngine.Application.streamingAssetsPath, "fighters", "arkos", "arkos.png")));
+            var wolf = System.IO.File.ReadAllText(System.IO.Path.Combine(UnityEngine.Application.streamingAssetsPath, "fighters", "d9ra", "entity.json"));
+            Assert.IsTrue(wolf.Contains("Wolf Fist"));
+            Assert.IsTrue(wolf.Contains("Shockwave"));
+            Assert.IsTrue(wolf.Contains("Wolf Fury"));
+            Assert.IsTrue(wolf.Contains("Squire's Charge"));
+            Assert.IsTrue(wolf.Contains("Close"));
+            Assert.IsFalse(wolf.Contains("\"Dash\""));
+            Assert.IsFalse(wolf.Contains("Slip"));
+            Assert.IsTrue(System.IO.File.Exists(System.IO.Path.Combine(UnityEngine.Application.streamingAssetsPath, "fighters", "d9ra", "d9ra.png")));
+            var needle = System.IO.File.ReadAllText(System.IO.Path.Combine(UnityEngine.Application.streamingAssetsPath, "fighters", "srath", "entity.json"));
+            Assert.IsTrue(needle.Contains("\"Needle\""));
+            Assert.IsTrue(needle.Contains("Doublespeak"));
+            Assert.IsTrue(needle.Contains("Needle Rain"));
+            Assert.IsTrue(needle.Contains("\"Dash\""));
+            Assert.IsTrue(needle.Contains("Slip"));
+            Assert.IsFalse(needle.Contains("Close"));
+            Assert.IsTrue(System.IO.File.Exists(System.IO.Path.Combine(UnityEngine.Application.streamingAssetsPath, "fighters", "srath", "srath.png")));
+            var hour = System.IO.File.ReadAllText(System.IO.Path.Combine(UnityEngine.Application.streamingAssetsPath, "fighters", "kairos", "entity.json"));
+            Assert.IsTrue(hour.Contains("Hour Bolt"));
+            Assert.IsTrue(hour.Contains("Right-Time"));
+            Assert.IsTrue(hour.Contains("Borrowed Second"));
+            Assert.IsTrue(hour.Contains("\u03949 Seal"));
+            Assert.IsTrue(hour.Contains("Slip"));
+            Assert.IsFalse(hour.Contains("\"Dash\""));
+            Assert.IsFalse(hour.Contains("Close"));
+            Assert.IsTrue(System.IO.File.Exists(System.IO.Path.Combine(UnityEngine.Application.streamingAssetsPath, "fighters", "kairos", "kairos.png")));
         }
 
         static void AssertFighters(MenuController.FitResult fit)

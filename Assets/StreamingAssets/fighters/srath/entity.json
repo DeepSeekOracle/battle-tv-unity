@@ -1,0 +1,17 @@
+{
+    "id": "srath",
+    "flip": "against",
+    "clipPivot": true,
+    "walk": 0.48,
+    "idle": "srath.png",
+    "clips": [
+        { "name": "Needle", "seconds": 0.50, "pivot": 0.5, "frames": ["srath.png", "srath-needle-f01.png", "srath.png"] },
+        { "name": "Doublespeak", "seconds": 0.50, "pivot": 0.5, "frames": ["srath.png", "srath-speak-f01.png"] },
+        { "name": "Needle Rain", "seconds": 0.52, "pivot": 0.5, "frames": ["srath.png", "srath-rain-f01.png"] },
+        { "name": "Dash", "seconds": 0.42, "pivot": 0.5, "frames": ["srath-dash-f00.png", "srath.png"] },
+        { "name": "Slip", "seconds": 0.35, "pivot": 0.5, "frames": ["srath-slip-f00.png", "srath.png"] },
+        { "name": "walk", "seconds": 0.48, "pivot": 0.5, "frames": ["srath.png", "srath-walk-f00.png"] },
+        { "name": "death", "seconds": 1.55, "pivot": 0.5, "frames": ["srath-death-f00.png"] },
+        { "name": "win", "seconds": 1.15, "pivot": 0.5, "frames": ["srath-win-f00.png"] }
+    ]
+}
