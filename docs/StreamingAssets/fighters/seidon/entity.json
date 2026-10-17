@@ -1,0 +1,17 @@
+{
+    "id": "seidon",
+    "flip": "against",
+    "clipPivot": true,
+    "walk": 0.72,
+    "idle": "seidon.png",
+    "clips": [
+        { "name": "Tide Bolt", "seconds": 0.50, "pivot": 0.5, "frames": ["seidon.png", "seidon-bolt-f01.png", "seidon.png"] },
+        { "name": "Undertow", "seconds": 0.52, "pivot": 0.5, "frames": ["seidon.png", "seidon-undertow-f01.png"] },
+        { "name": "Current", "seconds": 0.50, "pivot": 0.5, "frames": ["seidon.png", "seidon-current-f01.png"] },
+        { "name": "Geodesic", "seconds": 0.52, "pivot": 0.5, "frames": ["seidon.png", "seidon-geo-f01.png"] },
+        { "name": "Slip", "seconds": 0.35, "pivot": 0.5, "frames": ["seidon-slip-f00.png", "seidon.png"] },
+        { "name": "walk", "seconds": 0.72, "pivot": 0.5, "frames": ["seidon.png", "seidon-walk-f00.png"] },
+        { "name": "death", "seconds": 1.55, "pivot": 0.5, "frames": ["seidon-death-f00.png"] },
+        { "name": "win", "seconds": 1.15, "pivot": 0.5, "frames": ["seidon-win-f00.png"] }
+    ]
+}
