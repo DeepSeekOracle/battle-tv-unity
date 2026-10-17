@@ -85,6 +85,19 @@
                                  ]
                   },
                   {
+                      "name":  "Close",
+                      "seconds":  0.4,
+                      "pivot":  0.39,
+                      "frames":  [
+                                     "vale-bash-f00.png",
+                                     "vale-bash-f01.png",
+                                     "vale-bash-f02.png",
+                                     "vale-bash-f03.png",
+                                     "vale-bash-f04.png",
+                                     "vale-bash-f05.png"
+                                 ]
+                  },
+                  {
                       "name":  "Shield Wall",
                       "seconds":  0.4,
                       "pivot":  0.56,
