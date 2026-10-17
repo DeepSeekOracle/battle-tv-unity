@@ -170,6 +170,10 @@ namespace BattleTv.Fight
             var foe = Target(e);
             if (foe == null)
                 return;
+            // Same rule as the side lane: pinned, with someone in their face,
+            // the stride goes through them. It does not wait on the gun step.
+            if (TryCornerLeap(e))
+                return;
             if (e.Hp / e.Max < 0.5 && TrySelfHeal(e))
                 return;
             if (TryStopRush(e))
@@ -268,13 +272,90 @@ namespace BattleTv.Fight
                 else if (mv.Aim == "deadally")
                     ready = AnyDead(e.Team);
                 else if (mv.Aim == "self" || mv.Shape == "aura" || mv.Shape == "self")
-                    ready = dist < Math.Max(reach, ring) + 8;
+                {
+                    var span = Math.Max(reach, ring);
+                    // A self plate with no radius was waiting for an 8px overlap.
+                    // The lane casts those when the other fighter is within 3 tiles.
+                    ready = span < 8 ? dist < 3 * ArenaMatch.Tile : dist < span + 8;
+                    if (ready && mv.St != null && mv.St.Aegis > 0 && e.Shield > 0 && mv.Shape == "self")
+                        ready = false;
+                }
                 else
                     ready = dist <= reach + 30 || mv.Range <= 0 && dist < ring + 8;
                 if (ready && Cast(e, mv, i, foe))
                     return true;
             }
             return false;
+        }
+
+        const double PinBand = 22;
+
+        static bool TryCornerLeap(ArenaBody e)
+        {
+            if (e.Root > 0 || e.Silence > 0 || !AgainstStone(e))
+                return false;
+            var si = IndexOf(e, "stride");
+            if (si < 0 || e.Cds[si] > 0 || e.Mana < Cost(e.Moves[si]))
+                return false;
+            var face = (Math.Min(e.Range, 2.2) + 1.5) * ArenaMatch.Tile;
+            ArenaBody foe = null;
+            var best = face;
+            for (var i = 0; i < ArenaMatch.Bodies.Count; i++)
+            {
+                var o = ArenaMatch.Bodies[i];
+                if (!o.Alive || o.Team == e.Team)
+                    continue;
+                var d = Dist(e, o);
+                if (d > best || !Inward(e, o))
+                    continue;
+                best = d;
+                foe = o;
+            }
+            if (foe == null)
+                return false;
+            var dx = foe.X - e.X;
+            var dy = foe.Y - e.Y;
+            var dist = Math.Sqrt(dx * dx + dy * dy);
+            if (dist < 1)
+                dist = 1;
+            var gap = (Math.Min(Math.Max(e.Range, foe.Range), 2.4) + 0.85) * ArenaMatch.Tile;
+            var landX = foe.X + dx / dist * gap;
+            var landY = foe.Y + dy / dist * gap;
+            var held = new ArenaBody { X = landX, Y = landY };
+            ArenaMatch.Hold(held);
+            if ((held.X - foe.X) * dx + (held.Y - foe.Y) * dy <= 0)
+                return false;
+            var mv = e.Moves[si];
+            e.X = held.X;
+            e.Y = held.Y;
+            e.Mana -= Cost(mv);
+            e.Cds[si] = mv.Cd;
+            e.StrideCd = e.Cds[si];
+            e.Callout = mv.Name;
+            e.Swing = 0.4;
+            Casts++;
+            return true;
+        }
+
+        static bool AgainstStone(ArenaBody e)
+        {
+            return e.X <= ArenaMatch.Inset + PinBand
+                || e.Y <= ArenaMatch.Inset + PinBand
+                || e.X >= ArenaMatch.WorldW - ArenaMatch.Inset - PinBand
+                || e.Y >= ArenaMatch.WorldH - ArenaMatch.Inset - PinBand;
+        }
+
+        static bool Inward(ArenaBody e, ArenaBody o)
+        {
+            if (e.X <= ArenaMatch.Inset + PinBand && o.X <= e.X + 6)
+                return false;
+            if (e.X >= ArenaMatch.WorldW - ArenaMatch.Inset - PinBand && o.X >= e.X - 6)
+                return false;
+            if (e.Y <= ArenaMatch.Inset + PinBand && o.Y <= e.Y + 6)
+                return false;
+            if (e.Y >= ArenaMatch.WorldH - ArenaMatch.Inset - PinBand && o.Y >= e.Y - 6)
+                return false;
+            return true;
         }
 
         static bool TryStride(ArenaBody e, ArenaBody foe)

@@ -398,6 +398,39 @@ namespace BattleTv.Menu.Tests
             ShowPick.StopShow();
         }
 
+        [Test]
+        public void CorneredFighterLeapsPast()
+        {
+            ArenaMatch.Begin(new[] { "vale" }, new[] { "brute" }, 1);
+            var vale = ArenaMatch.Bodies[0];
+            var brute = ArenaMatch.Bodies[1];
+            vale.X = ArenaMatch.Inset;
+            vale.Y = ArenaMatch.WorldH * 0.5;
+            brute.X = vale.X + 70;
+            brute.Y = vale.Y;
+            vale.Mana = vale.ManaMax;
+            brute.Mana = 0;
+            ArenaMatch.Step(0.05);
+            Assert.Greater(vale.X, brute.X);
+            Assert.AreEqual(30, vale.StrideCd, 0.01);
+            Assert.AreEqual("Close", vale.Callout);
+            Assert.AreEqual(vale.ManaMax - 8, vale.Mana, 0.01);
+
+            ArenaMatch.Begin(new[] { "brute" }, new[] { "vale" }, 1);
+            brute = ArenaMatch.Bodies[0];
+            vale = ArenaMatch.Bodies[1];
+            brute.X = ArenaMatch.WorldW - ArenaMatch.Inset;
+            brute.Y = ArenaMatch.WorldH * 0.5;
+            vale.X = brute.X - 70;
+            vale.Y = brute.Y;
+            brute.Mana = brute.ManaMax;
+            vale.Mana = 0;
+            ArenaMatch.Step(0.05);
+            Assert.Less(brute.X, vale.X);
+            Assert.AreEqual(30, brute.StrideCd, 0.01);
+            Assert.AreEqual("Close", brute.Callout);
+        }
+
         static void AssertFighters(MenuController.FitResult fit)
         {
             Assert.IsTrue(MenuController.FighterThirdStaysVisible(fit, MenuController.LeftFighterThird));

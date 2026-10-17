@@ -222,7 +222,10 @@ namespace BattleTv.Fight
                 if (body.Alive)
                     actor.Rect.localScale = new Vector3(face, 1f, 1f);
                 if (body.Swing > 0.22 && actor.Heard < 0.05)
-                    Play("hit", 0.22f);
+                {
+                    var named = body.Callout ?? "";
+                    Play(named == "Close" || named == "Slip" ? "cast" : "hit", 0.22f);
+                }
                 if (body.Alive && body.Swing > actor.Heard + 0.02 && body.Swing > 0.18)
                 {
                     Arm(actor, body);
@@ -857,6 +860,12 @@ namespace BattleTv.Fight
                 var dx = body.X - actor.FootX;
                 var dy = body.Y - actor.FootY;
                 moved = dx * dx + dy * dy > 2.25;
+                var named = body.Callout ?? "";
+                if ((named == "Close" || named == "Slip") && dx * dx + dy * dy > 64 * 64)
+                {
+                    Push(4, actor.FootX, actor.FootY, body.X, body.Y, 0.32f, 26f, KitColor(body));
+                    Push(3, actor.FootX, actor.FootY, actor.FootX, actor.FootY, 0.28f, 72f, KitColor(body));
+                }
             }
             actor.HasFoot = true;
             actor.FootX = body.X;
