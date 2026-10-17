@@ -1,0 +1,1066 @@
+fileFormatVersion: 2
+guid: 09d2f5575cb196a49a5f84c86b87aef5
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -217470677685098750
+    second: slip_0
+  - first:
+      213: -3244553547364123831
+    second: slip_1
+  - first:
+      213: -7279502881403528622
+    second: slip_2
+  - first:
+      213: -1082988837350773442
+    second: slip_3
+  - first:
+      213: -8084108501871783139
+    second: slip_4
+  - first:
+      213: -2410703302915994424
+    second: slip_5
+  - first:
+      213: 5239491258840101920
+    second: slip_6
+  - first:
+      213: -9127782569615517704
+    second: slip_7
+  - first:
+      213: -4776309303208871209
+    second: slip_8
+  - first:
+      213: 9025722669172056537
+    second: slip_9
+  - first:
+      213: -2757107230556578687
+    second: slip_10
+  - first:
+      213: 5151859684966933050
+    second: slip_11
+  - first:
+      213: 1199832248039616229
+    second: slip_12
+  - first:
+      213: 4849260573498378350
+    second: slip_13
+  - first:
+      213: 7289754330904716896
+    second: slip_14
+  - first:
+      213: 1002662919461190405
+    second: slip_15
+  - first:
+      213: -572632148015211420
+    second: slip_16
+  - first:
+      213: 5124745457538752251
+    second: slip_17
+  - first:
+      213: 6276852333092971482
+    second: slip_18
+  - first:
+      213: -9091896505094293914
+    second: slip_19
+  - first:
+      213: 1568708825945137364
+    second: slip_20
+  - first:
+      213: -8738743635565089934
+    second: slip_21
+  - first:
+      213: 387189661944814432
+    second: slip_22
+  - first:
+      213: -419922276663556114
+    second: slip_23
+  - first:
+      213: -6974664658239579564
+    second: slip_24
+  - first:
+      213: 8990212881453978291
+    second: slip_25
+  - first:
+      213: 4366525416540851341
+    second: slip_26
+  - first:
+      213: -5910437228255087084
+    second: slip_27
+  - first:
+      213: -2884758752802657306
+    second: slip_28
+  - first:
+      213: 477390205253927652
+    second: slip_29
+  - first:
+      213: -2128035269918806849
+    second: slip_30
+  - first:
+      213: -8782285639993501081
+    second: slip_31
+  - first:
+      213: 6375753657368615369
+    second: slip_32
+  - first:
+      213: 1380570752791665386
+    second: slip_33
+  - first:
+      213: -4047802298274934289
+    second: slip_34
+  - first:
+      213: 1572263867999568993
+    second: slip_35
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: slip_0
+      rect:
+        serializedVersion: 2
+        x: 519
+        y: 737
+        width: 170
+        height: 232
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 207248322936bfcf0800000000000000
+      internalID: -217470677685098750
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slip_1
+      rect:
+        serializedVersion: 2
+        x: 692
+        y: 948
+        width: 11
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 94bb0a23db709f2d0800000000000000
+      internalID: -3244553547364123831
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slip_2
+      rect:
+        serializedVersion: 2
+        x: 636
+        y: 766
+        width: 118
+        height: 152
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 25a9284a2b20afa90800000000000000
+      internalID: -7279502881403528622
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slip_3
+      rect:
+        serializedVersion: 2
+        x: 695
+        y: 903
+        width: 29
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e3d6efde36378f0f0800000000000000
+      internalID: -1082988837350773442
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slip_4
+      rect:
+        serializedVersion: 2
+        x: 730
+        y: 905
+        width: 14
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d139734262a7fcf80800000000000000
+      internalID: -8084108501871783139
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slip_5
+      rect:
+        serializedVersion: 2
+        x: 452
+        y: 718
+        width: 95
+        height: 130
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8ccc4d25e167b8ed0800000000000000
+      internalID: -2410703302915994424
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slip_6
+      rect:
+        serializedVersion: 2
+        x: 479
+        y: 549
+        width: 203
+        height: 202
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 024bde63a8966b840800000000000000
+      internalID: 5239491258840101920
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slip_7
+      rect:
+        serializedVersion: 2
+        x: 543
+        y: 721
+        width: 134
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8f7901f2d1a935180800000000000000
+      internalID: -9127782569615517704
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slip_8
+      rect:
+        serializedVersion: 2
+        x: 648
+        y: 729
+        width: 31
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7da77d4aef327bdb0800000000000000
+      internalID: -4776309303208871209
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slip_9
+      rect:
+        serializedVersion: 2
+        x: 684
+        y: 749
+        width: 13
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9d1e03182fec14d70800000000000000
+      internalID: 9025722669172056537
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slip_10
+      rect:
+        serializedVersion: 2
+        x: 689
+        y: 735
+        width: 23
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 18c9303e499ccb9d0800000000000000
+      internalID: -2757107230556578687
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slip_11
+      rect:
+        serializedVersion: 2
+        x: 629
+        y: 520
+        width: 176
+        height: 182
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a322c1776151f7740800000000000000
+      internalID: 5151859684966933050
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slip_12
+      rect:
+        serializedVersion: 2
+        x: 669
+        y: 682
+        width: 48
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5eea5769219a6a010800000000000000
+      internalID: 1199832248039616229
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slip_13
+      rect:
+        serializedVersion: 2
+        x: 677
+        y: 674
+        width: 81
+        height: 70
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e688da29cc80c4340800000000000000
+      internalID: 4849260573498378350
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slip_14
+      rect:
+        serializedVersion: 2
+        x: 251
+        y: 389
+        width: 815
+        height: 256
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 066e071f0f86a2560800000000000000
+      internalID: 7289754330904716896
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slip_15
+      rect:
+        serializedVersion: 2
+        x: 279
+        y: 151
+        width: 185
+        height: 308
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 50bb0f7ec9c2aed00800000000000000
+      internalID: 1002662919461190405
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slip_16
+      rect:
+        serializedVersion: 2
+        x: 395
+        y: 232
+        width: 122
+        height: 167
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 46c9596681a9d08f0800000000000000
+      internalID: -572632148015211420
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slip_17
+      rect:
+        serializedVersion: 2
+        x: 633
+        y: 244
+        width: 159
+        height: 173
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bfed4e077d0ce1740800000000000000
+      internalID: 5124745457538752251
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slip_18
+      rect:
+        serializedVersion: 2
+        x: 508
+        y: 297
+        width: 8
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ad3a695d0fbdb1750800000000000000
+      internalID: 6276852333092971482
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slip_19
+      rect:
+        serializedVersion: 2
+        x: 519
+        y: 243
+        width: 125
+        height: 136
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6663d3fac4813d180800000000000000
+      internalID: -9091896505094293914
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slip_20
+      rect:
+        serializedVersion: 2
+        x: 639
+        y: 137
+        width: 68
+        height: 165
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4d0ea76ad5c25c510800000000000000
+      internalID: 1568708825945137364
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slip_21
+      rect:
+        serializedVersion: 2
+        x: 388
+        y: 29
+        width: 150
+        height: 197
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 27befea96feb9b680800000000000000
+      internalID: -8738743635565089934
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slip_22
+      rect:
+        serializedVersion: 2
+        x: 463
+        y: 223
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 06b9ce432f29f5500800000000000000
+      internalID: 387189661944814432
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slip_23
+      rect:
+        serializedVersion: 2
+        x: 468
+        y: 211
+        width: 21
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ee7023a0ae22c2af0800000000000000
+      internalID: -419922276663556114
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slip_24
+      rect:
+        serializedVersion: 2
+        x: 470
+        y: 197
+        width: 106
+        height: 98
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 45a982a5273053f90800000000000000
+      internalID: -6974664658239579564
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slip_25
+      rect:
+        serializedVersion: 2
+        x: 555
+        y: 188
+        width: 28
+        height: 51
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3b29436cbf6a3cc70800000000000000
+      internalID: 8990212881453978291
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slip_26
+      rect:
+        serializedVersion: 2
+        x: 569
+        y: 204
+        width: 101
+        height: 85
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d8cc1a34bb3099c30800000000000000
+      internalID: 4366525416540851341
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slip_27
+      rect:
+        serializedVersion: 2
+        x: 697
+        y: 186
+        width: 97
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4167c9ed7a8e9fda0800000000000000
+      internalID: -5910437228255087084
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slip_28
+      rect:
+        serializedVersion: 2
+        x: 786
+        y: 213
+        width: 18
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6ebaf7cc23747f7d0800000000000000
+      internalID: -2884758752802657306
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slip_29
+      rect:
+        serializedVersion: 2
+        x: 789
+        y: 214
+        width: 32
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4e24963ccd700a600800000000000000
+      internalID: 477390205253927652
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slip_30
+      rect:
+        serializedVersion: 2
+        x: 726
+        y: 163
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fbcacf26233b772e0800000000000000
+      internalID: -2128035269918806849
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slip_31
+      rect:
+        serializedVersion: 2
+        x: 734
+        y: 24
+        width: 222
+        height: 162
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 76a5c20bdbd0f1680800000000000000
+      internalID: -8782285639993501081
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slip_32
+      rect:
+        serializedVersion: 2
+        x: 753
+        y: 166
+        width: 26
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9c99ad2db2a3b7850800000000000000
+      internalID: 6375753657368615369
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slip_33
+      rect:
+        serializedVersion: 2
+        x: 774
+        y: 175
+        width: 39
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aead07bf8c5c82310800000000000000
+      internalID: 1380570752791665386
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slip_34
+      rect:
+        serializedVersion: 2
+        x: 378
+        y: 21
+        width: 163
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fe11052814153d7c0800000000000000
+      internalID: -4047802298274934289
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: slip_35
+      rect:
+        serializedVersion: 2
+        x: 799
+        y: 7
+        width: 162
+        height: 84
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 164cb4168adc1d510800000000000000
+      internalID: 1572263867999568993
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      slip_0: -217470677685098750
+      slip_1: -3244553547364123831
+      slip_10: -2757107230556578687
+      slip_11: 5151859684966933050
+      slip_12: 1199832248039616229
+      slip_13: 4849260573498378350
+      slip_14: 7289754330904716896
+      slip_15: 1002662919461190405
+      slip_16: -572632148015211420
+      slip_17: 5124745457538752251
+      slip_18: 6276852333092971482
+      slip_19: -9091896505094293914
+      slip_2: -7279502881403528622
+      slip_20: 1568708825945137364
+      slip_21: -8738743635565089934
+      slip_22: 387189661944814432
+      slip_23: -419922276663556114
+      slip_24: -6974664658239579564
+      slip_25: 8990212881453978291
+      slip_26: 4366525416540851341
+      slip_27: -5910437228255087084
+      slip_28: -2884758752802657306
+      slip_29: 477390205253927652
+      slip_3: -1082988837350773442
+      slip_30: -2128035269918806849
+      slip_31: -8782285639993501081
+      slip_32: 6375753657368615369
+      slip_33: 1380570752791665386
+      slip_34: -4047802298274934289
+      slip_35: 1572263867999568993
+      slip_4: -8084108501871783139
+      slip_5: -2410703302915994424
+      slip_6: 5239491258840101920
+      slip_7: -9127782569615517704
+      slip_8: -4776309303208871209
+      slip_9: 9025722669172056537
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

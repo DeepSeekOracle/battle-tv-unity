@@ -1,0 +1,304 @@
+fileFormatVersion: 2
+guid: b9e1384a96f1d24419a95fc9eadba001
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -8266560759914404975
+    second: nia_0
+  - first:
+      213: -4590422390737545750
+    second: nia_1
+  - first:
+      213: -6617990118736596746
+    second: nia_2
+  - first:
+      213: -1543282216515756908
+    second: nia_3
+  - first:
+      213: 5142009758940414960
+    second: nia_4
+  - first:
+      213: 7054948830124910219
+    second: nia_5
+  - first:
+      213: 8300153046440401307
+    second: nia_6
+  - first:
+      213: 4077699405248834086
+    second: nia_7
+  - first:
+      213: -8283223958560526600
+    second: nia_8
+  - first:
+      213: 6331711505760739328
+    second: nia_9
+  - first:
+      213: 3311587516598499873
+    second: nia_10
+  - first:
+      213: 837569373707517878
+    second: nia_11
+  - first:
+      213: 8591528004191928371
+    second: nia_12
+  - first:
+      213: 3449121854831027742
+    second: nia_13
+  - first:
+      213: -8619198408943647117
+    second: nia_14
+  - first:
+      213: -5134575983487561095
+    second: nia_15
+  - first:
+      213: 7386917709700019780
+    second: nia_16
+  - first:
+      213: -2158433332075205863
+    second: nia_17
+  - first:
+      213: -3903985254265879799
+    second: nia_18
+  - first:
+      213: -1256204591649008190
+    second: nia_19
+  - first:
+      213: -5097925062224495072
+    second: nia_20
+  - first:
+      213: 4741937541006775657
+    second: nia_21
+  - first:
+      213: -341655762325787083
+    second: nia_22
+  - first:
+      213: 7764263566395757088
+    second: nia_23
+  - first:
+      213: 3635375811969171919
+    second: nia_24
+  - first:
+      213: -8885300178606144883
+    second: nia_25
+  - first:
+      213: 5780629712482680093
+    second: nia_26
+  - first:
+      213: -6378317294678099051
+    second: nia_27
+  - first:
+      213: 8942324457619628875
+    second: nia_28
+  - first:
+      213: -6432859175716854046
+    second: nia_29
+  - first:
+      213: 8266095582896073068
+    second: nia_30
+  - first:
+      213: -1097367582694911065
+    second: nia_31
+  - first:
+      213: 4381764138924034561
+    second: nia_32
+  - first:
+      213: -7526579250000853058
+    second: nia_33
+  - first:
+      213: -4149471852597062500
+    second: nia_34
+  - first:
+      213: -6573740492093339304
+    second: nia_35
+  - first:
+      213: 2546014895848721622
+    second: nia_36
+  - first:
+      213: 6513565083609089196
+    second: nia
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 0
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: nia
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 1091
+        height: 969
+      alignment: 9
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ca448e5eee4d46a50800000000000000
+      internalID: 6513565083609089196
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      nia: 6513565083609089196
+      nia_0: -8266560759914404975
+      nia_1: -4590422390737545750
+      nia_10: 3311587516598499873
+      nia_11: 837569373707517878
+      nia_12: 8591528004191928371
+      nia_13: 3449121854831027742
+      nia_14: -8619198408943647117
+      nia_15: -5134575983487561095
+      nia_16: 7386917709700019780
+      nia_17: -2158433332075205863
+      nia_18: -3903985254265879799
+      nia_19: -1256204591649008190
+      nia_2: -6617990118736596746
+      nia_20: -5097925062224495072
+      nia_21: 4741937541006775657
+      nia_22: -341655762325787083
+      nia_23: 7764263566395757088
+      nia_24: 3635375811969171919
+      nia_25: -8885300178606144883
+      nia_26: 5780629712482680093
+      nia_27: -6378317294678099051
+      nia_28: 8942324457619628875
+      nia_29: -6432859175716854046
+      nia_3: -1543282216515756908
+      nia_30: 8266095582896073068
+      nia_31: -1097367582694911065
+      nia_32: 4381764138924034561
+      nia_33: -7526579250000853058
+      nia_34: -4149471852597062500
+      nia_35: -6573740492093339304
+      nia_36: 2546014895848721622
+      nia_4: 5142009758940414960
+      nia_5: 7054948830124910219
+      nia_6: 8300153046440401307
+      nia_7: 4077699405248834086
+      nia_8: -8283223958560526600
+      nia_9: 6331711505760739328
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
