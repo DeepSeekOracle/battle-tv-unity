@@ -266,3 +266,12 @@ Pack "shade" "against" $true 0.72 "shade.png" @(
     @{ name = "death"; seconds = 1.55; pivot = 0.50; frames = (Frames "shade-death" 1) }
     @{ name = "win"; seconds = 1.15; pivot = 0.50; frames = (Frames "shade-win" 1) }
 )
+Pack "thief" "against" $true 0.72 "thief.png" @(
+    @{ name = "Quick Stab"; seconds = 0.50; pivot = 0.50; frames = @("IDLE", "thief-stab/f01.png") }
+    @{ name = "Flicker"; seconds = 0.50; pivot = 0.50; frames = @("IDLE", "thief-flicker/f01.png") }
+    @{ name = "Snatch"; seconds = 0.52; pivot = 0.50; frames = @("IDLE", "thief-snatch/f01.png") }
+    @{ name = "Close"; seconds = 0.35; pivot = 0.50; frames = @("thief-close/f00.png", "IDLE") }
+    @{ name = "walk"; seconds = 0.72; pivot = 0.50; frames = @("IDLE", "thief-walk/f00.png") }
+    @{ name = "death"; seconds = 1.55; pivot = 0.50; frames = (Frames "thief-death" 1) }
+    @{ name = "win"; seconds = 1.15; pivot = 0.50; frames = (Frames "thief-win" 1) }
+)

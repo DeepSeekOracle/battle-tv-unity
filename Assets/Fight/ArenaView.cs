@@ -321,6 +321,10 @@ namespace BattleTv.Fight
                         Push(1, foe.X, foe.Y, foe.X, foe.Y, 0.32f, 48f, color);
                     else if (body.Id == "shade")
                         Push(1, foe.X, foe.Y, foe.X, foe.Y, 0.22f, 40f, color);
+                    if (body.Id == "thief" && mv != null && mv.Id == "snatch")
+                        Push(1, foe.X, foe.Y, foe.X, foe.Y, 0.28f, 42f, color);
+                    else if (body.Id == "thief")
+                        Push(4, foe.X, foe.Y, foe.X, foe.Y, 0.18f, 28f, color);
                 }
             }
             else if (shape == "bolt" || shape == "multi" || shape == "lob")
@@ -336,6 +340,8 @@ namespace BattleTv.Fight
                     Push(5, body.X, body.Y, body.X, body.Y, 0.35f, 48f, color);
                 if (body.Id == "shade" && mv != null && mv.Id == "flicker")
                     Push(1, body.X, body.Y, body.X, body.Y, 0.40f, 70f, color);
+                if (body.Id == "thief" && mv != null && mv.Id == "flicker")
+                    Push(1, body.X, body.Y, body.X, body.Y, 0.32f, 56f, color);
             }
             else if (body.Id == "d9ra" && mv != null && mv.Id == "wolffury")
                 Push(1, body.X, body.Y, body.X, body.Y, 0.5f, 110f, color);

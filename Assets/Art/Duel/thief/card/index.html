@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Thief animation card</title>
+<style>
+  body { margin: 0; background: #10141c; color: #f6e7c1; font: 16px/1.4 Georgia, serif; }
+  main { max-width: 1180px; margin: 0 auto; padding: 28px 20px 64px; }
+  h1 { font-weight: normal; letter-spacing: 0.08em; text-transform: uppercase; font-size: 22px; margin: 0 0 6px; }
+  h2 { font-size: 18px; font-weight: normal; margin: 28px 0 8px; color: #facc15; }
+  p, li { max-width: 78ch; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { border-bottom: 1px solid rgba(250,204,21,0.35); text-align: left; padding: 6px 8px; vertical-align: top; }
+  th { color: #facc15; font-weight: normal; letter-spacing: 0.06em; text-transform: uppercase; font-size: 12px; }
+  .row { display: grid; grid-template-columns: 220px 1fr; gap: 16px; margin: 22px 0; padding-top: 12px; border-top: 1px solid rgba(246,231,193,0.18); }
+  img { width: 220px; height: auto; background: #000; display: block; }
+  .tag { color: #facc15; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Thief · Tithe-Thief</h1>
+  <p>This card is the only pose list. A later frame has to match one of these keys. Native facing is right. The whole sprite flips. Green hood, lime face, brown satchel, curved dagger in the forward hand. The boots are the foot line. Thief is a fist, so the corner step is Close. There is no move named Dash and no Slip key. Quick Stab, Flicker, and Snatch keep those book names. Shade keeps its own Flicker and Snatch pictures.</p>
+  <table>
+    <tr><th>Book</th><th>Value</th></tr>
+    <tr><td>Basic</td><td>Quick Stab · range 1.6</td></tr>
+    <tr><td>Body</td><td>790 health · 36 damage · 1.05 attacks/s · speed 3.6 · armor 6 · range 1.6 · mana 50 · regen 6</td></tr>
+    <tr><td>Crit / cooldown</td><td>0.20 crit · 0.80 cooldown scale</td></tr>
+    <tr><td>Cards</td><td>Swift · Vampiric · Lucky</td></tr>
+    <tr><td>Moves</td><td>Snatch · Flicker</td></tr>
+    <tr><td>Stride</td><td>Close · a fist · 30s · cost 8</td></tr>
+  </table>
+  <h2>What stays off the body</h2>
+  <ul>
+    <li>Quick Stab is the forward thrust. The needle on the foe is the cut.</li>
+    <li>Flicker is this body's blink. Imp's coal blink stays Imp's. Shade's veil stays Shade's. The book name stays Flicker.</li>
+    <li>Snatch keeps that book name. Shade and Tithe-King keep their own snatch pictures.</li>
+  </ul>
+  <h2>Keys</h2>
+  <div class="row"><img src="idle.png" alt=""><div><p class="tag">Idle</p><p>Still hood, dagger forward, both boots on the foot line.</p></div></div>
+  <div class="row"><img src="stab.png" alt=""><div><p class="tag">Quick Stab</p><p>Idle, then the dagger thrusts, then idle. 0.50s.</p></div></div>
+  <div class="row"><img src="snatch.png" alt=""><div><p class="tag">Snatch</p><p>Idle, then the dagger hooks a coin, then idle. 0.52s.</p></div></div>
+  <div class="row"><img src="flicker.png" alt=""><div><p class="tag">Flicker</p><p>Idle, then the body smears, then idle. 0.50s.</p></div></div>
+  <div class="row"><img src="close.png" alt=""><div><p class="tag">Close</p><p>A lunge toward the right, then idle. 0.35s. Corner step only.</p></div></div>
+  <div class="row"><img src="walk-a.png" alt=""><div><p class="tag">Walk</p><p>Idle, then one stride. 0.72s. Do not copy it into a second step.</p></div></div>
+  <div class="row"><img src="death.png" alt=""><div><p class="tag">Death</p><p>One body in the lower portion, dagger dropped. 1.55s. It is not scaled up to standing height.</p></div></div>
+  <div class="row"><img src="win.png" alt=""><div><p class="tag">Win</p><p>The dagger lifts. Both boots stay down. 1.15s.</p></div></div>
+</main>
+</body>
+</html>
