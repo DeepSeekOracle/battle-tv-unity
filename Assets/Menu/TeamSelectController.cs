@@ -17,6 +17,7 @@ namespace BattleTv.Menu
         [SerializeField] Sprite lightfatherStill;
         [SerializeField] Sprite kaelStill;
         [SerializeField] Sprite orinStill;
+        [SerializeField] Sprite niaStill;
 
         Font _font;
         RectTransform _list;
@@ -360,6 +361,8 @@ namespace BattleTv.Menu
                 return kaelStill;
             if (id == "orin")
                 return orinStill;
+            if (id == "nia")
+                return niaStill;
             return null;
         }
 

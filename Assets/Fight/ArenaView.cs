@@ -80,6 +80,15 @@ namespace BattleTv.Fight
         [SerializeField] Sprite[] orinDeath;
         [SerializeField] Sprite[] orinWin;
         [SerializeField] Sprite[] orinWalk;
+        [SerializeField] Sprite niaStill;
+        [SerializeField] Sprite[] niaArrow;
+        [SerializeField] Sprite[] niaPin;
+        [SerializeField] Sprite[] niaDash;
+        [SerializeField] Sprite[] niaRain;
+        [SerializeField] Sprite[] niaSlip;
+        [SerializeField] Sprite[] niaDeath;
+        [SerializeField] Sprite[] niaWin;
+        [SerializeField] Sprite[] niaWalk;
         [SerializeField] Sprite sigilGlow;
         [SerializeField] Material sigilRingBack;
         [SerializeField] Material sigilRingFront;
@@ -235,7 +244,7 @@ namespace BattleTv.Fight
                 var face = 1f;
                 if (body.Id == "brute")
                     face = foe >= body.X ? -1f : 1f;
-                else if (body.Id == "vale" || body.Id == "lightfather" || body.Id == "kael" || body.Id == "orin" || Still(body.Id) == null)
+                else if (body.Id == "vale" || body.Id == "lightfather" || body.Id == "kael" || body.Id == "orin" || body.Id == "nia" || Still(body.Id) == null)
                     face = foe >= body.X ? 1f : -1f;
                 if (body.Alive)
                     actor.Rect.localScale = new Vector3(face, 1f, 1f);
@@ -255,7 +264,7 @@ namespace BattleTv.Fight
                     ArmEnd(actor, body, true);
                 actor.Heard = body.Swing;
                 ShowFrame(actor, body);
-                var pivot = (body.Id == "vale" || body.Id == "lightfather" || body.Id == "kael" || body.Id == "orin") && actor.ClipT >= 0f
+                var pivot = (body.Id == "vale" || body.Id == "lightfather" || body.Id == "kael" || body.Id == "orin" || body.Id == "nia") && actor.ClipT >= 0f
                     ? actor.Pivot
                     : PivotX(body.Id, actor.Image);
                 actor.Rect.pivot = new Vector2(pivot, 0f);
@@ -442,6 +451,8 @@ namespace BattleTv.Fight
                     PlaceSealBolt(bolt, at, width, height, color);
                 else if (bolt.Src != null && bolt.Src.Id == "orin")
                     PlaceSigilShard(bolt, at, width, height);
+                else if (bolt.Src != null && bolt.Src.Id == "nia")
+                    PlacePathArrow(bolt, at, width, height);
                 else
                 {
                     var aim = -(float)bolt.Angle * Mathf.Rad2Deg;
@@ -583,6 +594,65 @@ namespace BattleTv.Fight
                     {
                         nx = 0.317f;
                         ny = 0.681f;
+                    }
+                }
+                return feet + new Vector2(face * w * nx, h * ny);
+            }
+            return feet + new Vector2(0f, 48f);
+        }
+
+        void PlacePathArrow(ArenaBolt bolt, Vector2 at, float width, float height)
+        {
+            // The sim bolt leaves the feet. The picture leaves the bow.
+            var feet = OnSand(bolt.Src.X, bolt.Src.Y, width, height);
+            var hand = Bow(bolt.Src, feet);
+            var tip = at + (hand - feet);
+            var delta = tip - hand;
+            var len = delta.magnitude;
+            var ang = Mathf.Atan2(delta.y, delta.x) * Mathf.Rad2Deg;
+            var mid = (hand + tip) * 0.5f;
+            var green = new Color(0.29f, 0.87f, 0.50f, 1f);
+            var hot = new Color(0.92f, 1f, 0.86f, 1f);
+            if (len > 12f)
+            {
+                Place(sigilBolt, mid, new Vector2(len, 10f), ang, green, 1f, false);
+                Place(sigilLance, mid, new Vector2(len, 4f), ang, hot, 1f, false);
+            }
+            Place(sigilBolt, tip, new Vector2(28f, 10f), ang, hot, 1f, false);
+            Place(sigilEmber, hand, new Vector2(16f, 16f), 0f, green, 0.85f, false);
+        }
+
+        Vector2 Bow(ArenaBody body, Vector2 feet)
+        {
+            for (var i = 0; i < _actors.Count; i++)
+            {
+                var actor = _actors[i];
+                if (actor.Body != body || actor.Rect == null)
+                    continue;
+                var face = actor.Rect.localScale.x >= 0f ? 1f : -1f;
+                var w = actor.Rect.sizeDelta.x;
+                var h = actor.Rect.sizeDelta.y;
+                // Measured on the 1091x969 canvas, pivot at the feet. Each aim uses that key's arrow tip.
+                var nx = 0.462f;
+                var ny = 0.589f;
+                if (actor.Clip != null && actor.Clip.Length > 0 && actor.ClipT >= 0f)
+                {
+                    var u = actor.ClipDur > 0.01f ? actor.ClipT / actor.ClipDur : 1f;
+                    var frame = Mathf.Clamp(Mathf.FloorToInt(u * actor.Clip.Length), 0, actor.Clip.Length - 1);
+                    if (frame == 1 && actor.Pose == "Path Arrow")
+                    {
+                        nx = 0.379f;
+                        ny = 0.682f;
+                    }
+                    else if (frame == 1 && actor.Pose == "Pinning Volley")
+                    {
+                        nx = 0.307f;
+                        ny = 0.747f;
+                    }
+                    else if (frame == 1 && actor.Pose == "Needle Rain")
+                    {
+                        nx = 0.311f;
+                        ny = 0.778f;
                     }
                 }
                 return feet + new Vector2(face * w * nx, h * ny);
@@ -743,6 +813,8 @@ namespace BattleTv.Fight
                 return kaelStill;
             if (id == "orin")
                 return orinStill;
+            if (id == "nia")
+                return niaStill;
             return null;
         }
 
@@ -890,6 +962,19 @@ namespace BattleTv.Fight
                 else if (call == "Slip" || call == "Close")
                     ArmClip(actor, orinSlip, 0.35f, 0.5f, call);
             }
+            else if (body.Id == "nia")
+            {
+                if (call == "Path Arrow")
+                    ArmClip(actor, niaArrow, 0.50f, 0.5f, call);
+                else if (call == "Pinning Volley")
+                    ArmClip(actor, niaPin, 0.52f, 0.5f, call);
+                else if (call == "Dash")
+                    ArmClip(actor, niaDash, 0.42f, 0.5f, call);
+                else if (call == "Needle Rain")
+                    ArmClip(actor, niaRain, 0.52f, 0.5f, call);
+                else if (call == "Slip" || call == "Close")
+                    ArmClip(actor, niaSlip, 0.35f, 0.5f, call);
+            }
         }
 
         void ArmEnd(Actor actor, ArenaBody body, bool win)
@@ -904,6 +989,8 @@ namespace BattleTv.Fight
                 ArmClip(actor, win ? kaelWin : kaelDeath, win ? 1.15f : 1.55f, 0.5f, win ? "win" : "death");
             else if (body.Id == "orin")
                 ArmClip(actor, win ? orinWin : orinDeath, win ? 1.15f : 1.55f, 0.5f, win ? "win" : "death");
+            else if (body.Id == "nia")
+                ArmClip(actor, win ? niaWin : niaDeath, win ? 1.15f : 1.55f, 0.5f, win ? "win" : "death");
             else
                 actor.Pose = win ? "win" : "death";
             actor.HoldClip = true;
@@ -1001,6 +1088,8 @@ namespace BattleTv.Fight
                 return kaelWalk;
             if (id == "orin")
                 return orinWalk;
+            if (id == "nia")
+                return niaWalk;
             return null;
         }
 
@@ -1014,6 +1103,8 @@ namespace BattleTv.Fight
                 return 0.76f;
             if (id == "orin")
                 return 0.80f;
+            if (id == "nia")
+                return 0.58f;
             return 0.62f;
         }
 

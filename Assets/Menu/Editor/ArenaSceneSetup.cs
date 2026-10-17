@@ -110,6 +110,17 @@ namespace BattleTv.Menu.EditorTools
             AssignClip(so, "orinDeath", Cutout("orin-death", 1));
             AssignClip(so, "orinWin", Cutout("orin-win", 1));
             AssignClip(so, "orinWalk", Cutout("orin-walk", 8));
+            var nia = "Assets/Art/Duel/nia.png";
+            Configure(nia, true, 2048, true);
+            so.FindProperty("niaStill").objectReferenceValue = LoadSprite(nia);
+            AssignClip(so, "niaArrow", Cutout("nia-arrow", 3));
+            AssignClip(so, "niaPin", Cutout("nia-pin", 2));
+            AssignClip(so, "niaDash", Cutout("nia-dash", 2));
+            AssignClip(so, "niaRain", Cutout("nia-rain", 2));
+            AssignClip(so, "niaSlip", Cutout("nia-slip", 2));
+            AssignClip(so, "niaDeath", Cutout("nia-death", 1));
+            AssignClip(so, "niaWin", Cutout("nia-win", 1));
+            AssignClip(so, "niaWalk", Cutout("nia-walk", 8));
             var glow = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Duel/vale-door/glow-white.png");
             if (glow == null)
                 throw new FileNotFoundException("Sigil plate did not import.", "Assets/Art/Duel/vale-door/glow-white.png");
@@ -193,6 +204,11 @@ namespace BattleTv.Menu.EditorTools
         public static void ImportOrin()
         {
             Configure("Assets/Art/Duel/orin.png", true, 2048, true);
+        }
+
+        public static void ImportNia()
+        {
+            Configure("Assets/Art/Duel/nia.png", true, 2048, true);
         }
 
         public static Sprite LoadPlate(string path)

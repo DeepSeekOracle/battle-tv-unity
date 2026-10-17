@@ -78,6 +78,11 @@ namespace BattleTv.Menu.EditorTools
             if (orin == null)
                 throw new FileNotFoundException("Orin still did not import.", "Assets/Art/Duel/orin.png");
             teamObject.FindProperty("orinStill").objectReferenceValue = orin;
+            ArenaSceneSetup.ImportNia();
+            var nia = ArenaSceneSetup.LoadPlate("Assets/Art/Duel/nia.png");
+            if (nia == null)
+                throw new FileNotFoundException("Nia still did not import.", "Assets/Art/Duel/nia.png");
+            teamObject.FindProperty("niaStill").objectReferenceValue = nia;
             teamObject.ApplyModifiedPropertiesWithoutUndo();
 
             new GameObject("EventSystem", typeof(EventSystem), typeof(StandaloneInputModule));

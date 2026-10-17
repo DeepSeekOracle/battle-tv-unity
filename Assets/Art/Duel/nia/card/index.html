@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Nia animation card</title>
+<style>
+  body { margin: 0; background: #140806; color: #f6e7c1; font: 16px/1.4 Georgia, serif; }
+  main { max-width: 1180px; margin: 0 auto; padding: 28px 20px 64px; }
+  h1 { font-weight: normal; letter-spacing: 0.08em; text-transform: uppercase; font-size: 22px; margin: 0 0 6px; }
+  h2 { font-size: 18px; font-weight: normal; margin: 28px 0 8px; color: #4ade80; }
+  p, li { max-width: 78ch; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { border-bottom: 1px solid rgba(74,222,128,0.35); text-align: left; padding: 6px 8px; vertical-align: top; }
+  th { color: #4ade80; font-weight: normal; letter-spacing: 0.06em; text-transform: uppercase; font-size: 12px; }
+  .row { display: grid; grid-template-columns: 220px 1fr; gap: 16px; margin: 22px 0; padding-top: 12px; border-top: 1px solid rgba(246,231,193,0.18); }
+  img { width: 220px; height: auto; background: #000; display: block; }
+  .tag { color: #4ade80; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Nia · Path Archer</h1>
+  <p>This card is the only pose list. A later frame has to match one of these keys. Native facing is right. The whole sprite flips. One bow. The quiver stays on her back.</p>
+  <table>
+    <tr><th>Book</th><th>Value</th></tr>
+    <tr><td>Basic</td><td>Path Arrow · the flying arrow leaves the bow · it is not a second painted arrow</td></tr>
+    <tr><td>Body</td><td>707 health · 27 damage · 0.92 attacks/s · speed 4.4 · armor 4 · range 8.6 · mana 70 · regen 6</td></tr>
+    <tr><td>Crit / cooldown</td><td>0.22 crit · 0.84 cooldown scale</td></tr>
+    <tr><td>Cards</td><td>Swift · Lucky · Volley</td></tr>
+    <tr><td>Moves</td><td>Pinning Volley · Dash · Needle Rain</td></tr>
+    <tr><td>Stride</td><td>Slip · she is a gun · 30s · cost 8</td></tr>
+  </table>
+
+  <h2>What stays off the body</h2>
+  <ul>
+    <li>The Path Arrow in flight leaves the bow. The draw keeps one arrow on the string.</li>
+    <li>Pinning Volley's three flying arrows and their root are the bolts. Three arrows stay nocked on this key.</li>
+    <li>Needle Rain's five needles are the bolts. This key aims one arrow up.</li>
+    <li>Dash's swift shimmer is the existing haste mark. The sprint is her body.</li>
+    <li>Slip's streak is the lance already drawn for a gun's corner step. Dash and Slip are different keys.</li>
+  </ul>
+
+  <h2>Keys</h2>
+  <div class="row"><img src="idle.png" alt="Idle"><div><div class="tag">Idle · feet pivot</div><p>Rest. One bow across the body, one arrow pointing down, both boots planted. This frame opens Path Arrow, Pinning Volley, and Needle Rain.</p></div></div>
+  <div class="row"><img src="walk-a.png" alt="Walk"><div><div class="tag">Walk · 8 frames · 0.58s · feet pivot · loop</div><p>Contact. One boot reaches. The bow stays in her hands. The clip is nia-walk f00 through f07. These four keys are f00, f02, f04, and f06.</p></div></div>
+  <div class="row"><img src="walk-b.png" alt="Walk pass"><div><div class="tag">Walk · pass</div><p>The rear boot swings through. The hood and the bow stay with her.</p></div></div>
+  <div class="row"><img src="walk-c.png" alt="Walk other"><div><div class="tag">Walk · other contact</div><p>The other boot leads. Same height, same bow, same foot line as the idle.</p></div></div>
+  <div class="row"><img src="walk-d.png" alt="Walk return"><div><div class="tag">Walk · return</div><p>Passing back toward the first contact. The next frame is the loop.</p></div></div>
+  <div class="row"><img src="arrow.png" alt="Path Arrow"><div><div class="tag">Path Arrow · frame 2 of 3 · 0.50s · feet pivot</div><p>Full draw. One arrow aimed forward. Frame 1 and frame 3 are idle.</p></div></div>
+  <div class="row"><img src="pin.png" alt="Pinning Volley"><div><div class="tag">Pinning Volley · frame 2 of 2 · 0.52s · feet pivot</div><p>Three arrows sit together on the string. The arrows that fly are not on this sprite.</p></div></div>
+  <div class="row"><img src="dash.png" alt="Dash"><div><div class="tag">Dash · frame 1 of 2 · 0.42s · feet pivot</div><p>The sprint. Cloak behind her, bow carried low. Frame 2 is idle. This is not Slip.</p></div></div>
+  <div class="row"><img src="rain.png" alt="Needle Rain"><div><div class="tag">Needle Rain · frame 2 of 2 · 0.52s · feet pivot</div><p>The bow aims steeply up. One arrow on the string. The rain is not on this sprite.</p></div></div>
+  <div class="row"><img src="slip.png" alt="Slip"><div><div class="tag">Slip · frame 1 of 2 · 0.35s · feet pivot</div><p>The step through. Front boot forward, one bow across the body. Frame 2 is idle.</p></div></div>
+  <div class="row"><img src="death.png" alt="Death"><div><div class="tag">Death · last frame · 1.55s · hold · feet pivot</div><p>Down on her side, eyes closed, one bow on the ground by her open hand. The clip holds this frame. She is not scaled back up to standing height.</p></div></div>
+  <div class="row"><img src="win.png" alt="Win"><div><div class="tag">Win · last frame · 1.15s · hold · feet pivot</div><p>Chin up, one bow overhead, both boots planted. This is not Needle Rain: the rain keeps the arrow aimed up from the draw.</p></div></div>
+</main>
+</body>
+</html>
