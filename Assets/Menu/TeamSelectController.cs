@@ -124,9 +124,9 @@ namespace BattleTv.Menu
             {
                 ShowPick.Filter = cls;
                 var looking = LaneRoster.ById(ShowPick.Inspect);
-                var list = LaneRoster.Of(cls);
+                var list = RosterIds(cls);
                 if ((looking.Id == null || looking.Cls != cls) && list.Length > 0)
-                    ShowPick.Inspect = list[0].Id;
+                    ShowPick.Inspect = list[0];
                 Refresh();
             });
         }
@@ -144,7 +144,7 @@ namespace BattleTv.Menu
         void Refresh()
         {
             Canvas.ForceUpdateCanvases();
-            var list = LaneRoster.Of(ShowPick.Filter);
+            var list = KitsInRosterOrder(ShowPick.Filter);
             var looking = LaneRoster.ById(ShowPick.Inspect);
             if (looking.Id == null)
             {
@@ -177,8 +177,6 @@ namespace BattleTv.Menu
             for (var i = 0; i < list.Length; i++)
                 RosterRow(list[i]);
             var listLayout = _list.GetComponent<VerticalLayoutGroup>();
-            var height = list.Length * 64f + 8f;
-            _list.sizeDelta = new Vector2(0f, height);
             if (listLayout != null)
                 listLayout.padding = new RectOffset(6, 6, 6, 6);
             Canvas.ForceUpdateCanvases();
@@ -358,6 +356,43 @@ namespace BattleTv.Menu
             });
         }
 
+        /// <summary>
+        /// Painted bodies first, in show order, then the rest of that book tab.
+        /// </summary>
+        public static string[] RosterIds(string cls)
+        {
+            var kits = KitsInRosterOrder(cls);
+            var ids = new string[kits.Length];
+            for (var i = 0; i < kits.Length; i++)
+                ids[i] = kits[i].Id;
+            return ids;
+        }
+
+        static Kit[] KitsInRosterOrder(string cls)
+        {
+            var book = LaneRoster.Of(cls);
+            var show = LaneRoster.LaneIds();
+            var ordered = new List<Kit>(book.Length);
+            for (var i = 0; i < show.Length; i++)
+            {
+                var kit = LaneRoster.ById(show[i]);
+                if (kit.Id != null && kit.Cls == cls)
+                    ordered.Add(kit);
+            }
+            for (var i = 0; i < book.Length; i++)
+            {
+                var have = false;
+                for (var j = 0; j < ordered.Count; j++)
+                {
+                    if (ordered[j].Id == book[i].Id)
+                        have = true;
+                }
+                if (!have)
+                    ordered.Add(book[i]);
+            }
+            return ordered.ToArray();
+        }
+
         static Sprite StillFor(string id)
         {
             var body = FighterBodies.Get(id);
@@ -465,6 +500,19 @@ namespace BattleTv.Menu
                 font.RequestCharactersInTexture(sample, sizes[i], FontStyle.Bold);
         }
 
+        static Sprite _white;
+
+        static Sprite White()
+        {
+            if (_white != null)
+                return _white;
+            var tex = new Texture2D(1, 1, TextureFormat.RGBA32, false);
+            tex.SetPixel(0, 0, Color.white);
+            tex.Apply(false, true);
+            _white = Sprite.Create(tex, new Rect(0f, 0f, 1f, 1f), new Vector2(0.5f, 0.5f), 100f);
+            return _white;
+        }
+
         static Color Hex(string hex)
         {
             if (!string.IsNullOrEmpty(hex) && ColorUtility.TryParseHtmlString(hex, out var color))
@@ -505,17 +553,55 @@ namespace BattleTv.Menu
             {
                 var layout = content.AddComponent<VerticalLayoutGroup>();
                 layout.spacing = 6f;
+                layout.padding = new RectOffset(6, 6, 6, 6);
                 layout.childControlWidth = true;
                 layout.childControlHeight = true;
                 layout.childForceExpandWidth = true;
                 layout.childForceExpandHeight = false;
+                var fit = content.AddComponent<ContentSizeFitter>();
+                fit.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;
+                fit.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+                var viewRect = viewport.GetComponent<RectTransform>();
+                viewRect.offsetMax = new Vector2(-16f, 0f);
+                var barObject = Child(root, "Bar");
+                var barRect = barObject.GetComponent<RectTransform>();
+                barRect.anchorMin = new Vector2(1f, 0f);
+                barRect.anchorMax = new Vector2(1f, 1f);
+                barRect.pivot = new Vector2(1f, 0.5f);
+                barRect.sizeDelta = new Vector2(12f, -8f);
+                barRect.anchoredPosition = new Vector2(-2f, 0f);
+                var barFace = barObject.AddComponent<Image>();
+                barFace.sprite = White();
+                barFace.color = new Color(0.12f, 0.08f, 0.04f, 0.95f);
+                var handle = Child(barObject.transform, "Handle");
+                var handleRect = handle.GetComponent<RectTransform>();
+                handleRect.anchorMin = Vector2.zero;
+                handleRect.anchorMax = Vector2.one;
+                handleRect.offsetMin = new Vector2(2f, 2f);
+                handleRect.offsetMax = new Vector2(-2f, -2f);
+                var handleFace = handle.AddComponent<Image>();
+                handleFace.sprite = White();
+                handleFace.color = Gold;
+                var scrollbar = barObject.AddComponent<Scrollbar>();
+                scrollbar.direction = Scrollbar.Direction.BottomToTop;
+                scrollbar.handleRect = handleRect;
+                scrollbar.targetGraphic = handleFace;
+                var scroll = root.gameObject.AddComponent<ScrollRect>();
+                scroll.viewport = viewRect;
+                scroll.content = contentRect;
+                scroll.horizontal = false;
+                scroll.verticalScrollbar = scrollbar;
+                scroll.verticalScrollbarVisibility = ScrollRect.ScrollbarVisibility.Permanent;
+                scroll.movementType = ScrollRect.MovementType.Clamped;
+                scroll.scrollSensitivity = 28f;
+                return contentRect;
             }
-            var scroll = root.gameObject.AddComponent<ScrollRect>();
-            scroll.viewport = viewport.GetComponent<RectTransform>();
-            scroll.content = contentRect;
-            scroll.horizontal = false;
-            scroll.movementType = ScrollRect.MovementType.Clamped;
-            scroll.scrollSensitivity = 28f;
+            var plain = root.gameObject.AddComponent<ScrollRect>();
+            plain.viewport = viewport.GetComponent<RectTransform>();
+            plain.content = contentRect;
+            plain.horizontal = false;
+            plain.movementType = ScrollRect.MovementType.Clamped;
+            plain.scrollSensitivity = 28f;
             return contentRect;
         }
 

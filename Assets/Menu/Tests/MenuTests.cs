@@ -247,6 +247,17 @@ namespace BattleTv.Menu.Tests
         {
             Assert.AreEqual(33, LaneRoster.All.Length);
             Assert.AreEqual(13, LaneRoster.Of("champ").Length);
+            var select = TeamSelectController.RosterIds("champ");
+            Assert.AreEqual(13, select.Length);
+            Assert.AreEqual("vale", select[0]);
+            Assert.AreEqual("seidon", select[select.Length - 2]);
+            Assert.AreEqual("sancora", select[select.Length - 1]);
+            Assert.AreEqual("brute", TeamSelectController.RosterIds("beast")[0]);
+            ShowPick.Clear();
+            ShowPick.BeginDraft(1);
+            Assert.IsTrue(ShowPick.Toggle("sancora"));
+            Assert.IsNull(ShowPick.BlockReason());
+            ShowPick.Clear();
             Assert.AreEqual(15, LaneRoster.Of("beast").Length);
             Assert.AreEqual(5, LaneRoster.Of("pet").Length);
             Assert.AreEqual(2, LaneRoster.LinkedCount);
