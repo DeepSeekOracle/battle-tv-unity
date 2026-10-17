@@ -462,15 +462,22 @@ namespace BattleTv.Fight
             var len = delta.magnitude;
             var ang = Mathf.Atan2(delta.y, delta.x) * Mathf.Rad2Deg;
             var mid = (hand + tip) * 0.5f;
-            var hot = new Color(1f, 0.96f, 0.82f, 1f);
-            if (len > 10f)
+            var hot = new Color(1f, 0.97f, 0.78f, 1f);
+            if (len > 12f)
             {
-                Place(sigilBolt, mid, new Vector2(len, 64f), ang, color, 1f, false);
-                Place(sigilLance, mid, new Vector2(len, 18f), ang, hot, 0.95f, false);
+                Place(sigilBolt, mid, new Vector2(len, 120f), ang, color, 0.9f, false);
+                Place(sigilLance, mid, new Vector2(len, 36f), ang, hot, 1f, false);
             }
-            Place(sigilBolt, tip, new Vector2(54f, 28f), ang, hot, 1f, false);
-            if (len < 96f)
-                Place(sigilBurst, hand, new Vector2(88f, 88f), 0f, color, 0.9f, false);
+            Place(sigilBolt, tip, new Vector2(84f, 52f), ang, hot, 1f, false);
+            Place(sigilEmber, tip, new Vector2(40f, 40f), 0f, hot, 1f, false);
+            Place(sigilEmber, hand, new Vector2(64f, 64f), 0f, hot, 1f, false);
+            var flash = Mathf.Clamp01(1f - len / 280f);
+            if (flash > 0.02f)
+            {
+                var boom = Mathf.Lerp(80f, 220f, flash);
+                Place(sigilBurst, hand, new Vector2(boom, boom), 0f, color, 0.5f + 0.45f * flash, false);
+                Place(sigilBurst, hand, new Vector2(boom * 0.42f, boom * 0.42f), 0f, hot, flash, false);
+            }
         }
 
         Vector2 Triangle(ArenaBody body, Vector2 feet)
@@ -483,7 +490,25 @@ namespace BattleTv.Fight
                 var face = actor.Rect.localScale.x >= 0f ? 1f : -1f;
                 var w = actor.Rect.sizeDelta.x;
                 var h = actor.Rect.sizeDelta.y;
-                return feet + new Vector2(face * w * 0.28f, h * 0.58f);
+                // Measured on the 860x1240 frames, pivot at the feet. Idle and the open hand sit here.
+                var nx = 0.29f;
+                var ny = 0.65f;
+                if (actor.Pose == "Seal Bolt" && actor.Clip != null && actor.Clip.Length > 0 && actor.ClipT >= 0f)
+                {
+                    var u = actor.ClipDur > 0.01f ? actor.ClipT / actor.ClipDur : 1f;
+                    var frame = Mathf.Clamp(Mathf.FloorToInt(u * actor.Clip.Length), 0, actor.Clip.Length - 1);
+                    if (frame == 1)
+                    {
+                        nx = 0.27f;
+                        ny = 0.68f;
+                    }
+                    else if (frame == 2)
+                    {
+                        nx = 0.30f;
+                        ny = 0.73f;
+                    }
+                }
+                return feet + new Vector2(face * w * nx, h * ny);
             }
             return feet + new Vector2(0f, 48f);
         }
