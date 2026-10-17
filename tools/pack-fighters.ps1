@@ -152,3 +152,14 @@ Pack "lyra" "against" $true 0.72 "lyra.png" @(
     @{ name = "death"; seconds = 1.55; pivot = 0.50; frames = (Frames "lyra-death" 1) }
     @{ name = "win"; seconds = 1.15; pivot = 0.50; frames = (Frames "lyra-win" 1) }
 )
+
+Pack "arkos" "against" $true 0.74 "arkos.png" @(
+    @{ name = "Lance Thrust"; seconds = 0.48; pivot = 0.50; frames = @("IDLE", "arkos-thrust/f01.png", "IDLE") }
+    @{ name = "Geodesic"; seconds = 0.52; pivot = 0.50; frames = @("IDLE", "arkos-geodesic/f01.png") }
+    @{ name = "True Line"; seconds = 0.52; pivot = 0.50; frames = @("IDLE", "arkos-line/f01.png") }
+    @{ name = "Dash"; seconds = 0.42; pivot = 0.50; frames = @("arkos-dash/f00.png", "IDLE") }
+    @{ name = "Close"; seconds = 0.35; pivot = 0.50; frames = @("arkos-close/f00.png", "IDLE") }
+    @{ name = "walk"; seconds = 0.74; pivot = 0.50; frames = (Frames "arkos-walk" 4) }
+    @{ name = "death"; seconds = 1.55; pivot = 0.50; frames = (Frames "arkos-death" 1) }
+    @{ name = "win"; seconds = 1.15; pivot = 0.50; frames = (Frames "arkos-win" 1) }
+)

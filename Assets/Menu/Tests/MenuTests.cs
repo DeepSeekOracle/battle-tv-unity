@@ -449,6 +449,14 @@ namespace BattleTv.Menu.Tests
             var brute = System.IO.File.ReadAllText(System.IO.Path.Combine(UnityEngine.Application.streamingAssetsPath, "fighters", "brute", "entity.json"));
             Assert.IsTrue(brute.Contains("0.6164"));
             Assert.IsTrue(brute.Contains("brute-drag.png"));
+            var arkos = System.IO.File.ReadAllText(System.IO.Path.Combine(UnityEngine.Application.streamingAssetsPath, "fighters", "arkos", "entity.json"));
+            Assert.IsTrue(arkos.Contains("Lance Thrust"));
+            Assert.IsTrue(arkos.Contains("Geodesic"));
+            Assert.IsTrue(arkos.Contains("True Line"));
+            Assert.IsTrue(arkos.Contains("\"Dash\""));
+            Assert.IsTrue(arkos.Contains("Close"));
+            Assert.IsFalse(arkos.Contains("Slip"));
+            Assert.IsTrue(System.IO.File.Exists(System.IO.Path.Combine(UnityEngine.Application.streamingAssetsPath, "fighters", "arkos", "arkos.png")));
         }
 
         static void AssertFighters(MenuController.FitResult fit)

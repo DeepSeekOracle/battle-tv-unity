@@ -406,7 +406,9 @@ namespace BattleTv.Fight
                 var bolt = ArenaMatch.Bolts[i];
                 var color = bolt.Src != null ? KitColor(bolt.Src) : Gold;
                 var at = OnSand(bolt.X, bolt.Y, width, height);
-                if (bolt.Lob)
+                if (bolt.Lob && bolt.Src != null && bolt.Src.Id == "arkos")
+                    PlaceRing(at, 48f, color, 1f, false);
+                else if (bolt.Lob)
                     Place(sigilEmber, at, new Vector2(26f, 26f), 0f, color, 1f, false);
                 else if (bolt.Src != null && bolt.Src.Id == "lightfather")
                     PlaceSealBolt(bolt, at, width, height, color);
