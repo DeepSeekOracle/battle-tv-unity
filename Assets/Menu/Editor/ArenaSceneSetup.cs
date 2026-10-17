@@ -85,6 +85,9 @@ namespace BattleTv.Menu.EditorTools
             AssignClip(so, "lfSlip", Cutout("lf-slip", 2));
             AssignClip(so, "lfDeath", Cutout("lf-death", 1));
             AssignClip(so, "lfWin", Cutout("lf-win", 1));
+            AssignClip(so, "valeWalk", Cutout("vale-walk", 8));
+            AssignClip(so, "bruteWalk", Cutout("brute-walk", 8));
+            AssignClip(so, "lfWalk", Cutout("lf-walk", 8));
             var glow = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Art/Duel/vale-door/glow-white.png");
             if (glow == null)
                 throw new FileNotFoundException("Sigil plate did not import.", "Assets/Art/Duel/vale-door/glow-white.png");

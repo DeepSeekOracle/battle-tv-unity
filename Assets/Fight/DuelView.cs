@@ -42,6 +42,8 @@ namespace BattleTv.Fight
         [SerializeField] Sprite[] valeWin;
         [SerializeField] Sprite[] bruteDeath;
         [SerializeField] Sprite[] bruteWin;
+        [SerializeField] Sprite[] valeWalk;
+        [SerializeField] Sprite[] bruteWalk;
         [SerializeField] GameObject scoreboard;
         [SerializeField] Text scoreTitle;
         [SerializeField] Text scoreDetail;
@@ -64,6 +66,8 @@ namespace BattleTv.Fight
         const float PlantPivot = 0.56f;
         const float ValeDeathPivot = 0.42f;
         const float ValeWinPivot = 0.40f;
+        const float ValeWalkTime = 0.62f;
+        const float BruteWalkTime = 0.84f;
         const float DeathTime = 1.6f;
         const float BruteDeathTime = 1.55f;
         const float WinTime = 1.15f;
@@ -118,6 +122,10 @@ namespace BattleTv.Fight
         float _wardPulse;
         bool _wardHold;
         Sprite _valeIdle;
+        float _valeWalkT = -1f;
+        float _bruteWalkT = -1f;
+        double _valeFoot = double.NaN;
+        double _bruteFoot = double.NaN;
         const float PoundLineTime = 0.62f;
 
         void Start()
@@ -287,6 +295,8 @@ namespace BattleTv.Fight
                 double dt = frameDt;
                 _time += dt;
                 SideDuel.Step(_vale, _brute, dt, _rng, _time);
+                StepWalk(ref _valeWalkT, _vale, ref _valeFoot, _clipT >= 0f, frameDt);
+                StepWalk(ref _bruteWalkT, _brute, ref _bruteFoot, _bruteClipT >= 0f, frameDt);
                 float atk = (float)_vale.AtkCd;
                 bool swung = _vale.Callout == "Punch" || _vale.Callout == "Shield Bash";
                 if (atk > _prevAtk + 0.05f && swung)
@@ -390,6 +400,25 @@ namespace BattleTv.Fight
             callout.text = _lastLine;
         }
 
+        static void StepWalk(ref float clock, Body body, ref double foot, bool clip, float dt)
+        {
+            bool moved = false;
+            if (!double.IsNaN(foot))
+            {
+                double dx = body.X - foot;
+                moved = dx * dx > 0.0004;
+            }
+            foot = body.X;
+            if (clip || body.Hp <= 0 || !moved)
+            {
+                clock = -1f;
+                return;
+            }
+            if (clock < 0f)
+                clock = 0f;
+            clock += dt;
+        }
+
         void Place(Body body, RectTransform rect)
         {
             if (rect == null)
@@ -410,6 +439,13 @@ namespace BattleTv.Fight
                         frame = Mathf.Clamp(Mathf.FloorToInt(0.58f * _clip.Length), 0, _clip.Length - 1);
                     if (_clip[frame] != null)
                         image.sprite = _clip[frame];
+                }
+                else if (_valeWalkT >= 0f && valeWalk != null && valeWalk.Length > 0)
+                {
+                    float u = ValeWalkTime > 0.01f ? (_valeWalkT % ValeWalkTime) / ValeWalkTime : 0f;
+                    int frame = Mathf.Clamp(Mathf.FloorToInt(u * valeWalk.Length), 0, valeWalk.Length - 1);
+                    if (valeWalk[frame] != null)
+                        image.sprite = valeWalk[frame];
                 }
                 else if (_valeIdle != null)
                     image.sprite = _valeIdle;
@@ -436,6 +472,13 @@ namespace BattleTv.Fight
                     int frame = ((int)(_wardPulse / 0.28f)) % bruteWard.Length;
                     if (bruteWard[frame] != null)
                         image.sprite = bruteWard[frame];
+                }
+                else if (_bruteWalkT >= 0f && bruteWalk != null && bruteWalk.Length > 0)
+                {
+                    float u = BruteWalkTime > 0.01f ? (_bruteWalkT % BruteWalkTime) / BruteWalkTime : 0f;
+                    int frame = Mathf.Clamp(Mathf.FloorToInt(u * bruteWalk.Length), 0, bruteWalk.Length - 1);
+                    if (bruteWalk[frame] != null)
+                        image.sprite = bruteWalk[frame];
                 }
                 else if (bruteIdle != null)
                     image.sprite = bruteIdle;

@@ -59,6 +59,9 @@ namespace BattleTv.Fight
         [SerializeField] Sprite[] lfSlip;
         [SerializeField] Sprite[] lfDeath;
         [SerializeField] Sprite[] lfWin;
+        [SerializeField] Sprite[] valeWalk;
+        [SerializeField] Sprite[] bruteWalk;
+        [SerializeField] Sprite[] lfWalk;
         [SerializeField] Sprite sigilGlow;
         [SerializeField] Material sigilRingBack;
         [SerializeField] Material sigilRingFront;
@@ -103,6 +106,10 @@ namespace BattleTv.Fight
             public string Pose = "";
             public double SeenHp = -1;
             public bool SeenAlive = true;
+            public float WalkT = -1f;
+            public bool HasFoot;
+            public double FootX;
+            public double FootY;
         }
 
         sealed class Sigil
@@ -153,7 +160,10 @@ namespace BattleTv.Fight
                     Play("kill", 0.5f);
             }
             for (var i = 0; i < _actors.Count; i++)
+            {
                 AdvanceClip(_actors[i], dt);
+                AdvanceWalk(_actors[i], dt);
+            }
             EnsureActors();
             Paint();
             AgeFlashes(dt);
@@ -753,9 +763,70 @@ namespace BattleTv.Fight
                     actor.Image.sprite = actor.Clip[frame];
                 return;
             }
+            if (actor.WalkT >= 0f)
+            {
+                var frames = WalkOf(body.Id);
+                if (frames != null && frames.Length > 0)
+                {
+                    var dur = WalkDur(body.Id);
+                    var u = dur > 0.01f ? (actor.WalkT % dur) / dur : 0f;
+                    var frame = Mathf.Clamp(Mathf.FloorToInt(u * frames.Length), 0, frames.Length - 1);
+                    if (frames[frame] != null)
+                    {
+                        actor.Image.sprite = frames[frame];
+                        return;
+                    }
+                }
+            }
             var still = Still(body.Id);
             if (still != null)
                 actor.Image.sprite = still;
+        }
+
+        void AdvanceWalk(Actor actor, float dt)
+        {
+            var body = actor.Body;
+            if (body == null)
+                return;
+            var moved = false;
+            if (actor.HasFoot && body.Alive)
+            {
+                var dx = body.X - actor.FootX;
+                var dy = body.Y - actor.FootY;
+                moved = dx * dx + dy * dy > 2.25;
+            }
+            actor.HasFoot = true;
+            actor.FootX = body.X;
+            actor.FootY = body.Y;
+            var frames = WalkOf(body.Id);
+            if (actor.ClipT >= 0f || !moved || frames == null || frames.Length == 0)
+            {
+                actor.WalkT = -1f;
+                return;
+            }
+            if (actor.WalkT < 0f)
+                actor.WalkT = 0f;
+            actor.WalkT += dt;
+        }
+
+        Sprite[] WalkOf(string id)
+        {
+            if (id == "vale")
+                return valeWalk;
+            if (id == "brute")
+                return bruteWalk;
+            if (id == "lightfather")
+                return lfWalk;
+            return null;
+        }
+
+        static float WalkDur(string id)
+        {
+            if (id == "brute")
+                return 0.84f;
+            if (id == "lightfather")
+                return 0.72f;
+            return 0.62f;
         }
 
         void BuildChrome()

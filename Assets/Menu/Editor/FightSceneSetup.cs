@@ -19,6 +19,12 @@ namespace BattleTv.Menu.EditorTools
         const string ValePath = "Assets/Art/Duel/vale.png";
         const string BrutePath = "Assets/Art/Duel/brute.png";
 
+        public static void BindWalks()
+        {
+            Build();
+            ArenaSceneSetup.Build();
+        }
+
         public static void Build()
         {
             Configure(StagePath, false, false, Vector4.zero, true);
@@ -38,6 +44,8 @@ namespace BattleTv.Menu.EditorTools
             var bruteClose = LoadClip("brute-close", 1, 1024);
             var bruteDeath = LoadClip("brute-death", 3, 1024);
             var bruteWin = LoadClip("brute-win", 2, 1024);
+            var valeWalk = LoadClip("vale-walk", 8, 1024);
+            var bruteWalk = LoadClip("brute-walk", 8, 1024);
             ConfigureToss("Assets/Art/Duel/brute-line.png", 1024);
             ConfigureToss("Assets/Art/Duel/brute-grip.png", 1024);
             ConfigureToss("Assets/Art/Duel/brute-dust.png", 1024);
@@ -158,6 +166,8 @@ namespace BattleTv.Menu.EditorTools
             AssignClip(so, "valeWin", valeWin);
             AssignClip(so, "bruteDeath", bruteDeath);
             AssignClip(so, "bruteWin", bruteWin);
+            AssignClip(so, "valeWalk", valeWalk);
+            AssignClip(so, "bruteWalk", bruteWalk);
             so.FindProperty("bruteIdle").objectReferenceValue = bruteIdle;
             var door = Mark(plate, "ValeDoor", doorSprite);
             door.transform.SetSiblingIndex(3);
