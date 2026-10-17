@@ -1,0 +1,17 @@
+{
+    "id": "smith",
+    "flip": "against",
+    "clipPivot": true,
+    "walk": 0.72,
+    "idle": "smith.png",
+    "clips": [
+        { "name": "Forge Bolt", "seconds": 0.50, "pivot": 0.5, "frames": ["smith.png", "smith-bolt-f01.png"] },
+        { "name": "Anvil", "seconds": 0.50, "pivot": 0.5, "frames": ["smith.png", "smith-anvil-f01.png"] },
+        { "name": "Gate Cannon", "seconds": 0.50, "pivot": 0.5, "frames": ["smith.png", "smith-cannon-f01.png"] },
+        { "name": "Temper Work", "seconds": 0.52, "pivot": 0.5, "frames": ["smith.png", "smith-temper-f01.png"] },
+        { "name": "Slip", "seconds": 0.35, "pivot": 0.5, "frames": ["smith-slip-f00.png", "smith.png"] },
+        { "name": "walk", "seconds": 0.72, "pivot": 0.5, "frames": ["smith.png", "smith-walk-f00.png"] },
+        { "name": "death", "seconds": 1.55, "pivot": 0.5, "frames": ["smith-death-f00.png"] },
+        { "name": "win", "seconds": 1.15, "pivot": 0.5, "frames": ["smith-win-f00.png"] }
+    ]
+}
