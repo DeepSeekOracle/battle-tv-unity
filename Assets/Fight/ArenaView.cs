@@ -336,6 +336,8 @@ namespace BattleTv.Fight
                     Push(1, body.X, body.Y, body.X, body.Y, 0.50f, 100f, color);
                 if (body.Id == "seidon" && mv != null && mv.Id == "current")
                     Push(1, body.X, body.Y, body.X, body.Y, 0.50f, 110f, color);
+                if (body.Id == "sancora" && mv != null && (mv.Id == "chorusflask" || mv.Id == "weavebloom" || mv.Id == "cover"))
+                    Push(1, body.X, body.Y, body.X, body.Y, 0.50f, 100f, color);
             }
         }
 
@@ -452,6 +454,8 @@ namespace BattleTv.Fight
                     PlaceHourBolt(bolt, at, width, height);
                 else if (bolt.Src != null && bolt.Src.Id == "seidon")
                     PlaceTideBolt(bolt, at, width, height);
+                else if (bolt.Src != null && bolt.Src.Id == "sancora")
+                    PlaceFlask(bolt, at, width, height);
                 else
                 {
                     var aim = -(float)bolt.Angle * Mathf.Rad2Deg;
@@ -792,6 +796,50 @@ namespace BattleTv.Fight
                 Place(sigilLance, mid, new Vector2(len, 5f), ang, tide, 1f, false);
             PlaceRing(tip, 36f, pale, 1f, false);
             Place(sigilEmber, hand, new Vector2(16f, 16f), 0f, tide, 0.8f, false);
+        }
+
+        void PlaceFlask(ArenaBolt bolt, Vector2 at, float width, float height)
+        {
+            var feet = OnSand(bolt.Src.X, bolt.Src.Y, width, height);
+            var hand = FlaskHand(bolt.Src, feet);
+            var tip = at + (hand - feet);
+            var delta = tip - hand;
+            var len = delta.magnitude;
+            var ang = Mathf.Atan2(delta.y, delta.x) * Mathf.Rad2Deg;
+            var mid = (hand + tip) * 0.5f;
+            var gold = new Color(0.99f, 0.90f, 0.54f, 1f);
+            var rose = new Color(0.93f, 0.28f, 0.72f, 1f);
+            if (len > 12f)
+                Place(sigilLance, mid, new Vector2(len, 5f), ang, rose, 1f, false);
+            PlaceRing(tip, 34f, gold, 1f, false);
+            Place(sigilEmber, hand, new Vector2(18f, 18f), 0f, rose, 0.8f, false);
+        }
+
+        Vector2 FlaskHand(ArenaBody body, Vector2 feet)
+        {
+            for (var i = 0; i < _actors.Count; i++)
+            {
+                var actor = _actors[i];
+                if (actor.Body != body || actor.Rect == null)
+                    continue;
+                var face = actor.Rect.localScale.x >= 0f ? 1f : -1f;
+                var w = actor.Rect.sizeDelta.x;
+                var h = actor.Rect.sizeDelta.y;
+                var nx = 0.28f;
+                var ny = 0.55f;
+                if (actor.Clip != null && actor.Clip.Length > 0 && actor.ClipT >= 0f)
+                {
+                    var u = actor.ClipDur > 0.01f ? actor.ClipT / actor.ClipDur : 1f;
+                    var frame = Mathf.Clamp(Mathf.FloorToInt(u * actor.Clip.Length), 0, actor.Clip.Length - 1);
+                    if (frame == 1 && actor.Pose == "Chemist Vial")
+                    {
+                        nx = 0.55f;
+                        ny = 0.62f;
+                    }
+                }
+                return feet + new Vector2(face * w * nx, h * ny);
+            }
+            return feet + new Vector2(0f, 48f);
         }
 
         Vector2 TideHand(ArenaBody body, Vector2 feet)

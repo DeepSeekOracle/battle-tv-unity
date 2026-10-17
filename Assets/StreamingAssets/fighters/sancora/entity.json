@@ -1,0 +1,17 @@
+{
+    "id": "sancora",
+    "flip": "against",
+    "clipPivot": true,
+    "walk": 0.72,
+    "idle": "sancora.png",
+    "clips": [
+        { "name": "Chemist Vial", "seconds": 0.50, "pivot": 0.5, "frames": ["sancora.png", "sancora-vial-f01.png", "sancora.png"] },
+        { "name": "Chorus Flask", "seconds": 0.50, "pivot": 0.5, "frames": ["sancora.png", "sancora-chorus-f01.png"] },
+        { "name": "Weave Bloom", "seconds": 0.52, "pivot": 0.5, "frames": ["sancora.png", "sancora-weave-f01.png"] },
+        { "name": "Cover", "seconds": 0.50, "pivot": 0.5, "frames": ["sancora.png", "sancora-cover-f01.png"] },
+        { "name": "Slip", "seconds": 0.35, "pivot": 0.5, "frames": ["sancora-slip-f00.png", "sancora.png"] },
+        { "name": "walk", "seconds": 0.72, "pivot": 0.5, "frames": ["sancora.png", "sancora-walk-f00.png"] },
+        { "name": "death", "seconds": 1.55, "pivot": 0.5, "frames": ["sancora-death-f00.png"] },
+        { "name": "win", "seconds": 1.15, "pivot": 0.5, "frames": ["sancora-win-f00.png"] }
+    ]
+}

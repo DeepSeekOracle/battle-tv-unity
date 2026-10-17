@@ -220,3 +220,13 @@ Pack "seidon" "against" $true 0.72 "seidon.png" @(
     @{ name = "death"; seconds = 1.55; pivot = 0.50; frames = (Frames "seidon-death" 1) }
     @{ name = "win"; seconds = 1.15; pivot = 0.50; frames = (Frames "seidon-win" 1) }
 )
+Pack "sancora" "against" $true 0.72 "sancora.png" @(
+    @{ name = "Chemist Vial"; seconds = 0.50; pivot = 0.50; frames = @("IDLE", "sancora-vial/f01.png", "IDLE") }
+    @{ name = "Chorus Flask"; seconds = 0.50; pivot = 0.50; frames = @("IDLE", "sancora-chorus/f01.png") }
+    @{ name = "Weave Bloom"; seconds = 0.52; pivot = 0.50; frames = @("IDLE", "sancora-weave/f01.png") }
+    @{ name = "Cover"; seconds = 0.50; pivot = 0.50; frames = @("IDLE", "sancora-cover/f01.png") }
+    @{ name = "Slip"; seconds = 0.35; pivot = 0.50; frames = @("sancora-slip/f00.png", "IDLE") }
+    @{ name = "walk"; seconds = 0.72; pivot = 0.50; frames = @("IDLE", "sancora-walk/f00.png") }
+    @{ name = "death"; seconds = 1.55; pivot = 0.50; frames = (Frames "sancora-death" 1) }
+    @{ name = "win"; seconds = 1.15; pivot = 0.50; frames = (Frames "sancora-win" 1) }
+)

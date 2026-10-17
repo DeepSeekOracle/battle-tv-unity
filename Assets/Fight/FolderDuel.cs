@@ -572,6 +572,8 @@ namespace BattleTv.Fight
                     Push(1, body.X, body.Y, body.X, body.Y, 0.50f, 100f, color);
                 if (body.Id == "seidon" && mv != null && mv.Id == "current")
                     Push(1, body.X, body.Y, body.X, body.Y, 0.50f, 110f, color);
+                if (body.Id == "sancora" && mv != null && (mv.Id == "chorusflask" || mv.Id == "weavebloom" || mv.Id == "cover"))
+                    Push(1, body.X, body.Y, body.X, body.Y, 0.50f, 100f, color);
             }
         }
 
@@ -704,6 +706,8 @@ namespace BattleTv.Fight
                     PlaceHourBolt(bolt, at, width, height);
                 else if (bolt.Src != null && bolt.Src.Id == "seidon")
                     PlaceTideBolt(bolt, at, width, height);
+                else if (bolt.Src != null && bolt.Src.Id == "sancora")
+                    PlaceFlask(bolt, at, width, height);
                 else
                     Place(_bolt, at, new Vector2(46f, 14f), -(float)bolt.Angle * Mathf.Rad2Deg, color, 1f, false);
             }
@@ -860,6 +864,30 @@ namespace BattleTv.Fight
             var pale = new Color(0.85f, 0.97f, 1f, 1f);
             Shot(hand, tip, tide, pale, 7f, 3f, 12f, 10f, 16f, 150f);
             PlaceRing(tip, 36f, pale, 1f, false);
+        }
+
+        void PlaceFlask(ArenaBolt bolt, Vector2 at, float width, float height)
+        {
+            var feet = OnLane(bolt.Src.X, width, height);
+            var nx = 0.28f;
+            var ny = 0.55f;
+            var slot = FindSlot(bolt.Src);
+            if (slot != null && slot.Clip != null && slot.Clip.Length > 0 && slot.ClipT >= 0f)
+            {
+                var u = slot.ClipDur > 0.01f ? slot.ClipT / slot.ClipDur : 1f;
+                var frame = Mathf.Clamp(Mathf.FloorToInt(u * slot.Clip.Length), 0, slot.Clip.Length - 1);
+                if (frame == 1 && slot.Pose == "Chemist Vial")
+                {
+                    nx = 0.55f;
+                    ny = 0.62f;
+                }
+            }
+            var hand = Anchor(bolt.Src, feet, nx, ny);
+            var tip = at + (hand - feet);
+            var gold = new Color(0.99f, 0.90f, 0.54f, 1f);
+            var rose = new Color(0.93f, 0.28f, 0.72f, 1f);
+            Shot(hand, tip, rose, gold, 6f, 3f, 12f, 12f, 18f, 140f);
+            PlaceRing(tip, 34f, gold, 1f, false);
         }
 
         void Shot(Vector2 hand, Vector2 tip, Color color, Color hot, float thick, float core, float tipW, float tipH, float handSize, float flashLen)

@@ -349,10 +349,10 @@ namespace BattleTv.Menu.Tests
         public void AutoShowRotatesPaintedCards()
         {
             var roster = LaneRoster.LaneIds();
-            Assert.AreEqual(13, roster.Length);
+            Assert.AreEqual(14, roster.Length);
             Assert.AreEqual("vale", roster[0]);
             Assert.AreEqual("brute", roster[1]);
-            Assert.AreEqual("seidon", roster[roster.Length - 1]);
+            Assert.AreEqual("sancora", roster[roster.Length - 1]);
             Assert.IsTrue(LaneRoster.InLane("gate"));
             Assert.IsFalse(LaneRoster.Painted("gate"));
             Assert.IsTrue(LaneRoster.Painted("d9ra"));
@@ -360,8 +360,9 @@ namespace BattleTv.Menu.Tests
             Assert.IsTrue(LaneRoster.Painted("kairos"));
             Assert.IsTrue(LaneRoster.Painted("justicae"));
             Assert.IsTrue(LaneRoster.Painted("seidon"));
-            Assert.IsTrue(LaneRoster.InLane("sancora"));
-            Assert.IsFalse(LaneRoster.Painted("sancora"));
+            Assert.IsTrue(LaneRoster.Painted("sancora"));
+            Assert.IsTrue(LaneRoster.InLane("wraith"));
+            Assert.IsFalse(LaneRoster.Painted("wraith"));
 
             Assert.IsTrue(ShowPick.BeginAutonomous(new System.Random(5)));
             Assert.AreEqual("vale", ShowPick.Yours[0]);
@@ -416,7 +417,8 @@ namespace BattleTv.Menu.Tests
                 "srath", "nia",
                 "kairos", "srath",
                 "justicae", "kairos",
-                "seidon", "justicae"
+                "seidon", "justicae",
+                "sancora", "seidon"
             };
             for (var c = 0; c < cards.Length; c += 2)
                 FinishLane(cards[c], cards[c + 1], 20 + c);
@@ -481,7 +483,8 @@ namespace BattleTv.Menu.Tests
             Assert.IsFalse(LaneRoster.ById("kairos").Linked);
             Assert.IsFalse(LaneRoster.ById("justicae").Linked);
             Assert.IsFalse(LaneRoster.ById("seidon").Linked);
-            var painted = new[] { "lightfather", "kael", "orin", "nia", "lyra", "arkos", "d9ra", "srath", "kairos", "justicae", "seidon" };
+            Assert.IsFalse(LaneRoster.ById("sancora").Linked);
+            var painted = new[] { "lightfather", "kael", "orin", "nia", "lyra", "arkos", "d9ra", "srath", "kairos", "justicae", "seidon", "sancora" };
             for (var i = 0; i < painted.Length; i++)
             {
                 var id = painted[i];
@@ -666,7 +669,7 @@ namespace BattleTv.Menu.Tests
         public void PaintedRosterDashes()
         {
             var ids = LaneRoster.LaneIds();
-            Assert.AreEqual(13, ids.Length);
+            Assert.AreEqual(14, ids.Length);
             for (var i = 0; i < ids.Length; i++)
             {
                 Leap(ids[i], true, false);
@@ -838,6 +841,15 @@ namespace BattleTv.Menu.Tests
             Assert.IsFalse(tide.Contains("\"Dash\""));
             Assert.IsFalse(tide.Contains("Close"));
             Assert.IsTrue(System.IO.File.Exists(System.IO.Path.Combine(UnityEngine.Application.streamingAssetsPath, "fighters", "seidon", "seidon.png")));
+            var flask = System.IO.File.ReadAllText(System.IO.Path.Combine(UnityEngine.Application.streamingAssetsPath, "fighters", "sancora", "entity.json"));
+            Assert.IsTrue(flask.Contains("Chemist Vial"));
+            Assert.IsTrue(flask.Contains("Chorus Flask"));
+            Assert.IsTrue(flask.Contains("Weave Bloom"));
+            Assert.IsTrue(flask.Contains("Cover"));
+            Assert.IsTrue(flask.Contains("Slip"));
+            Assert.IsFalse(flask.Contains("\"Dash\""));
+            Assert.IsFalse(flask.Contains("Close"));
+            Assert.IsTrue(System.IO.File.Exists(System.IO.Path.Combine(UnityEngine.Application.streamingAssetsPath, "fighters", "sancora", "sancora.png")));
         }
 
         static void AssertFighters(MenuController.FitResult fit)
