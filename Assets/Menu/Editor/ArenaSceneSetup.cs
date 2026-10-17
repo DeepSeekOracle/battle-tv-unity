@@ -305,6 +305,21 @@ namespace BattleTv.Menu.EditorTools
             importer.textureCompression = alpha ? TextureImporterCompression.Uncompressed : TextureImporterCompression.CompressedHQ;
             importer.maxTextureSize = max;
             importer.filterMode = FilterMode.Bilinear;
+            // Sand bodies draw at about 170px. The source plates stay full size.
+            // The WebGL player caps those plates at 512 so the data file stays under GitHub's 100 MiB limit.
+            // Vale and Brute keep their existing import. Their lane sprites are taller than this cap.
+            var sandPlate = path.IndexOf("vale", System.StringComparison.OrdinalIgnoreCase) < 0
+                && path.IndexOf("brute", System.StringComparison.OrdinalIgnoreCase) < 0;
+            if (alpha && max >= 2048 && sandPlate)
+            {
+                var web = importer.GetPlatformTextureSettings("WebGL");
+                web.overridden = true;
+                web.maxTextureSize = 512;
+                web.textureCompression = TextureImporterCompression.Uncompressed;
+                web.format = TextureImporterFormat.RGBA32;
+                web.crunchedCompression = false;
+                importer.SetPlatformTextureSettings(web);
+            }
             var settings = new TextureImporterSettings();
             importer.ReadTextureSettings(settings);
             settings.spriteMeshType = SpriteMeshType.FullRect;
