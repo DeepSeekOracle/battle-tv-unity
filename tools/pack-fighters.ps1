@@ -285,3 +285,14 @@ Pack "drain" "against" $true 0.72 "drain.png" @(
     @{ name = "death"; seconds = 1.55; pivot = 0.50; frames = (Frames "drain-death" 1) }
     @{ name = "win"; seconds = 1.15; pivot = 0.50; frames = (Frames "drain-win" 1) }
 )
+
+Pack "gate" "against" $true 0.72 "gate.png" @(
+    @{ name = "Gate Slam"; seconds = 0.50; pivot = 0.50; frames = @("IDLE", "gate-slam/f01.png") }
+    @{ name = "Gate Ward"; seconds = 0.50; pivot = 0.50; frames = @("IDLE", "gate-ward/f01.png") }
+    @{ name = "Call the Wards"; seconds = 0.52; pivot = 0.50; frames = @("IDLE", "gate-wards/f01.png") }
+    @{ name = "Gate Haul"; seconds = 0.50; pivot = 0.50; frames = @("IDLE", "gate-haul/f01.png") }
+    @{ name = "Close"; seconds = 0.35; pivot = 0.50; frames = @("gate-close/f00.png", "IDLE") }
+    @{ name = "walk"; seconds = 0.72; pivot = 0.50; frames = @("IDLE", "gate-walk/f00.png") }
+    @{ name = "death"; seconds = 1.55; pivot = 0.50; frames = (Frames "gate-death" 1) }
+    @{ name = "win"; seconds = 1.15; pivot = 0.50; frames = (Frames "gate-win" 1) }
+)

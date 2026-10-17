@@ -544,6 +544,10 @@ namespace BattleTv.Fight
                     Push(5, at.X, at.Y, at.X, at.Y, 0.45f, radius * 0.45f, color);
                 if (body.Id == "drain" && mv != null && mv.Id == "draincloud")
                     Push(5, at.X, at.Y, at.X, at.Y, 0.50f, radius * 0.62f, color);
+                if (body.Id == "gate" && mv != null && mv.Id == "gateslam")
+                    Push(1, body.X, body.Y, body.X, body.Y, 0.48f, radius, color);
+                if (body.Id == "gate" && mv != null && mv.Id == "gate_haul" && foe != null)
+                    Push(4, foe.X, foe.Y, body.X, body.Y, 0.28f, 20f, color);
                 if (body.Id == "hurler" && mv != null && mv.Id == "pound")
                     Push(1, body.X, body.Y, body.X, body.Y, 0.48f, radius, color);
             }
@@ -568,6 +572,8 @@ namespace BattleTv.Fight
                         Push(1, foe.X, foe.Y, foe.X, foe.Y, 0.36f, 56f, color);
                     else if (body.Id == "drain")
                         Push(5, foe.X, foe.Y, foe.X, foe.Y, 0.24f, 36f, color);
+                    if (body.Id == "gate")
+                        Push(1, foe.X, foe.Y, foe.X, foe.Y, 0.32f, 70f, color);
                 }
             }
             else if (shape == "bolt" || shape == "multi" || shape == "lob")
@@ -602,6 +608,8 @@ namespace BattleTv.Fight
                     Push(1, body.X, body.Y, body.X, body.Y, 0.50f, 110f, color);
                 if (body.Id == "sancora" && mv != null && (mv.Id == "chorusflask" || mv.Id == "weavebloom" || mv.Id == "cover"))
                     Push(1, body.X, body.Y, body.X, body.Y, 0.50f, 100f, color);
+                if (body.Id == "gate" && mv != null && (mv.Id == "gateward" || mv.Id == "callwards"))
+                    Push(1, body.X, body.Y, body.X, body.Y, 0.50f, mv.Id == "callwards" ? 120f : 100f, color);
             }
         }
 
