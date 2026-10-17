@@ -1,0 +1,16 @@
+{
+    "id": "hurler",
+    "flip": "against",
+    "clipPivot": true,
+    "walk": 0.72,
+    "idle": "hurler.png",
+    "clips": [
+        { "name": "Stone Toss", "seconds": 0.50, "pivot": 0.5, "frames": ["hurler.png", "hurler-toss-f01.png"] },
+        { "name": "Lob Stone", "seconds": 0.52, "pivot": 0.5, "frames": ["hurler.png", "hurler-lob-f01.png"] },
+        { "name": "Ground Pound", "seconds": 0.50, "pivot": 0.5, "frames": ["hurler.png", "hurler-pound-f01.png"] },
+        { "name": "Slip", "seconds": 0.35, "pivot": 0.5, "frames": ["hurler-slip-f00.png", "hurler.png"] },
+        { "name": "walk", "seconds": 0.72, "pivot": 0.5, "frames": ["hurler.png", "hurler-walk-f00.png"] },
+        { "name": "death", "seconds": 1.55, "pivot": 0.5, "frames": ["hurler-death-f00.png"] },
+        { "name": "win", "seconds": 1.15, "pivot": 0.5, "frames": ["hurler-win-f00.png"] }
+    ]
+}
