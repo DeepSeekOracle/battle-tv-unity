@@ -417,6 +417,8 @@ namespace BattleTv.Fight
                 var at = OnSand(bolt.X, bolt.Y, width, height);
                 if (bolt.Lob)
                     Place(sigilEmber, at, new Vector2(26f, 26f), 0f, color, 1f, false);
+                else if (bolt.Src != null && bolt.Src.Id == "lightfather")
+                    PlaceSealBolt(bolt, at, width, height, color);
                 else
                 {
                     var aim = -(float)bolt.Angle * Mathf.Rad2Deg;
@@ -448,6 +450,42 @@ namespace BattleTv.Fight
             }
             for (var i = _sigilN; i < _sigils.Count; i++)
                 _sigils[i].Image.enabled = false;
+        }
+
+        void PlaceSealBolt(ArenaBolt bolt, Vector2 at, float width, float height, Color color)
+        {
+            // The sim bolt leaves the feet. The picture leaves the triangle in the leading hand.
+            var feet = OnSand(bolt.Src.X, bolt.Src.Y, width, height);
+            var hand = Triangle(bolt.Src, feet);
+            var tip = at + (hand - feet);
+            var delta = tip - hand;
+            var len = delta.magnitude;
+            var ang = Mathf.Atan2(delta.y, delta.x) * Mathf.Rad2Deg;
+            var mid = (hand + tip) * 0.5f;
+            var hot = new Color(1f, 0.96f, 0.82f, 1f);
+            if (len > 10f)
+            {
+                Place(sigilBolt, mid, new Vector2(len, 64f), ang, color, 1f, false);
+                Place(sigilLance, mid, new Vector2(len, 18f), ang, hot, 0.95f, false);
+            }
+            Place(sigilBolt, tip, new Vector2(54f, 28f), ang, hot, 1f, false);
+            if (len < 96f)
+                Place(sigilBurst, hand, new Vector2(88f, 88f), 0f, color, 0.9f, false);
+        }
+
+        Vector2 Triangle(ArenaBody body, Vector2 feet)
+        {
+            for (var i = 0; i < _actors.Count; i++)
+            {
+                var actor = _actors[i];
+                if (actor.Body != body || actor.Rect == null)
+                    continue;
+                var face = actor.Rect.localScale.x >= 0f ? 1f : -1f;
+                var w = actor.Rect.sizeDelta.x;
+                var h = actor.Rect.sizeDelta.y;
+                return feet + new Vector2(face * w * 0.28f, h * 0.58f);
+            }
+            return feet + new Vector2(0f, 48f);
         }
 
         void PlaceRing(Vector2 at, float diameter, Color color, float alpha, bool behind)
