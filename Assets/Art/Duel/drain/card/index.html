@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Drain animation card</title>
+<style>
+  body { margin: 0; background: #10141c; color: #f6e7c1; font: 16px/1.4 Georgia, serif; }
+  main { max-width: 1180px; margin: 0 auto; padding: 28px 20px 64px; }
+  h1 { font-weight: normal; letter-spacing: 0.08em; text-transform: uppercase; font-size: 22px; margin: 0 0 6px; }
+  h2 { font-size: 18px; font-weight: normal; margin: 28px 0 8px; color: #7c3aed; }
+  p, li { max-width: 78ch; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { border-bottom: 1px solid rgba(124,58,237,0.35); text-align: left; padding: 6px 8px; vertical-align: top; }
+  th { color: #7c3aed; font-weight: normal; letter-spacing: 0.06em; text-transform: uppercase; font-size: 12px; }
+  .row { display: grid; grid-template-columns: 220px 1fr; gap: 16px; margin: 22px 0; padding-top: 12px; border-top: 1px solid rgba(246,231,193,0.18); }
+  img { width: 220px; height: auto; background: #000; display: block; }
+  .tag { color: #7c3aed; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Drain · The Unwriting</h1>
+  <p>This card is the only pose list. A later frame has to match one of these keys. Native facing is right. The whole sprite flips. Charcoal shroud, red eyes, violet hem. The hem is the foot line. Drain is a fist, so the corner step is Close. There is no move named Dash and no Slip key. Drain Touch, Unmake, Drain Cloud, and Grave Step keep those book names. Wraith keeps its own Drain Cloud picture.</p>
+  <table>
+    <tr><th>Book</th><th>Value</th></tr>
+    <tr><td>Basic</td><td>Drain Touch · range 2.0</td></tr>
+    <tr><td>Body</td><td>875 health · 37 damage · 0.78 attacks/s · speed 2.9 · armor 7 · range 2.0 · mana 90 · regen 8</td></tr>
+    <tr><td>Crit / cooldown</td><td>0.12 crit · 0.88 cooldown scale</td></tr>
+    <tr><td>Cards</td><td>Leech · Regen · Might</td></tr>
+    <tr><td>Moves</td><td>Unmake · Drain Cloud · Grave Step</td></tr>
+    <tr><td>Stride</td><td>Close · a fist · 30s · cost 8</td></tr>
+  </table>
+  <h2>What stays off the body</h2>
+  <ul>
+    <li>Drain Touch is the forward sleeve. The mist on the foe is the cut.</li>
+    <li>Unmake is the grab. The ring on the foe is the silence. The book name stays Unmake.</li>
+    <li>Drain Cloud keeps that book name. Wraith's cloud stays Wraith's. The live alias Unwriting does not replace it.</li>
+    <li>Grave Step is this body's blink. The book name stays Grave Step.</li>
+  </ul>
+  <h2>Keys</h2>
+  <div class="row"><img src="idle.png" alt=""><div><p class="tag">Idle</p><p>Still hood, sleeve forward, hem on the foot line.</p></div></div>
+  <div class="row"><img src="touch.png" alt=""><div><p class="tag">Drain Touch</p><p>Idle, then the sleeve reaches, then idle. 0.50s.</p></div></div>
+  <div class="row"><img src="unmake.png" alt=""><div><p class="tag">Unmake</p><p>Idle, then the sleeve closes, then idle. 0.52s.</p></div></div>
+  <div class="row"><img src="cloud.png" alt=""><div><p class="tag">Drain Cloud</p><p>Idle, then the violet cloud opens at the hem, then idle. 0.50s.</p></div></div>
+  <div class="row"><img src="step.png" alt=""><div><p class="tag">Grave Step</p><p>Idle, then the shroud smears, then idle. 0.50s.</p></div></div>
+  <div class="row"><img src="close.png" alt=""><div><p class="tag">Close</p><p>A lunge toward the right, then idle. 0.35s. Corner step only.</p></div></div>
+  <div class="row"><img src="walk-a.png" alt=""><div><p class="tag">Walk</p><p>Idle, then one sweep of the hem. 0.72s. Do not copy it into a second step.</p></div></div>
+  <div class="row"><img src="death.png" alt=""><div><p class="tag">Death</p><p>One shroud pooled in the lower portion. 1.55s. It is not scaled up to standing height.</p></div></div>
+  <div class="row"><img src="win.png" alt=""><div><p class="tag">Win</p><p>Both sleeves rise. The hem stays down. 1.15s.</p></div></div>
+</main>
+</body>
+</html>

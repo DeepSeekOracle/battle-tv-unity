@@ -542,6 +542,8 @@ namespace BattleTv.Fight
                     Push(1, body.X, body.Y, body.X, body.Y, 0.55f, radius, color);
                 if (body.Id == "wraith" && mv != null && mv.Id == "draincloud")
                     Push(5, at.X, at.Y, at.X, at.Y, 0.45f, radius * 0.45f, color);
+                if (body.Id == "drain" && mv != null && mv.Id == "draincloud")
+                    Push(5, at.X, at.Y, at.X, at.Y, 0.50f, radius * 0.62f, color);
                 if (body.Id == "hurler" && mv != null && mv.Id == "pound")
                     Push(1, body.X, body.Y, body.X, body.Y, 0.48f, radius, color);
             }
@@ -562,6 +564,10 @@ namespace BattleTv.Fight
                         Push(1, foe.X, foe.Y, foe.X, foe.Y, 0.28f, 42f, color);
                     else if (body.Id == "thief")
                         Push(4, foe.X, foe.Y, foe.X, foe.Y, 0.18f, 28f, color);
+                    if (body.Id == "drain" && mv != null && mv.Id == "unmake")
+                        Push(1, foe.X, foe.Y, foe.X, foe.Y, 0.36f, 56f, color);
+                    else if (body.Id == "drain")
+                        Push(5, foe.X, foe.Y, foe.X, foe.Y, 0.24f, 36f, color);
                 }
             }
             else if (shape == "bolt" || shape == "multi" || shape == "lob")
@@ -579,6 +585,8 @@ namespace BattleTv.Fight
                     Push(1, body.X, body.Y, body.X, body.Y, 0.40f, 70f, color);
                 if (body.Id == "thief" && mv != null && mv.Id == "flicker")
                     Push(1, body.X, body.Y, body.X, body.Y, 0.32f, 56f, color);
+                if (body.Id == "drain" && mv != null && mv.Id == "gravstep")
+                    Push(1, body.X, body.Y, body.X, body.Y, 0.36f, 64f, color);
             }
             else if (body.Id == "d9ra" && mv != null && mv.Id == "wolffury")
                 Push(1, body.X, body.Y, body.X, body.Y, 0.5f, 110f, color);

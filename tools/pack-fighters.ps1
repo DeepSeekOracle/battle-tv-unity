@@ -275,3 +275,13 @@ Pack "thief" "against" $true 0.72 "thief.png" @(
     @{ name = "death"; seconds = 1.55; pivot = 0.50; frames = (Frames "thief-death" 1) }
     @{ name = "win"; seconds = 1.15; pivot = 0.50; frames = (Frames "thief-win" 1) }
 )
+Pack "drain" "against" $true 0.72 "drain.png" @(
+    @{ name = "Drain Touch"; seconds = 0.50; pivot = 0.50; frames = @("IDLE", "drain-touch/f01.png") }
+    @{ name = "Unmake"; seconds = 0.52; pivot = 0.50; frames = @("IDLE", "drain-unmake/f01.png") }
+    @{ name = "Drain Cloud"; seconds = 0.50; pivot = 0.50; frames = @("IDLE", "drain-cloud/f01.png") }
+    @{ name = "Grave Step"; seconds = 0.50; pivot = 0.50; frames = @("IDLE", "drain-step/f01.png") }
+    @{ name = "Close"; seconds = 0.35; pivot = 0.50; frames = @("drain-close/f00.png", "IDLE") }
+    @{ name = "walk"; seconds = 0.72; pivot = 0.50; frames = @("IDLE", "drain-walk/f00.png") }
+    @{ name = "death"; seconds = 1.55; pivot = 0.50; frames = (Frames "drain-death" 1) }
+    @{ name = "win"; seconds = 1.15; pivot = 0.50; frames = (Frames "drain-win" 1) }
+)

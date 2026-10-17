@@ -1,0 +1,17 @@
+{
+    "id": "drain",
+    "flip": "against",
+    "clipPivot": true,
+    "walk": 0.72,
+    "idle": "drain.png",
+    "clips": [
+        { "name": "Drain Touch", "seconds": 0.50, "pivot": 0.5, "frames": ["drain.png", "drain-touch-f01.png"] },
+        { "name": "Unmake", "seconds": 0.52, "pivot": 0.5, "frames": ["drain.png", "drain-unmake-f01.png"] },
+        { "name": "Drain Cloud", "seconds": 0.50, "pivot": 0.5, "frames": ["drain.png", "drain-cloud-f01.png"] },
+        { "name": "Grave Step", "seconds": 0.50, "pivot": 0.5, "frames": ["drain.png", "drain-step-f01.png"] },
+        { "name": "Close", "seconds": 0.35, "pivot": 0.5, "frames": ["drain-close-f00.png", "drain.png"] },
+        { "name": "walk", "seconds": 0.72, "pivot": 0.5, "frames": ["drain.png", "drain-walk-f00.png"] },
+        { "name": "death", "seconds": 1.55, "pivot": 0.5, "frames": ["drain-death-f00.png"] },
+        { "name": "win", "seconds": 1.15, "pivot": 0.5, "frames": ["drain-win-f00.png"] }
+    ]
+}
