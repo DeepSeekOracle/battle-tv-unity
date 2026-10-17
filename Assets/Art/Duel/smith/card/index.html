@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Smith animation card</title>
+<style>
+  body { margin: 0; background: #10141c; color: #f6e7c1; font: 16px/1.4 Georgia, serif; }
+  main { max-width: 1180px; margin: 0 auto; padding: 28px 20px 64px; }
+  h1 { font-weight: normal; letter-spacing: 0.08em; text-transform: uppercase; font-size: 22px; margin: 0 0 6px; }
+  h2 { font-size: 18px; font-weight: normal; margin: 28px 0 8px; color: #f97316; }
+  p, li { max-width: 78ch; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { border-bottom: 1px solid rgba(249,115,22,0.35); text-align: left; padding: 6px 8px; vertical-align: top; }
+  th { color: #f97316; font-weight: normal; letter-spacing: 0.06em; text-transform: uppercase; font-size: 12px; }
+  .row { display: grid; grid-template-columns: 220px 1fr; gap: 16px; margin: 22px 0; padding-top: 12px; border-top: 1px solid rgba(246,231,193,0.18); }
+  img { width: 220px; height: auto; background: #000; display: block; }
+  .tag { color: #f97316; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Smith · Nexus Guardian</h1>
+  <p>This card is the only pose list. A later frame has to match one of these keys. Native facing is right. The whole sprite flips. Dark iron plates and an orange furnace chest. The feet are the foot line. Smith is a gun, so the corner step is Slip. There is no move named Dash and no Close key. Forge Bolt, Anvil, Gate Cannon, and Temper Work keep those book names. Gate Cannon stays the shared name. The Lock keeps that name later.</p>
+  <table>
+    <tr><th>Book</th><th>Value</th></tr>
+    <tr><td>Basic</td><td>Forge Bolt · range 7.8</td></tr>
+    <tr><td>Body</td><td>1175 health · 42 damage · 0.64 attacks/s · speed 1.7 · armor 7 · range 7.8 · mana 100 · regen 8</td></tr>
+    <tr><td>Crit / cooldown</td><td>0.11 crit · 0.90 cooldown scale</td></tr>
+    <tr><td>Cards</td><td>Might · Brutal · Iron</td></tr>
+    <tr><td>Moves</td><td>Anvil · Gate Cannon · Temper Work</td></tr>
+    <tr><td>Stride</td><td>Slip · a gun · 30s · cost 8</td></tr>
+  </table>
+  <h2>What stays off the body</h2>
+  <ul>
+    <li>Forge Bolt is the furnace shot. The cinder in the air is the bolt.</li>
+    <li>Anvil is the hammer coming down. The burst on the foe is the blast.</li>
+    <li>Gate Cannon keeps that book name. The lance is the beam. The ember sits at the far end.</li>
+    <li>Temper Work is the lowered hammer. The mend ring stays on Smith.</li>
+  </ul>
+  <h2>Keys</h2>
+  <div class="row"><img src="idle.png" alt=""><div><p class="tag">Idle</p><p>Hammer on the shoulder, furnace steady, both feet on the foot line.</p></div></div>
+  <div class="row"><img src="bolt.png" alt=""><div><p class="tag">Forge Bolt</p><p>Idle, then the furnace brightens, then idle. 0.50s.</p></div></div>
+  <div class="row"><img src="anvil.png" alt=""><div><p class="tag">Anvil</p><p>Idle, then the hammer swings down, then idle. 0.50s.</p></div></div>
+  <div class="row"><img src="cannon.png" alt=""><div><p class="tag">Gate Cannon</p><p>Idle, then the furnace aims, then idle. 0.50s.</p></div></div>
+  <div class="row"><img src="temper.png" alt=""><div><p class="tag">Temper Work</p><p>Idle, then the hammer lowers, then idle. 0.52s.</p></div></div>
+  <div class="row"><img src="slip.png" alt=""><div><p class="tag">Slip</p><p>A lunge toward the right, then idle. 0.35s. Corner step only.</p></div></div>
+  <div class="row"><img src="walk-a.png" alt=""><div><p class="tag">Walk</p><p>Idle, then one stride. 0.72s. The lifted foot stays on the leg.</p></div></div>
+  <div class="row"><img src="death.png" alt=""><div><p class="tag">Death</p><p>One rubble pile in the lower portion. The hammer and furnace stay in the pile. 1.55s.</p></div></div>
+  <div class="row"><img src="win.png" alt=""><div><p class="tag">Win</p><p>The hammer lifts. Both feet stay down. 1.15s.</p></div></div>
+</main>
+</body>
+</html>

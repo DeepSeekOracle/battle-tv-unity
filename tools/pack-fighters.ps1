@@ -307,3 +307,14 @@ Pack "crown" "against" $true 0.72 "crown.png" @(
     @{ name = "death"; seconds = 1.55; pivot = 0.50; frames = (Frames "crown-death" 1) }
     @{ name = "win"; seconds = 1.15; pivot = 0.50; frames = (Frames "crown-win" 1) }
 )
+
+Pack "smith" "against" $true 0.72 "smith.png" @(
+    @{ name = "Forge Bolt"; seconds = 0.50; pivot = 0.50; frames = @("IDLE", "smith-bolt/f01.png") }
+    @{ name = "Anvil"; seconds = 0.50; pivot = 0.50; frames = @("IDLE", "smith-anvil/f01.png") }
+    @{ name = "Gate Cannon"; seconds = 0.50; pivot = 0.50; frames = @("IDLE", "smith-cannon/f01.png") }
+    @{ name = "Temper Work"; seconds = 0.52; pivot = 0.50; frames = @("IDLE", "smith-temper/f01.png") }
+    @{ name = "Slip"; seconds = 0.35; pivot = 0.50; frames = @("smith-slip/f00.png", "IDLE") }
+    @{ name = "walk"; seconds = 0.72; pivot = 0.50; frames = @("IDLE", "smith-walk/f00.png") }
+    @{ name = "death"; seconds = 1.55; pivot = 0.50; frames = (Frames "smith-death" 1) }
+    @{ name = "win"; seconds = 1.15; pivot = 0.50; frames = (Frames "smith-win" 1) }
+)

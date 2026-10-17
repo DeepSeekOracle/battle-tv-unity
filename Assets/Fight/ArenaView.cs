@@ -315,9 +315,15 @@ namespace BattleTv.Fight
                     Push(1, foe.X, foe.Y, foe.X, foe.Y, 0.42f, radius, color);
                 if (body.Id == "hurler" && mv != null && mv.Id == "pound")
                     Push(1, body.X, body.Y, body.X, body.Y, 0.48f, radius, color);
+                if (body.Id == "smith" && mv != null && mv.Id == "anvil" && foe != null)
+                    Push(5, foe.X, foe.Y, foe.X, foe.Y, 0.42f, radius * 0.5f, color);
             }
             else if (shape == "beam" && foe != null)
+            {
                 Push(4, body.X, body.Y, foe.X, foe.Y, 0.32f, 18f, color);
+                if (body.Id == "smith" && mv != null && mv.Id == "gatecannon")
+                    Push(5, foe.X, foe.Y, foe.X, foe.Y, 0.28f, 36f, color);
+            }
             else if (shape == "melee" || shape == "arc")
             {
                 if (foe != null)
@@ -382,6 +388,8 @@ namespace BattleTv.Fight
                     Push(1, body.X, body.Y, body.X, body.Y, 0.50f, 100f, color);
                 if (body.Id == "gate" && mv != null && (mv.Id == "gateward" || mv.Id == "callwards"))
                     Push(1, body.X, body.Y, body.X, body.Y, 0.50f, mv.Id == "callwards" ? 120f : 100f, color);
+                if (body.Id == "smith" && mv != null && mv.Id == "temperwork")
+                    Push(2, body.X, body.Y, body.X, body.Y, 0.50f, 100f, color);
             }
         }
 
@@ -510,6 +518,8 @@ namespace BattleTv.Fight
                     PlaceCoal(bolt, at, width, height);
                 else if (bolt.Src != null && bolt.Src.Id == "hurler")
                     PlaceStone(bolt, at, width, height);
+                else if (bolt.Src != null && bolt.Src.Id == "smith")
+                    PlaceCinder(bolt, at, width, height);
                 else
                 {
                     var aim = -(float)bolt.Angle * Mathf.Rad2Deg;
@@ -903,6 +913,19 @@ namespace BattleTv.Fight
             var dust = new Color(0.82f, 0.78f, 0.70f, 1f);
             Place(sigilEmber, at, new Vector2(28f, 22f), 0f, rock, 1f, false);
             PlaceRing(at, 22f, dust, 0.7f, false);
+        }
+
+        void PlaceCinder(ArenaBolt bolt, Vector2 at, float width, float height)
+        {
+            var aim = -(float)bolt.Angle;
+            var dir = new Vector2(Mathf.Cos(aim), Mathf.Sin(aim));
+            var tail = at - dir * 28f;
+            var mid = (at + tail) * 0.5f;
+            var ang = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+            var cinder = new Color(0.98f, 0.42f, 0.08f, 1f);
+            var core = new Color(1f, 0.62f, 0.18f, 1f);
+            Place(sigilLance, mid, new Vector2(28f, 6f), ang, cinder, 1f, false);
+            Place(sigilEmber, at, new Vector2(14f, 14f), 0f, core, 1f, false);
         }
 
         Vector2 FlaskHand(ArenaBody body, Vector2 feet)
