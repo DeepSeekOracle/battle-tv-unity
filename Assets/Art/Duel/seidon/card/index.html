@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Seidon animation card</title>
+<style>
+  body { margin: 0; background: #071418; color: #f6e7c1; font: 16px/1.4 Georgia, serif; }
+  main { max-width: 1180px; margin: 0 auto; padding: 28px 20px 64px; }
+  h1 { font-weight: normal; letter-spacing: 0.08em; text-transform: uppercase; font-size: 22px; margin: 0 0 6px; }
+  p, li { max-width: 78ch; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { border-bottom: 1px solid rgba(34,211,238,0.35); text-align: left; padding: 6px 8px; vertical-align: top; }
+  th { color: #22d3ee; font-weight: normal; letter-spacing: 0.06em; text-transform: uppercase; font-size: 12px; }
+  .row { display: grid; grid-template-columns: 220px 1fr; gap: 16px; margin: 22px 0; padding-top: 12px; border-top: 1px solid rgba(246,231,193,0.18); }
+  img { width: 220px; height: auto; background: #000; display: block; }
+  .tag { color: #22d3ee; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Seidon · Tide Seer</h1>
+  <p>This card is the only pose list. Native facing is right. The whole sprite flips. Teal scale mantle, purple robe, coral staff, pink ribbon. He is a gun, so the corner step is Slip. He has no move named Dash. Geodesic keeps that book name.</p>
+  <table>
+    <tr><th>Book</th><th>Value</th></tr>
+    <tr><td>Basic</td><td>Tide Bolt · range 8.0</td></tr>
+    <tr><td>Body</td><td>725 health · 30 damage · 0.80 attacks/s · speed 3.5 · armor 5 · range 8.0 · mana 120 · regen 10</td></tr>
+    <tr><td>Moves</td><td>Undertow · Current · Geodesic</td></tr>
+    <tr><td>Stride</td><td>Slip · he is a gun · 30s · cost 8</td></tr>
+  </table>
+  <h2>Keys</h2>
+  <div class="row"><img src="idle.png" alt="Idle"><div><div class="tag">Idle · feet pivot</div><p>Staff forward, both boots planted. This frame opens Tide Bolt, Undertow, Current, and Geodesic.</p></div></div>
+  <div class="row"><img src="walk-a.png" alt="Walk"><div><div class="tag">Walk · 0.72s</div><p>One stride. The right boot leads. The fight clip is idle, then this stride.</p></div></div>
+  <div class="row"><img src="bolt.png" alt="Tide Bolt"><div><div class="tag">Tide Bolt · 0.50s</div><p>The staff thrusts. The traveling tide is drawn off the body. Frame 1 and frame 3 are idle.</p></div></div>
+  <div class="row"><img src="undertow.png" alt="Undertow"><div><div class="tag">Undertow · 0.52s</div><p>The staff sweeps low. The pull ring is the effect.</p></div></div>
+  <div class="row"><img src="current.png" alt="Current"><div><div class="tag">Current · 0.50s</div><p>The staff is raised for the allies. The ring is the effect.</p></div></div>
+  <div class="row"><img src="geodesic.png" alt="Geodesic"><div><div class="tag">Geodesic · 0.52s</div><p>The staff lofts the shot. The book name stays Geodesic. Arkos keeps his own geodesic picture.</p></div></div>
+  <div class="row"><img src="slip.png" alt="Slip"><div><div class="tag">Slip · 0.35s</div><p>The corner step. There is no Close key and no Dash key.</p></div></div>
+  <div class="row"><img src="death.png" alt="Death"><div><div class="tag">Death · 1.55s</div><p>Down in the lower part of the canvas. The staff stays with the body.</p></div></div>
+  <div class="row"><img src="win.png" alt="Win"><div><div class="tag">Win · 1.15s</div><p>The staff is raised. Both boots are planted. This is not Current.</p></div></div>
+</main>
+</body>
+</html>

@@ -536,6 +536,8 @@ namespace BattleTv.Fight
                     Push(1, body.X, body.Y, body.X, body.Y, 0.42f, radius, color);
                 if (body.Id == "kairos" && mv != null && (mv.Id == "righttime" || mv.Id == "seal9"))
                     Push(1, at.X, at.Y, at.X, at.Y, 0.55f, radius, color);
+                if (body.Id == "seidon" && mv != null && mv.Id == "undertow")
+                    Push(1, at.X, at.Y, at.X, at.Y, 0.55f, radius, color);
             }
             else if (shape == "beam" && foe != null)
                 Push(4, body.X, body.Y, foe.X, foe.Y, 0.32f, 18f, color);
@@ -568,6 +570,8 @@ namespace BattleTv.Fight
                     Push(1, body.X, body.Y, body.X, body.Y, 0.45f, 90f, color);
                 if (body.Id == "justicae" && mv != null && (mv.Id == "fairplate" || mv.Id == "bulwark"))
                     Push(1, body.X, body.Y, body.X, body.Y, 0.50f, 100f, color);
+                if (body.Id == "seidon" && mv != null && mv.Id == "current")
+                    Push(1, body.X, body.Y, body.X, body.Y, 0.50f, 110f, color);
             }
         }
 
@@ -682,6 +686,8 @@ namespace BattleTv.Fight
                 var at = OnLane(bolt.X, width, height);
                 if (bolt.Lob && bolt.Src != null && bolt.Src.Id == "arkos")
                     PlaceRing(at, 48f, color, 1f, false);
+                else if (bolt.Lob && bolt.Src != null && bolt.Src.Id == "seidon")
+                    PlaceRing(at, 64f, new Color(0.13f, 0.83f, 0.93f, 1f), 1f, false);
                 else if (bolt.Lob)
                     Place(_ember, at, new Vector2(26f, 26f), 0f, color, 1f, false);
                 else if (bolt.Src != null && bolt.Src.Id == "lightfather")
@@ -696,6 +702,8 @@ namespace BattleTv.Fight
                     PlaceNeedle(bolt, at, width, height);
                 else if (bolt.Src != null && bolt.Src.Id == "kairos")
                     PlaceHourBolt(bolt, at, width, height);
+                else if (bolt.Src != null && bolt.Src.Id == "seidon")
+                    PlaceTideBolt(bolt, at, width, height);
                 else
                     Place(_bolt, at, new Vector2(46f, 14f), -(float)bolt.Angle * Mathf.Rad2Deg, color, 1f, false);
             }
@@ -828,6 +836,30 @@ namespace BattleTv.Fight
             var pale = new Color(0.86f, 0.78f, 1f, 1f);
             Shot(hand, tip, gold, pale, 6f, 3f, 10f, 10f, 16f, 140f);
             PlaceRing(tip, 42f, pale, 1f, false);
+        }
+
+        void PlaceTideBolt(ArenaBolt bolt, Vector2 at, float width, float height)
+        {
+            var feet = OnLane(bolt.Src.X, width, height);
+            var nx = 0.08f;
+            var ny = 0.58f;
+            var slot = FindSlot(bolt.Src);
+            if (slot != null && slot.Clip != null && slot.Clip.Length > 0 && slot.ClipT >= 0f)
+            {
+                var u = slot.ClipDur > 0.01f ? slot.ClipT / slot.ClipDur : 1f;
+                var frame = Mathf.Clamp(Mathf.FloorToInt(u * slot.Clip.Length), 0, slot.Clip.Length - 1);
+                if (frame == 1 && slot.Pose == "Tide Bolt")
+                {
+                    nx = 0.50f;
+                    ny = 0.55f;
+                }
+            }
+            var hand = Anchor(bolt.Src, feet, nx, ny);
+            var tip = at + (hand - feet);
+            var tide = new Color(0.13f, 0.83f, 0.93f, 1f);
+            var pale = new Color(0.85f, 0.97f, 1f, 1f);
+            Shot(hand, tip, tide, pale, 7f, 3f, 12f, 10f, 16f, 150f);
+            PlaceRing(tip, 36f, pale, 1f, false);
         }
 
         void Shot(Vector2 hand, Vector2 tip, Color color, Color hot, float thick, float core, float tipW, float tipH, float handSize, float flashLen)

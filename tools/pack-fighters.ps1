@@ -209,3 +209,14 @@ Pack "justicae" "against" $true 0.72 "justicae.png" @(
     @{ name = "death"; seconds = 1.55; pivot = 0.50; frames = (Frames "justicae-death" 1) }
     @{ name = "win"; seconds = 1.15; pivot = 0.50; frames = (Frames "justicae-win" 1) }
 )
+
+Pack "seidon" "against" $true 0.72 "seidon.png" @(
+    @{ name = "Tide Bolt"; seconds = 0.50; pivot = 0.50; frames = @("IDLE", "seidon-bolt/f01.png", "IDLE") }
+    @{ name = "Undertow"; seconds = 0.52; pivot = 0.50; frames = @("IDLE", "seidon-undertow/f01.png") }
+    @{ name = "Current"; seconds = 0.50; pivot = 0.50; frames = @("IDLE", "seidon-current/f01.png") }
+    @{ name = "Geodesic"; seconds = 0.52; pivot = 0.50; frames = @("IDLE", "seidon-geo/f01.png") }
+    @{ name = "Slip"; seconds = 0.35; pivot = 0.50; frames = @("seidon-slip/f00.png", "IDLE") }
+    @{ name = "walk"; seconds = 0.72; pivot = 0.50; frames = @("IDLE", "seidon-walk/f00.png") }
+    @{ name = "death"; seconds = 1.55; pivot = 0.50; frames = (Frames "seidon-death" 1) }
+    @{ name = "win"; seconds = 1.15; pivot = 0.50; frames = (Frames "seidon-win" 1) }
+)
