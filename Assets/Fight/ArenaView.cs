@@ -305,14 +305,22 @@ namespace BattleTv.Fight
             else if (shape == "melee" || shape == "arc")
             {
                 if (foe != null)
+                {
                     Push(5, foe.X, foe.Y, foe.X, foe.Y, 0.22f, 36f, color);
+                    if (body.Id == "justicae" && mv != null && mv.Id == "verdict")
+                        Push(1, foe.X, foe.Y, foe.X, foe.Y, 0.28f, 70f, color);
+                }
             }
             else if (shape == "bolt" || shape == "multi" || shape == "lob")
                 Push(5, body.X, body.Y, body.X, body.Y, 0.14f, 28f, color);
             else if (shape == "revive")
                 Push(2, body.X, body.Y, body.X, body.Y, 0.7f, 120f, color);
             else if (shape == "blink" || shape == "stride")
+            {
                 Push(3, body.X, body.Y, body.X, body.Y, 0.35f, 80f, color);
+                if (body.Id == "justicae" && mv != null && mv.Id == "writpursuit")
+                    Push(1, body.X, body.Y, body.X, body.Y, 0.35f, 90f, color);
+            }
             else if (body.Id == "d9ra" && mv != null && mv.Id == "wolffury")
                 Push(1, body.X, body.Y, body.X, body.Y, 0.5f, 110f, color);
             else
@@ -322,6 +330,8 @@ namespace BattleTv.Fight
                 Push(ward && !mend ? 3 : 2, body.X, body.Y, body.X, body.Y, 0.45f, ward ? 110f : 80f, color);
                 if (body.Id == "kairos" && mv != null && mv.Id == "borrow")
                     Push(1, body.X, body.Y, body.X, body.Y, 0.45f, 90f, color);
+                if (body.Id == "justicae" && mv != null && (mv.Id == "fairplate" || mv.Id == "bulwark"))
+                    Push(1, body.X, body.Y, body.X, body.Y, 0.50f, 100f, color);
             }
         }
 

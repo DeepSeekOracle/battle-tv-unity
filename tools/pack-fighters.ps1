@@ -197,3 +197,15 @@ Pack "kairos" "against" $true 0.72 "kairos.png" @(
     @{ name = "death"; seconds = 1.55; pivot = 0.50; frames = (Frames "kairos-death" 1) }
     @{ name = "win"; seconds = 1.15; pivot = 0.50; frames = (Frames "kairos-win" 1) }
 )
+
+Pack "justicae" "against" $true 0.72 "justicae.png" @(
+    @{ name = "Accord Blade"; seconds = 0.48; pivot = 0.50; frames = @("IDLE", "justicae-blade/f01.png", "IDLE") }
+    @{ name = "Fair Plate"; seconds = 0.50; pivot = 0.50; frames = @("IDLE", "justicae-plate/f01.png") }
+    @{ name = "Verdict"; seconds = 0.50; pivot = 0.50; frames = @("IDLE", "justicae-verdict/f01.png") }
+    @{ name = "Bulwark"; seconds = 0.55; pivot = 0.50; frames = @("IDLE", "justicae-bulwark/f01.png") }
+    @{ name = "Writ of Pursuit"; seconds = 0.40; pivot = 0.50; frames = @("justicae-writ/f00.png", "IDLE") }
+    @{ name = "Close"; seconds = 0.35; pivot = 0.50; frames = @("justicae-close/f00.png", "IDLE") }
+    @{ name = "walk"; seconds = 0.72; pivot = 0.50; frames = @("IDLE", "justicae-walk/f00.png") }
+    @{ name = "death"; seconds = 1.55; pivot = 0.50; frames = (Frames "justicae-death" 1) }
+    @{ name = "win"; seconds = 1.15; pivot = 0.50; frames = (Frames "justicae-win" 1) }
+)

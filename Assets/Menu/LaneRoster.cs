@@ -127,7 +127,7 @@ namespace BattleTv.Menu
         /// </summary>
         static readonly string[] ShowOrder =
         {
-            "vale", "brute", "lightfather", "kael", "orin", "nia", "lyra", "arkos", "d9ra", "srath", "kairos"
+            "vale", "brute", "lightfather", "kael", "orin", "nia", "lyra", "arkos", "d9ra", "srath", "kairos", "justicae"
         };
 
         /// <summary>
