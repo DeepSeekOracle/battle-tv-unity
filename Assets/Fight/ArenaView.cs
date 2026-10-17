@@ -867,7 +867,7 @@ namespace BattleTv.Fight
             else if (body.Id == "kael")
             {
                 if (call == "Shard Volley")
-                    ArmClip(actor, kaelShard, 0.36f, 0.5f, call);
+                    ArmClip(actor, kaelShard, 0.72f, 0.5f, call);
                 else if (call == "Rend")
                     ArmClip(actor, kaelRend, 0.42f, 0.5f, call);
                 else if (call == "Shield Wall")

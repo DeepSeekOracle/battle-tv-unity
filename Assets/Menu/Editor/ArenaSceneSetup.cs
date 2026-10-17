@@ -91,7 +91,7 @@ namespace BattleTv.Menu.EditorTools
             var kael = "Assets/Art/Duel/kael.png";
             Configure(kael, true, 2048, true);
             so.FindProperty("kaelStill").objectReferenceValue = LoadSprite(kael);
-            AssignClip(so, "kaelShard", Cutout("kael-shard", 3));
+            AssignClip(so, "kaelShard", Cutout("kael-shard", 6));
             AssignClip(so, "kaelRend", Cutout("kael-rend", 3));
             AssignClip(so, "kaelWall", Cutout("kael-wall", 2));
             AssignClip(so, "kaelCharge", Cutout("kael-charge", 2));
