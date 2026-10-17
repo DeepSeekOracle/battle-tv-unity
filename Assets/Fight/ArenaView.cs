@@ -326,6 +326,8 @@ namespace BattleTv.Fight
                 Push(3, body.X, body.Y, body.X, body.Y, 0.35f, 80f, color);
                 if (body.Id == "justicae" && mv != null && mv.Id == "writpursuit")
                     Push(1, body.X, body.Y, body.X, body.Y, 0.35f, 90f, color);
+                if (body.Id == "imp" && mv != null && mv.Id == "flicker")
+                    Push(5, body.X, body.Y, body.X, body.Y, 0.35f, 48f, color);
             }
             else if (body.Id == "d9ra" && mv != null && mv.Id == "wolffury")
                 Push(1, body.X, body.Y, body.X, body.Y, 0.5f, 110f, color);
@@ -462,6 +464,8 @@ namespace BattleTv.Fight
                     PlaceFlask(bolt, at, width, height);
                 else if (bolt.Src != null && bolt.Src.Id == "wraith")
                     PlaceWisp(bolt, at, width, height);
+                else if (bolt.Src != null && bolt.Src.Id == "imp")
+                    PlaceCoal(bolt, at, width, height);
                 else
                 {
                     var aim = -(float)bolt.Angle * Mathf.Rad2Deg;
@@ -833,6 +837,20 @@ namespace BattleTv.Fight
             Place(sigilLance, mid, new Vector2(42f, 7f), ang, violet, 1f, false);
             PlaceRing(at, 30f, pale, 1f, false);
             Place(sigilEmber, at, new Vector2(16f, 16f), 0f, violet, 0.9f, false);
+        }
+
+        void PlaceCoal(ArenaBolt bolt, Vector2 at, float width, float height)
+        {
+            var aim = -(float)bolt.Angle;
+            var dir = new Vector2(Mathf.Cos(aim), Mathf.Sin(aim));
+            var tail = at - dir * 36f;
+            var mid = (at + tail) * 0.5f;
+            var ang = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+            var coal = new Color(0.98f, 0.57f, 0.24f, 1f);
+            var hot = new Color(1f, 0.93f, 0.55f, 1f);
+            Place(sigilLance, mid, new Vector2(36f, 8f), ang, coal, 1f, false);
+            Place(sigilEmber, at, new Vector2(22f, 22f), 0f, hot, 1f, false);
+            PlaceRing(at, 28f, coal, 0.8f, false);
         }
 
         Vector2 FlaskHand(ArenaBody body, Vector2 feet)

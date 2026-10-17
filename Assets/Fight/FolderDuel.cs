@@ -563,6 +563,8 @@ namespace BattleTv.Fight
                 Push(3, body.X, body.Y, body.X, body.Y, 0.35f, 80f, color);
                 if (body.Id == "justicae" && mv != null && mv.Id == "writpursuit")
                     Push(1, body.X, body.Y, body.X, body.Y, 0.35f, 90f, color);
+                if (body.Id == "imp" && mv != null && mv.Id == "flicker")
+                    Push(5, body.X, body.Y, body.X, body.Y, 0.35f, 48f, color);
             }
             else if (body.Id == "d9ra" && mv != null && mv.Id == "wolffury")
                 Push(1, body.X, body.Y, body.X, body.Y, 0.5f, 110f, color);
@@ -714,6 +716,8 @@ namespace BattleTv.Fight
                     PlaceFlask(bolt, at, width, height);
                 else if (bolt.Src != null && bolt.Src.Id == "wraith")
                     PlaceWisp(bolt, at, width, height);
+                else if (bolt.Src != null && bolt.Src.Id == "imp")
+                    PlaceCoal(bolt, at, width, height);
                 else
                     Place(_bolt, at, new Vector2(46f, 14f), -(float)bolt.Angle * Mathf.Rad2Deg, color, 1f, false);
             }
@@ -905,6 +909,17 @@ namespace BattleTv.Fight
             var pale = new Color(0.93f, 0.90f, 1f, 1f);
             Shot(tail, at, violet, pale, 8f, 3f, 14f, 14f, 16f, 120f);
             PlaceRing(at, 30f, pale, 1f, false);
+        }
+
+        void PlaceCoal(ArenaBolt bolt, Vector2 at, float width, float height)
+        {
+            var aim = -(float)bolt.Angle;
+            var dir = new Vector2(Mathf.Cos(aim), Mathf.Sin(aim));
+            var tail = at - dir * 36f;
+            var coal = new Color(0.98f, 0.57f, 0.24f, 1f);
+            var hot = new Color(1f, 0.93f, 0.55f, 1f);
+            Shot(tail, at, coal, hot, 9f, 4f, 16f, 16f, 18f, 110f);
+            PlaceRing(at, 28f, hot, 0.85f, false);
         }
 
         void Shot(Vector2 hand, Vector2 tip, Color color, Color hot, float thick, float core, float tipW, float tipH, float handSize, float flashLen)

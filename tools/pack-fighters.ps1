@@ -239,3 +239,12 @@ Pack "wraith" "against" $true 0.72 "wraith.png" @(
     @{ name = "death"; seconds = 1.55; pivot = 0.50; frames = (Frames "wraith-death" 1) }
     @{ name = "win"; seconds = 1.15; pivot = 0.50; frames = (Frames "wraith-win" 1) }
 )
+Pack "imp" "against" $true 0.72 "imp.png" @(
+    @{ name = "Ember Spit"; seconds = 0.50; pivot = 0.50; frames = @("IDLE", "imp-spit/f01.png") }
+    @{ name = "Imp Fire"; seconds = 0.52; pivot = 0.50; frames = @("IDLE", "imp-fire/f01.png") }
+    @{ name = "Flicker"; seconds = 0.50; pivot = 0.50; frames = @("IDLE", "imp-flicker/f01.png") }
+    @{ name = "Slip"; seconds = 0.35; pivot = 0.50; frames = @("imp-slip/f00.png", "IDLE") }
+    @{ name = "walk"; seconds = 0.72; pivot = 0.50; frames = @("IDLE", "imp-walk/f00.png") }
+    @{ name = "death"; seconds = 1.55; pivot = 0.50; frames = (Frames "imp-death" 1) }
+    @{ name = "win"; seconds = 1.15; pivot = 0.50; frames = (Frames "imp-win" 1) }
+)

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Imp animation card</title>
+<style>
+  body { margin: 0; background: #10141c; color: #f6e7c1; font: 16px/1.4 Georgia, serif; }
+  main { max-width: 1180px; margin: 0 auto; padding: 28px 20px 64px; }
+  h1 { font-weight: normal; letter-spacing: 0.08em; text-transform: uppercase; font-size: 22px; margin: 0 0 6px; }
+  h2 { font-size: 18px; font-weight: normal; margin: 28px 0 8px; color: #fb923c; }
+  p, li { max-width: 78ch; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { border-bottom: 1px solid rgba(251,146,60,0.35); text-align: left; padding: 6px 8px; vertical-align: top; }
+  th { color: #fb923c; font-weight: normal; letter-spacing: 0.06em; text-transform: uppercase; font-size: 12px; }
+  .row { display: grid; grid-template-columns: 220px 1fr; gap: 16px; margin: 22px 0; padding-top: 12px; border-top: 1px solid rgba(246,231,193,0.18); }
+  img { width: 220px; height: auto; background: #000; display: block; }
+  .tag { color: #fb923c; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Imp · Crypt Fodder</h1>
+  <p>This card is the only pose list. A later frame has to match one of these keys. Native facing is right. The whole sprite flips. Red body, two purple horns, yellow eyes, pointed ears, thin tail, coal in the forward hand. The boots are the foot line. Imp is a gun, so the corner step is Slip. There is no move named Dash and no Close key. Ember Spit, Imp Fire, and Flicker keep those book names.</p>
+  <table>
+    <tr><th>Book</th><th>Value</th></tr>
+    <tr><td>Basic</td><td>Ember Spit · range 7.4</td></tr>
+    <tr><td>Body</td><td>724 health · 34.8 damage · 1.01 attacks/s · speed 2.9 · armor 6 · range 7.4 · mana 60 · regen 8</td></tr>
+    <tr><td>Crit / cooldown</td><td>0.12 crit · 0.86 cooldown scale</td></tr>
+    <tr><td>Cards</td><td>Swift · Lucky · Nimble</td></tr>
+    <tr><td>Moves</td><td>Imp Fire · Flicker</td></tr>
+    <tr><td>Stride</td><td>Slip · a gun · 30s · cost 8</td></tr>
+  </table>
+  <h2>What stays off the body</h2>
+  <ul>
+    <li>Ember Spit is the coal that leaves the mouth. The coal in the hand stays on the body.</li>
+    <li>Imp Fire is the streak. The orange lance in the pit is the shot, not a second imp.</li>
+    <li>Flicker is the heat veil on this body. Shade and Thief keep their own blink. The book name stays Flicker.</li>
+  </ul>
+  <h2>Keys</h2>
+  <div class="row"><img src="idle.png" alt=""><div><p class="tag">Idle</p><p>Still, facing right, coal in the forward hand, both boots on the foot line.</p></div></div>
+  <div class="row"><img src="spit.png" alt=""><div><p class="tag">Ember Spit</p><p>Idle, then a coal leaves the mouth while the hand still holds one, then idle. 0.50s.</p></div></div>
+  <div class="row"><img src="fire.png" alt=""><div><p class="tag">Imp Fire</p><p>Idle, then the flame streak leaves the forward hand, then idle. 0.52s.</p></div></div>
+  <div class="row"><img src="flicker.png" alt=""><div><p class="tag">Flicker</p><p>Idle, then the heat veil, coal still in the forward hand, then idle. 0.50s.</p></div></div>
+  <div class="row"><img src="slip.png" alt=""><div><p class="tag">Slip</p><p>A lean toward the right, then idle. 0.35s. Corner step only.</p></div></div>
+  <div class="row"><img src="walk-a.png" alt=""><div><p class="tag">Walk</p><p>Idle, then one stride. 0.72s. Do not copy it into a second step.</p></div></div>
+  <div class="row"><img src="death.png" alt=""><div><p class="tag">Death</p><p>Collapsed in the lower portion, coal out. 1.55s. It is not scaled up to standing height.</p></div></div>
+  <div class="row"><img src="win.png" alt=""><div><p class="tag">Win</p><p>Coal lifted, chin up, both boots on the foot line. 1.15s.</p></div></div>
+</main>
+</body>
+</html>
