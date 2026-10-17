@@ -256,6 +256,7 @@ namespace BattleTv.Menu.Tests
             Assert.AreEqual("brute", beasts[0]);
             Assert.AreEqual("wraith", beasts[1]);
             Assert.AreEqual("imp", beasts[2]);
+            Assert.AreEqual("hurler", beasts[3]);
             ShowPick.Clear();
             ShowPick.BeginDraft(1);
             Assert.IsTrue(ShowPick.Toggle("sancora"));
@@ -363,10 +364,10 @@ namespace BattleTv.Menu.Tests
         public void AutoShowRotatesPaintedCards()
         {
             var roster = LaneRoster.LaneIds();
-            Assert.AreEqual(16, roster.Length);
+            Assert.AreEqual(17, roster.Length);
             Assert.AreEqual("vale", roster[0]);
             Assert.AreEqual("brute", roster[1]);
-            Assert.AreEqual("imp", roster[roster.Length - 1]);
+            Assert.AreEqual("hurler", roster[roster.Length - 1]);
             Assert.IsTrue(LaneRoster.InLane("gate"));
             Assert.IsFalse(LaneRoster.Painted("gate"));
             Assert.IsTrue(LaneRoster.Painted("d9ra"));
@@ -379,6 +380,8 @@ namespace BattleTv.Menu.Tests
             Assert.IsTrue(LaneRoster.Painted("wraith"));
             Assert.IsTrue(LaneRoster.InLane("imp"));
             Assert.IsTrue(LaneRoster.Painted("imp"));
+            Assert.IsTrue(LaneRoster.InLane("hurler"));
+            Assert.IsTrue(LaneRoster.Painted("hurler"));
 
             Assert.IsTrue(ShowPick.BeginAutonomous(new System.Random(5)));
             Assert.AreEqual("vale", ShowPick.Yours[0]);
@@ -436,7 +439,8 @@ namespace BattleTv.Menu.Tests
                 "seidon", "justicae",
                 "sancora", "seidon",
                 "wraith", "brute",
-                "imp", "wraith"
+                "imp", "wraith",
+                "hurler", "imp"
             };
             for (var c = 0; c < cards.Length; c += 2)
                 FinishLane(cards[c], cards[c + 1], 20 + c);
@@ -504,7 +508,8 @@ namespace BattleTv.Menu.Tests
             Assert.IsFalse(LaneRoster.ById("sancora").Linked);
             Assert.IsFalse(LaneRoster.ById("wraith").Linked);
             Assert.IsFalse(LaneRoster.ById("imp").Linked);
-            var painted = new[] { "lightfather", "kael", "orin", "nia", "lyra", "arkos", "d9ra", "srath", "kairos", "justicae", "seidon", "sancora", "wraith", "imp" };
+            Assert.IsFalse(LaneRoster.ById("hurler").Linked);
+            var painted = new[] { "lightfather", "kael", "orin", "nia", "lyra", "arkos", "d9ra", "srath", "kairos", "justicae", "seidon", "sancora", "wraith", "imp", "hurler" };
             for (var i = 0; i < painted.Length; i++)
             {
                 var id = painted[i];
@@ -615,6 +620,26 @@ namespace BattleTv.Menu.Tests
                             }
                             Assert.IsTrue(fire, body.Id);
                             Assert.IsTrue(flicker, body.Id);
+                            Assert.IsTrue(body.Gun, body.Id);
+                            Assert.IsTrue(slip, body.Id);
+                        }
+                        if (body.Id == "hurler")
+                        {
+                            var lob = false;
+                            var pound = false;
+                            var slip = false;
+                            for (var mi = 0; mi < body.Moves.Count; mi++)
+                            {
+                                var move = body.Moves[mi];
+                                if (move.Name == "Lob Stone")
+                                    lob = true;
+                                if (move.Name == "Ground Pound")
+                                    pound = true;
+                                if (move.Name == "Slip")
+                                    slip = true;
+                            }
+                            Assert.IsTrue(lob, body.Id);
+                            Assert.IsTrue(pound, body.Id);
                             Assert.IsTrue(body.Gun, body.Id);
                             Assert.IsTrue(slip, body.Id);
                         }
@@ -732,7 +757,7 @@ namespace BattleTv.Menu.Tests
         public void PaintedRosterDashes()
         {
             var ids = LaneRoster.LaneIds();
-            Assert.AreEqual(16, ids.Length);
+            Assert.AreEqual(17, ids.Length);
             for (var i = 0; i < ids.Length; i++)
             {
                 Leap(ids[i], true, false);
@@ -931,6 +956,14 @@ namespace BattleTv.Menu.Tests
             Assert.IsFalse(coal.Contains("Coal Blink"));
             Assert.IsFalse(coal.Contains("Coal Claw"));
             Assert.IsTrue(System.IO.File.Exists(System.IO.Path.Combine(UnityEngine.Application.streamingAssetsPath, "fighters", "imp", "imp.png")));
+            var stone = System.IO.File.ReadAllText(System.IO.Path.Combine(UnityEngine.Application.streamingAssetsPath, "fighters", "hurler", "entity.json"));
+            Assert.IsTrue(stone.Contains("Stone Toss"));
+            Assert.IsTrue(stone.Contains("Lob Stone"));
+            Assert.IsTrue(stone.Contains("Ground Pound"));
+            Assert.IsTrue(stone.Contains("Slip"));
+            Assert.IsFalse(stone.Contains("\"Dash\""));
+            Assert.IsFalse(stone.Contains("Close"));
+            Assert.IsTrue(System.IO.File.Exists(System.IO.Path.Combine(UnityEngine.Application.streamingAssetsPath, "fighters", "hurler", "hurler.png")));
         }
 
         static void AssertFighters(MenuController.FitResult fit)

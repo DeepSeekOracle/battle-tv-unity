@@ -305,6 +305,8 @@ namespace BattleTv.Fight
                     Push(1, body.X, body.Y, body.X, body.Y, 0.55f, radius, color);
                 if (body.Id == "wraith" && mv != null && mv.Id == "draincloud")
                     Push(5, at.X, at.Y, at.X, at.Y, 0.45f, radius * 0.45f, color);
+                if (body.Id == "hurler" && mv != null && mv.Id == "pound")
+                    Push(1, body.X, body.Y, body.X, body.Y, 0.48f, radius, color);
             }
             else if (shape == "beam" && foe != null)
                 Push(4, body.X, body.Y, foe.X, foe.Y, 0.32f, 18f, color);
@@ -444,6 +446,8 @@ namespace BattleTv.Fight
                     PlaceRing(at, 48f, color, 1f, false);
                 else if (bolt.Lob && bolt.Src != null && bolt.Src.Id == "seidon")
                     PlaceRing(at, 64f, new Color(0.13f, 0.83f, 0.93f, 1f), 1f, false);
+                else if (bolt.Lob && bolt.Src != null && bolt.Src.Id == "hurler")
+                    PlaceStone(bolt, at, width, height);
                 else if (bolt.Lob)
                     Place(sigilEmber, at, new Vector2(26f, 26f), 0f, color, 1f, false);
                 else if (bolt.Src != null && bolt.Src.Id == "lightfather")
@@ -466,6 +470,8 @@ namespace BattleTv.Fight
                     PlaceWisp(bolt, at, width, height);
                 else if (bolt.Src != null && bolt.Src.Id == "imp")
                     PlaceCoal(bolt, at, width, height);
+                else if (bolt.Src != null && bolt.Src.Id == "hurler")
+                    PlaceStone(bolt, at, width, height);
                 else
                 {
                     var aim = -(float)bolt.Angle * Mathf.Rad2Deg;
@@ -851,6 +857,14 @@ namespace BattleTv.Fight
             Place(sigilLance, mid, new Vector2(36f, 8f), ang, coal, 1f, false);
             Place(sigilEmber, at, new Vector2(22f, 22f), 0f, hot, 1f, false);
             PlaceRing(at, 28f, coal, 0.8f, false);
+        }
+
+        void PlaceStone(ArenaBolt bolt, Vector2 at, float width, float height)
+        {
+            var rock = new Color(0.64f, 0.64f, 0.64f, 1f);
+            var dust = new Color(0.82f, 0.78f, 0.70f, 1f);
+            Place(sigilEmber, at, new Vector2(28f, 22f), 0f, rock, 1f, false);
+            PlaceRing(at, 22f, dust, 0.7f, false);
         }
 
         Vector2 FlaskHand(ArenaBody body, Vector2 feet)

@@ -248,3 +248,12 @@ Pack "imp" "against" $true 0.72 "imp.png" @(
     @{ name = "death"; seconds = 1.55; pivot = 0.50; frames = (Frames "imp-death" 1) }
     @{ name = "win"; seconds = 1.15; pivot = 0.50; frames = (Frames "imp-win" 1) }
 )
+Pack "hurler" "against" $true 0.72 "hurler.png" @(
+    @{ name = "Stone Toss"; seconds = 0.50; pivot = 0.50; frames = @("IDLE", "hurler-toss/f01.png") }
+    @{ name = "Lob Stone"; seconds = 0.52; pivot = 0.50; frames = @("IDLE", "hurler-lob/f01.png") }
+    @{ name = "Ground Pound"; seconds = 0.50; pivot = 0.50; frames = @("IDLE", "hurler-pound/f01.png") }
+    @{ name = "Slip"; seconds = 0.35; pivot = 0.50; frames = @("hurler-slip/f00.png", "IDLE") }
+    @{ name = "walk"; seconds = 0.72; pivot = 0.50; frames = @("IDLE", "hurler-walk/f00.png") }
+    @{ name = "death"; seconds = 1.55; pivot = 0.50; frames = (Frames "hurler-death" 1) }
+    @{ name = "win"; seconds = 1.15; pivot = 0.50; frames = (Frames "hurler-win" 1) }
+)

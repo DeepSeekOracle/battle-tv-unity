@@ -542,6 +542,8 @@ namespace BattleTv.Fight
                     Push(1, body.X, body.Y, body.X, body.Y, 0.55f, radius, color);
                 if (body.Id == "wraith" && mv != null && mv.Id == "draincloud")
                     Push(5, at.X, at.Y, at.X, at.Y, 0.45f, radius * 0.45f, color);
+                if (body.Id == "hurler" && mv != null && mv.Id == "pound")
+                    Push(1, body.X, body.Y, body.X, body.Y, 0.48f, radius, color);
             }
             else if (shape == "beam" && foe != null)
                 Push(4, body.X, body.Y, foe.X, foe.Y, 0.32f, 18f, color);
@@ -696,6 +698,8 @@ namespace BattleTv.Fight
                     PlaceRing(at, 48f, color, 1f, false);
                 else if (bolt.Lob && bolt.Src != null && bolt.Src.Id == "seidon")
                     PlaceRing(at, 64f, new Color(0.13f, 0.83f, 0.93f, 1f), 1f, false);
+                else if (bolt.Lob && bolt.Src != null && bolt.Src.Id == "hurler")
+                    PlaceStone(bolt, at, width, height);
                 else if (bolt.Lob)
                     Place(_ember, at, new Vector2(26f, 26f), 0f, color, 1f, false);
                 else if (bolt.Src != null && bolt.Src.Id == "lightfather")
@@ -718,6 +722,8 @@ namespace BattleTv.Fight
                     PlaceWisp(bolt, at, width, height);
                 else if (bolt.Src != null && bolt.Src.Id == "imp")
                     PlaceCoal(bolt, at, width, height);
+                else if (bolt.Src != null && bolt.Src.Id == "hurler")
+                    PlaceStone(bolt, at, width, height);
                 else
                     Place(_bolt, at, new Vector2(46f, 14f), -(float)bolt.Angle * Mathf.Rad2Deg, color, 1f, false);
             }
@@ -920,6 +926,14 @@ namespace BattleTv.Fight
             var hot = new Color(1f, 0.93f, 0.55f, 1f);
             Shot(tail, at, coal, hot, 9f, 4f, 16f, 16f, 18f, 110f);
             PlaceRing(at, 28f, hot, 0.85f, false);
+        }
+
+        void PlaceStone(ArenaBolt bolt, Vector2 at, float width, float height)
+        {
+            var rock = new Color(0.64f, 0.64f, 0.64f, 1f);
+            var dust = new Color(0.82f, 0.78f, 0.70f, 1f);
+            Place(_ember, at, new Vector2(28f, 22f), 0f, rock, 1f, false);
+            PlaceRing(at, 22f, dust, 0.75f, false);
         }
 
         void Shot(Vector2 hand, Vector2 tip, Color color, Color hot, float thick, float core, float tipW, float tipH, float handSize, float flashLen)
