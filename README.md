@@ -1,11 +1,62 @@
 # Battle TV Unity
 
-Standalone menu for the Battle TV port. The live browser game at https://chatagent.ca/games/lattice-arena/ is not in this repo.
+The Unity 6 port of the LYGO Arena broadcast-fight concept. The live browser game is
+https://chatagent.ca/games/lattice-arena/ and is not in this repo.
 
-The design paper is `C:\Users\justi\Desktop\LYGO Arena look\Battle-TV-Unity-whitepaper.md`.
+**Play the Unity build:** https://deepseekoracle.github.io/battle-tv-unity/
 
-This slice is the intro and the game menu. The still is `Assets/Art/Menu/Vale-vs-Brute.jpg`. `Vale-vs-Brute-rest.mp4` loops in place over that still. The start clip plays once from `Vale-vs-Brute-push.mp4`, then fades to the loop. The intro carries the studio line. The intro button opens the game menu. That page links back to the live arena, PayPal, Patreon, and the Excavationpro radio, with a small Options button. `BATTLE TV` on 1v1 opens the side lane. Each fighter reads health, mana, swing, plate, and Close. The other modes do not open a fight yet.
+## What is in this build
 
-Editor `6000.5.9f1`. Render pipeline is Built-in.
+- Intro film and station ident.
+- Game menu with mode selection: **1v1, 2v2, 3v3, 5v5**.
+- **1v1** opens `Duel.unity`, the side-view lane. Vale versus Brute is the baked
+  opening card; other painted fighters use their own StreamingAssets folder.
+- **2v2, 3v3, and 5v5** open `Arena.unity`, the overhead sand arena.
+- Team Select drafts every book kit. A painted kit loads its folder; an unpainted
+  kit fields as a colored mark and does not request a folder that does not exist.
+- The Arena uses the book's HP, damage, speed, armor, range, moves, and cards. It
+  does not retune fight numbers to fix presentation.
+- 1v1 and Arena share the painted roster and the corner Close/Slip rule.
 
-The test page is https://deepseekoracle.github.io/battle-tv-unity/. It is this menu only. The live arena is not in this repo and has no link here yet.
+## Scenes
+
+`Menu`, `GameMenu`, `TeamSelect`, `Duel`, then `Arena`. They are all enabled in
+Build Settings.
+
+## Editor and pipeline
+
+- Unity `6000.5.9f1`
+- Built-in render pipeline
+- WebGL build with decompression fallback
+- Publish: `tools/publish-webgl.ps1` → `docs/`
+- Build cache stamp includes the source SHA so a republish cannot reuse a stale
+  CDN/IndexedDB query key.
+
+## Tests
+
+`Assets/Menu/Tests/MenuTests.cs` covers the menu, roster, both fight modes, the
+book kits, painted lane entries, the corner leap, and the unpainted-kit loader
+gate.
+
+Run EditMode tests from the project:
+
+```powershell
+& "<Unity editor path>" `
+  -batchmode -projectPath . -runTests -testPlatform EditMode `
+  -testResults "$env:TEMP\battle-tv-editmode.xml" `
+  -logFile "$env:TEMP\battle-tv-editmode.log"
+```
+
+Do not pass `-quit` with `-runTests`.
+
+## Known incomplete art
+
+Ten book kits do not have painted fighter folders yet: `bear`, `wolf`, `lion`,
+`elephant`, `scorpion`, `heartboss`, `levi`, `lock`, `tithe`, and `unnamer`.
+They are playable as marks and do not produce missing-file errors. Painting them
+is the next roster pass; do not shrink or retune the existing fight art to compensate.
+
+## Licence and provenance
+
+Copyright 2026 Justin Helmer / Excavationpro. The Arena web game and this Unity
+port share the LYGO Arena design language; the web game is not bundled here.
