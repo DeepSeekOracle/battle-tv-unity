@@ -86,12 +86,16 @@ namespace BattleTv.Menu
 
         public static bool Settled(string id)
         {
-            return string.IsNullOrEmpty(id) || Have.ContainsKey(id) || Missing.Contains(id);
+            // An unpainted book kit is a deliberate mark. It has no folder to
+            // request, so it is settled without a network round-trip.
+            return string.IsNullOrEmpty(id) || !LaneRoster.Painted(id) ||
+                   Have.ContainsKey(id) || Missing.Contains(id);
         }
 
         public static IEnumerator LoadIdle(string id)
         {
-            if (string.IsNullOrEmpty(id) || Have.ContainsKey(id) || Missing.Contains(id))
+            if (string.IsNullOrEmpty(id) || !LaneRoster.Painted(id) ||
+                Have.ContainsKey(id) || Missing.Contains(id))
                 yield break;
             yield return LoadOne(id, false);
         }
@@ -103,7 +107,7 @@ namespace BattleTv.Menu
             for (var i = 0; i < ids.Count; i++)
             {
                 var id = ids[i];
-                if (string.IsNullOrEmpty(id))
+                if (string.IsNullOrEmpty(id) || !LaneRoster.Painted(id))
                     continue;
                 if (Have.TryGetValue(id, out var body) && body.Full)
                     continue;

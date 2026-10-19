@@ -336,6 +336,15 @@ namespace BattleTv.Menu.Tests
         }
 
         [Test]
+        public void UnpaintedKitIsSettledWithoutAFolder()
+        {
+            Assert.IsTrue(LaneRoster.InLane("bear"));
+            Assert.IsFalse(LaneRoster.Painted("bear"));
+            Assert.IsTrue(FighterBodies.Settled("bear"));
+            Assert.IsTrue(LaneRoster.Painted("smith"));
+        }
+
+        [Test]
         public void DraftMenuKeepsTheLineup()
         {
             ShowPick.Clear();
