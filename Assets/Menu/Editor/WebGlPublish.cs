@@ -181,15 +181,27 @@ namespace BattleTv.Menu.EditorTools
         /// </summary>
         static string StampBuildUrls(string html, string output)
         {
-            if (html.Contains("var buildStamp"))
-                return html;
             var build = Path.Combine(output, "Build");
             long data = new FileInfo(Path.Combine(build, "docs.data.unityweb")).Length;
             long framework = new FileInfo(Path.Combine(build, "docs.framework.js.unityweb")).Length;
             long wasm = new FileInfo(Path.Combine(build, "docs.wasm.unityweb")).Length;
             if (data < 1 || framework < 1 || wasm < 1)
                 throw new InvalidOperationException("WebGL build files are missing, so the page cannot be cache-stamped.");
-            var stamp = data + "-" + framework + "-" + wasm;
+            var sha = Environment.GetEnvironmentVariable("BATTLETV_GIT_SHA");
+            if (string.IsNullOrWhiteSpace(sha))
+                sha = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
+            sha = sha.Trim();
+            var stamp = data + "-" + framework + "-" + wasm + "-" + sha.Substring(0, Math.Min(8, sha.Length));
+            var existing = "var buildStamp = \"";
+            var at = html.IndexOf(existing, StringComparison.Ordinal);
+            if (at >= 0)
+            {
+                var valueAt = at + existing.Length;
+                var end = html.IndexOf("\";", valueAt, StringComparison.Ordinal);
+                if (end < 0)
+                    throw new InvalidOperationException("index.html buildStamp has no closing quote.");
+                return html.Substring(0, valueAt) + stamp + html.Substring(end);
+            }
             var stamped = html.Replace(
                 "var loaderUrl = buildUrl + \"/docs.loader.js\";",
                 "var buildStamp = \"" + stamp + "\";\n      var loaderUrl = buildUrl + \"/docs.loader.js?v=\" + buildStamp;");
