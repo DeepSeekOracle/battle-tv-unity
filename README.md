@@ -51,10 +51,10 @@ Do not pass `-quit` with `-runTests`.
 
 ## Known incomplete art
 
-Ten book kits do not have painted fighter folders yet: `bear`, `wolf`, `lion`,
+Nine book kits do not have painted fighter folders yet: `bear`, `lion`,
 `elephant`, `scorpion`, `heartboss`, `levi`, `lock`, `tithe`, and `unnamer`.
-They are playable as marks and do not produce missing-file errors. Painting them
-is the next roster pass; do not shrink or retune the existing fight art to compensate.
+They are playable as marks and do not produce missing-file errors. Wolf is now
+painted as Ashmane. Painting the rest is the next roster pass; do not shrink or retune the existing fight art to compensate.
 
 ## Licence and provenance
 

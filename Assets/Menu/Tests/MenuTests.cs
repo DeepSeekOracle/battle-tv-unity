@@ -342,6 +342,7 @@ namespace BattleTv.Menu.Tests
             Assert.IsFalse(LaneRoster.Painted("bear"));
             Assert.IsTrue(FighterBodies.Settled("bear"));
             Assert.IsTrue(LaneRoster.Painted("smith"));
+            Assert.IsTrue(LaneRoster.Painted("wolf"));
         }
 
         [Test]
@@ -379,10 +380,10 @@ namespace BattleTv.Menu.Tests
         public void AutoShowRotatesPaintedCards()
         {
             var roster = LaneRoster.LaneIds();
-            Assert.AreEqual(23, roster.Length);
+            Assert.AreEqual(24, roster.Length);
             Assert.AreEqual("vale", roster[0]);
             Assert.AreEqual("brute", roster[1]);
-            Assert.AreEqual("smith", roster[roster.Length - 1]);
+            Assert.AreEqual("wolf", roster[roster.Length - 1]);
             Assert.IsTrue(LaneRoster.InLane("gate"));
             Assert.IsTrue(LaneRoster.Painted("gate"));
             Assert.IsTrue(LaneRoster.InLane("crown"));
@@ -425,7 +426,7 @@ namespace BattleTv.Menu.Tests
             seen.Add("vale");
             seen.Add("lightfather");
             var guard = 0;
-            while (seen.Count < roster.Length && guard < 24)
+            while (seen.Count < roster.Length && guard < 30)
             {
                 var champ = ShowPick.Yours[0];
                 ShowPick.RememberResult(champ);
@@ -549,7 +550,7 @@ namespace BattleTv.Menu.Tests
             Assert.IsFalse(LaneRoster.ById("gate").Linked);
             Assert.IsFalse(LaneRoster.ById("crown").Linked);
             Assert.IsFalse(LaneRoster.ById("smith").Linked);
-            var painted = new[] { "lightfather", "kael", "orin", "nia", "lyra", "arkos", "d9ra", "srath", "kairos", "justicae", "seidon", "sancora", "wraith", "imp", "hurler", "shade", "thief", "drain", "gate", "crown", "smith" };
+            var painted = new[] { "lightfather", "kael", "orin", "nia", "lyra", "arkos", "d9ra", "srath", "kairos", "justicae", "seidon", "sancora", "wraith", "imp", "hurler", "shade", "thief", "drain", "gate", "crown", "smith", "wolf" };
             for (var i = 0; i < painted.Length; i++)
             {
                 var id = painted[i];
@@ -954,7 +955,7 @@ namespace BattleTv.Menu.Tests
         public void PaintedRosterDashes()
         {
             var ids = LaneRoster.LaneIds();
-            Assert.AreEqual(23, ids.Length);
+            Assert.AreEqual(24, ids.Length);
             for (var i = 0; i < ids.Length; i++)
             {
                 Leap(ids[i], true, false);
@@ -1226,3 +1227,4 @@ namespace BattleTv.Menu.Tests
         }
     }
 }
+

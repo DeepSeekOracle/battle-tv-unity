@@ -127,7 +127,7 @@ namespace BattleTv.Menu
         /// </summary>
         static readonly string[] ShowOrder =
         {
-            "vale", "brute", "lightfather", "kael", "orin", "nia", "lyra", "arkos", "d9ra", "srath", "kairos", "justicae", "seidon", "sancora", "wraith", "imp", "hurler", "shade", "thief", "drain", "gate", "crown", "smith"
+            "vale", "brute", "lightfather", "kael", "orin", "nia", "lyra", "arkos", "d9ra", "srath", "kairos", "justicae", "seidon", "sancora", "wraith", "imp", "hurler", "shade", "thief", "drain", "gate", "crown", "smith", "wolf"
         };
 
         /// <summary>
@@ -520,3 +520,4 @@ namespace BattleTv.Menu
         }
     }
 }
+
