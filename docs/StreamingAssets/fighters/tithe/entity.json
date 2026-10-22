@@ -57,6 +57,60 @@
       "frames": [
         "tithe-win-f00.png"
       ]
+    },
+    {
+      "name": "tithe",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "tithe-bite-f00.png",
+        "tithe-bite-f01.png"
+      ]
+    },
+    {
+      "name": "Tithe",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "tithe-bite-f00.png",
+        "tithe-bite-f01.png"
+      ]
+    },
+    {
+      "name": "snatch",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "tithe-bite-f00.png",
+        "tithe-bite-f01.png"
+      ]
+    },
+    {
+      "name": "Snatch",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "tithe-bite-f00.png",
+        "tithe-bite-f01.png"
+      ]
+    },
+    {
+      "name": "collection",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "tithe-bite-f00.png",
+        "tithe-bite-f01.png"
+      ]
+    },
+    {
+      "name": "Collection",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "tithe-bite-f00.png",
+        "tithe-bite-f01.png"
+      ]
     }
   ]
 }

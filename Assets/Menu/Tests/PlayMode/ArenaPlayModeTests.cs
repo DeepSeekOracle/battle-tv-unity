@@ -104,5 +104,33 @@ namespace BattleTv.Menu.PlayTests
                 Assert.IsNotNull(body.End(true), id + " win clip missing");
             }
         }
+
+        [UnityTest]
+        public IEnumerator EveryCharacterWorksIn1v1()
+        {
+            SceneManager.LoadScene("Arena");
+            yield return null;
+            yield return new WaitForSeconds(1.5f);
+            var ids = new string[LaneRoster.All.Length];
+            for (var i = 0; i < ids.Length; i++)
+                ids[i] = LaneRoster.All[i].Id;
+            yield return FighterBodies.Load(ids);
+            for (var i = 0; i < ids.Length; i++)
+            {
+                var id = ids[i];
+                var foe = id == "vale" ? "brute" : "vale";
+                ArenaMatch.Begin(new[] { id }, new[] { foe }, 1000 + i, true);
+                var steps = 0;
+                while (!ArenaMatch.Over && steps < 20000)
+                {
+                    ArenaMatch.Step(0.05);
+                    steps++;
+                    if (steps % 500 == 0)
+                        yield return null;
+                }
+                Assert.IsTrue(ArenaMatch.Over, id + " 1v1 did not finish");
+                Assert.IsNotNull(FighterBodies.Get(id), id + " body missing in 1v1");
+            }
+        }
     }
 }

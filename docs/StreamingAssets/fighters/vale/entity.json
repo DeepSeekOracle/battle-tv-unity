@@ -1,147 +1,199 @@
 {
-    "id":  "vale",
-    "flip":  "against",
-    "clipPivot":  true,
-    "walk":  0.62,
-    "idle":  "vale.png",
-    "clips":  [
-                  {
-                      "name":  "Shield Bash",
-                      "seconds":  0.4,
-                      "pivot":  0.39,
-                      "frames":  [
-                                     "vale-bash-f00.png",
-                                     "vale-bash-f01.png",
-                                     "vale-bash-f02.png",
-                                     "vale-bash-f03.png",
-                                     "vale-bash-f04.png",
-                                     "vale-bash-f05.png"
-                                 ]
-                  },
-                  {
-                      "name":  "Shield Hook",
-                      "seconds":  0.4,
-                      "pivot":  0.39,
-                      "frames":  [
-                                     "vale-bash-f00.png",
-                                     "vale-bash-f01.png",
-                                     "vale-bash-f02.png",
-                                     "vale-bash-f03.png",
-                                     "vale-bash-f04.png",
-                                     "vale-bash-f05.png"
-                                 ]
-                  },
-                  {
-                      "name":  "Cleave",
-                      "seconds":  0.34,
-                      "pivot":  0.37,
-                      "frames":  [
-                                     "vale-punch-f00.png",
-                                     "vale-punch-f01.png",
-                                     "vale-punch-f02.png",
-                                     "vale-punch-f03.png",
-                                     "vale-punch-f04.png",
-                                     "vale-punch-f05.png"
-                                 ]
-                  },
-                  {
-                      "name":  "Punch",
-                      "seconds":  0.34,
-                      "pivot":  0.37,
-                      "frames":  [
-                                     "vale-punch-f00.png",
-                                     "vale-punch-f01.png",
-                                     "vale-punch-f02.png",
-                                     "vale-punch-f03.png",
-                                     "vale-punch-f04.png",
-                                     "vale-punch-f05.png"
-                                 ]
-                  },
-                  {
-                      "name":  "Cover",
-                      "seconds":  0.5,
-                      "pivot":  0.3,
-                      "frames":  [
-                                     "vale-toss-f00.png",
-                                     "vale-toss-f01.png",
-                                     "vale-toss-f02.png",
-                                     "vale-toss-f03.png",
-                                     "vale-toss-f04.png",
-                                     "vale-toss-f05.png",
-                                     "vale-toss-f06.png",
-                                     "vale-toss-f07.png"
-                                 ]
-                  },
-                  {
-                      "name":  "Bulwark",
-                      "seconds":  0.5,
-                      "pivot":  0.54,
-                      "frames":  [
-                                     "vale-line-f00.png",
-                                     "vale-line-f01.png",
-                                     "vale-line-f02.png",
-                                     "vale-line-f03.png",
-                                     "vale-line-f04.png"
-                                 ]
-                  },
-                  {
-                      "name":  "Close",
-                      "seconds":  0.4,
-                      "pivot":  0.39,
-                      "frames":  [
-                                     "vale-bash-f00.png",
-                                     "vale-bash-f01.png",
-                                     "vale-bash-f02.png",
-                                     "vale-bash-f03.png",
-                                     "vale-bash-f04.png",
-                                     "vale-bash-f05.png"
-                                 ]
-                  },
-                  {
-                      "name":  "Shield Wall",
-                      "seconds":  0.4,
-                      "pivot":  0.56,
-                      "frames":  [
-                                     "vale-plant-f00.png",
-                                     "vale-plant-f01.png",
-                                     "vale-plant-f02.png",
-                                     "vale-plant-f03.png"
-                                 ]
-                  },
-                  {
-                      "name":  "walk",
-                      "seconds":  0.62,
-                      "pivot":  0.5,
-                      "frames":  [
-                                     "vale-walk-f00.png",
-                                     "vale-walk-f01.png",
-                                     "vale-walk-f02.png",
-                                     "vale-walk-f03.png",
-                                     "vale-walk-f04.png",
-                                     "vale-walk-f05.png",
-                                     "vale-walk-f06.png",
-                                     "vale-walk-f07.png"
-                                 ]
-                  },
-                  {
-                      "name":  "death",
-                      "seconds":  1.6,
-                      "pivot":  0.42,
-                      "frames":  [
-                                     "vale-death-f00.png",
-                                     "vale-death-f01.png",
-                                     "vale-death-f02.png",
-                                     "vale-death-f03.png"
-                                 ]
-                  },
-                  {
-                      "name":  "win",
-                      "seconds":  1.15,
-                      "pivot":  0.4,
-                      "frames":  [
-                                     "vale-win-f00.png",
-                                     "vale-win-f01.png"
-                                 ]
-                  }
-              ]
+  "id": "vale",
+  "flip": "against",
+  "clipPivot": true,
+  "walk": 0.62,
+  "idle": "vale.png",
+  "clips": [
+    {
+      "name": "Shield Bash",
+      "seconds": 0.4,
+      "pivot": 0.39,
+      "frames": [
+        "vale-bash-f00.png",
+        "vale-bash-f01.png",
+        "vale-bash-f02.png",
+        "vale-bash-f03.png",
+        "vale-bash-f04.png",
+        "vale-bash-f05.png"
+      ]
+    },
+    {
+      "name": "Shield Hook",
+      "seconds": 0.4,
+      "pivot": 0.39,
+      "frames": [
+        "vale-bash-f00.png",
+        "vale-bash-f01.png",
+        "vale-bash-f02.png",
+        "vale-bash-f03.png",
+        "vale-bash-f04.png",
+        "vale-bash-f05.png"
+      ]
+    },
+    {
+      "name": "Cleave",
+      "seconds": 0.34,
+      "pivot": 0.37,
+      "frames": [
+        "vale-punch-f00.png",
+        "vale-punch-f01.png",
+        "vale-punch-f02.png",
+        "vale-punch-f03.png",
+        "vale-punch-f04.png",
+        "vale-punch-f05.png"
+      ]
+    },
+    {
+      "name": "Punch",
+      "seconds": 0.34,
+      "pivot": 0.37,
+      "frames": [
+        "vale-punch-f00.png",
+        "vale-punch-f01.png",
+        "vale-punch-f02.png",
+        "vale-punch-f03.png",
+        "vale-punch-f04.png",
+        "vale-punch-f05.png"
+      ]
+    },
+    {
+      "name": "Cover",
+      "seconds": 0.5,
+      "pivot": 0.3,
+      "frames": [
+        "vale-toss-f00.png",
+        "vale-toss-f01.png",
+        "vale-toss-f02.png",
+        "vale-toss-f03.png",
+        "vale-toss-f04.png",
+        "vale-toss-f05.png",
+        "vale-toss-f06.png",
+        "vale-toss-f07.png"
+      ]
+    },
+    {
+      "name": "Bulwark",
+      "seconds": 0.5,
+      "pivot": 0.54,
+      "frames": [
+        "vale-line-f00.png",
+        "vale-line-f01.png",
+        "vale-line-f02.png",
+        "vale-line-f03.png",
+        "vale-line-f04.png"
+      ]
+    },
+    {
+      "name": "Close",
+      "seconds": 0.4,
+      "pivot": 0.39,
+      "frames": [
+        "vale-bash-f00.png",
+        "vale-bash-f01.png",
+        "vale-bash-f02.png",
+        "vale-bash-f03.png",
+        "vale-bash-f04.png",
+        "vale-bash-f05.png"
+      ]
+    },
+    {
+      "name": "Shield Wall",
+      "seconds": 0.4,
+      "pivot": 0.56,
+      "frames": [
+        "vale-plant-f00.png",
+        "vale-plant-f01.png",
+        "vale-plant-f02.png",
+        "vale-plant-f03.png"
+      ]
+    },
+    {
+      "name": "walk",
+      "seconds": 0.62,
+      "pivot": 0.5,
+      "frames": [
+        "vale-walk-f00.png",
+        "vale-walk-f01.png",
+        "vale-walk-f02.png",
+        "vale-walk-f03.png",
+        "vale-walk-f04.png",
+        "vale-walk-f05.png",
+        "vale-walk-f06.png",
+        "vale-walk-f07.png"
+      ]
+    },
+    {
+      "name": "death",
+      "seconds": 1.6,
+      "pivot": 0.42,
+      "frames": [
+        "vale-death-f00.png",
+        "vale-death-f01.png",
+        "vale-death-f02.png",
+        "vale-death-f03.png"
+      ]
+    },
+    {
+      "name": "win",
+      "seconds": 1.15,
+      "pivot": 0.4,
+      "frames": [
+        "vale-win-f00.png",
+        "vale-win-f01.png"
+      ]
+    },
+    {
+      "name": "cover",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "vale-bash-f00.png",
+        "vale-bash-f01.png",
+        "vale-bash-f02.png",
+        "vale-bash-f03.png",
+        "vale-bash-f04.png",
+        "vale-bash-f05.png"
+      ]
+    },
+    {
+      "name": "bulwark",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "vale-bash-f00.png",
+        "vale-bash-f01.png",
+        "vale-bash-f02.png",
+        "vale-bash-f03.png",
+        "vale-bash-f04.png",
+        "vale-bash-f05.png"
+      ]
+    },
+    {
+      "name": "shieldwall",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "vale-bash-f00.png",
+        "vale-bash-f01.png",
+        "vale-bash-f02.png",
+        "vale-bash-f03.png",
+        "vale-bash-f04.png",
+        "vale-bash-f05.png"
+      ]
+    },
+    {
+      "name": "shieldhook",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "vale-bash-f00.png",
+        "vale-bash-f01.png",
+        "vale-bash-f02.png",
+        "vale-bash-f03.png",
+        "vale-bash-f04.png",
+        "vale-bash-f05.png"
+      ]
+    }
+  ]
 }

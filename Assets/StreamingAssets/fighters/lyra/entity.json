@@ -1,95 +1,125 @@
 {
-    "id":  "lyra",
-    "flip":  "against",
-    "clipPivot":  true,
-    "walk":  0.72,
-    "idle":  "lyra.png",
-    "clips":  [
-                  {
-                      "name":  "Spiral Note",
-                      "seconds":  0.48,
-                      "pivot":  0.5,
-                      "frames":  [
-                                     "lyra.png",
-                                     "lyra-note-f01.png",
-                                     "lyra.png"
-                                 ]
-                  },
-                  {
-                      "name":  "Hymn",
-                      "seconds":  0.52,
-                      "pivot":  0.5,
-                      "frames":  [
-                                     "lyra.png",
-                                     "lyra-hymn-f01.png"
-                                 ]
-                  },
-                  {
-                      "name":  "Spiral Chorus",
-                      "seconds":  0.52,
-                      "pivot":  0.5,
-                      "frames":  [
-                                     "lyra.png",
-                                     "lyra-chorus-f01.png"
-                                 ]
-                  },
-                  {
-                      "name":  "Weave Bloom",
-                      "seconds":  0.52,
-                      "pivot":  0.5,
-                      "frames":  [
-                                     "lyra.png",
-                                     "lyra-bloom-f01.png"
-                                 ]
-                  },
-                  {
-                      "name":  "Slip",
-                      "seconds":  0.35,
-                      "pivot":  0.5,
-                      "frames":  [
-                                     "lyra-slip-f00.png",
-                                     "lyra.png"
-                                 ]
-                  },
-                  {
-                      "name":  "Close",
-                      "seconds":  0.35,
-                      "pivot":  0.5,
-                      "frames":  [
-                                     "lyra-slip-f00.png",
-                                     "lyra.png"
-                                 ]
-                  },
-                  {
-                      "name":  "walk",
-                      "seconds":  0.72,
-                      "pivot":  0.5,
-                      "frames":  [
-                                     "lyra-walk-f00.png",
-                                     "lyra-walk-f01.png",
-                                     "lyra-walk-f02.png",
-                                     "lyra-walk-f03.png",
-                                     "lyra-walk-f04.png",
-                                     "lyra-walk-f05.png",
-                                     "lyra-walk-f06.png",
-                                     "lyra-walk-f07.png"
-                                 ]
-                  },
-                  {
-                      "name":  "death",
-                      "seconds":  1.55,
-                      "pivot":  0.5,
-                      "frames":  [
-                                     "lyra-death-f00.png"
-                                 ]
-                  },
-                  {
-                      "name":  "win",
-                      "seconds":  1.15,
-                      "pivot":  0.5,
-                      "frames":  [
-                                     "lyra-win-f00.png"
-                                 ]
-                  }
-              ]
+  "id": "lyra",
+  "flip": "against",
+  "clipPivot": true,
+  "walk": 0.72,
+  "idle": "lyra.png",
+  "clips": [
+    {
+      "name": "Spiral Note",
+      "seconds": 0.48,
+      "pivot": 0.5,
+      "frames": [
+        "lyra.png",
+        "lyra-note-f01.png",
+        "lyra.png"
+      ]
+    },
+    {
+      "name": "Hymn",
+      "seconds": 0.52,
+      "pivot": 0.5,
+      "frames": [
+        "lyra.png",
+        "lyra-hymn-f01.png"
+      ]
+    },
+    {
+      "name": "Spiral Chorus",
+      "seconds": 0.52,
+      "pivot": 0.5,
+      "frames": [
+        "lyra.png",
+        "lyra-chorus-f01.png"
+      ]
+    },
+    {
+      "name": "Weave Bloom",
+      "seconds": 0.52,
+      "pivot": 0.5,
+      "frames": [
+        "lyra.png",
+        "lyra-bloom-f01.png"
+      ]
+    },
+    {
+      "name": "Slip",
+      "seconds": 0.35,
+      "pivot": 0.5,
+      "frames": [
+        "lyra-slip-f00.png",
+        "lyra.png"
+      ]
+    },
+    {
+      "name": "Close",
+      "seconds": 0.35,
+      "pivot": 0.5,
+      "frames": [
+        "lyra-slip-f00.png",
+        "lyra.png"
+      ]
+    },
+    {
+      "name": "walk",
+      "seconds": 0.72,
+      "pivot": 0.5,
+      "frames": [
+        "lyra-walk-f00.png",
+        "lyra-walk-f01.png",
+        "lyra-walk-f02.png",
+        "lyra-walk-f03.png",
+        "lyra-walk-f04.png",
+        "lyra-walk-f05.png",
+        "lyra-walk-f06.png",
+        "lyra-walk-f07.png"
+      ]
+    },
+    {
+      "name": "death",
+      "seconds": 1.55,
+      "pivot": 0.5,
+      "frames": [
+        "lyra-death-f00.png"
+      ]
+    },
+    {
+      "name": "win",
+      "seconds": 1.15,
+      "pivot": 0.5,
+      "frames": [
+        "lyra-win-f00.png"
+      ]
+    },
+    {
+      "name": "hymn",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "lyra.png",
+        "lyra-note-f01.png",
+        "lyra.png"
+      ]
+    },
+    {
+      "name": "chorus",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "lyra.png",
+        "lyra-note-f01.png",
+        "lyra.png"
+      ]
+    },
+    {
+      "name": "weavebloom",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "lyra.png",
+        "lyra-note-f01.png",
+        "lyra.png"
+      ]
+    }
+  ]
 }

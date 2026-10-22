@@ -57,6 +57,42 @@
       "frames": [
         "lock-win-f00.png"
       ]
+    },
+    {
+      "name": "lockseal",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "lock-bite-f00.png",
+        "lock-bite-f01.png"
+      ]
+    },
+    {
+      "name": "The Lock Seals",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "lock-bite-f00.png",
+        "lock-bite-f01.png"
+      ]
+    },
+    {
+      "name": "gatecannon",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "lock-bite-f00.png",
+        "lock-bite-f01.png"
+      ]
+    },
+    {
+      "name": "Gate Cannon",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "lock-bite-f00.png",
+        "lock-bite-f01.png"
+      ]
     }
   ]
 }

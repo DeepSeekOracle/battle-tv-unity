@@ -1,16 +1,88 @@
 {
-    "id": "thief",
-    "flip": "against",
-    "clipPivot": true,
-    "walk": 0.72,
-    "idle": "thief.png",
-    "clips": [
-        { "name": "Quick Stab", "seconds": 0.50, "pivot": 0.5, "frames": ["thief.png", "thief-stab-f01.png"] },
-        { "name": "Flicker", "seconds": 0.50, "pivot": 0.5, "frames": ["thief.png", "thief-flicker-f01.png"] },
-        { "name": "Snatch", "seconds": 0.52, "pivot": 0.5, "frames": ["thief.png", "thief-snatch-f01.png"] },
-        { "name": "Close", "seconds": 0.35, "pivot": 0.5, "frames": ["thief-close-f00.png", "thief.png"] },
-        { "name": "walk", "seconds": 0.72, "pivot": 0.5, "frames": ["thief.png", "thief-walk-f00.png"] },
-        { "name": "death", "seconds": 1.55, "pivot": 0.5, "frames": ["thief-death-f00.png"] },
-        { "name": "win", "seconds": 1.15, "pivot": 0.5, "frames": ["thief-win-f00.png"] }
-    ]
+  "id": "thief",
+  "flip": "against",
+  "clipPivot": true,
+  "walk": 0.72,
+  "idle": "thief.png",
+  "clips": [
+    {
+      "name": "Quick Stab",
+      "seconds": 0.5,
+      "pivot": 0.5,
+      "frames": [
+        "thief.png",
+        "thief-stab-f01.png"
+      ]
+    },
+    {
+      "name": "Flicker",
+      "seconds": 0.5,
+      "pivot": 0.5,
+      "frames": [
+        "thief.png",
+        "thief-flicker-f01.png"
+      ]
+    },
+    {
+      "name": "Snatch",
+      "seconds": 0.52,
+      "pivot": 0.5,
+      "frames": [
+        "thief.png",
+        "thief-snatch-f01.png"
+      ]
+    },
+    {
+      "name": "Close",
+      "seconds": 0.35,
+      "pivot": 0.5,
+      "frames": [
+        "thief-close-f00.png",
+        "thief.png"
+      ]
+    },
+    {
+      "name": "walk",
+      "seconds": 0.72,
+      "pivot": 0.5,
+      "frames": [
+        "thief.png",
+        "thief-walk-f00.png"
+      ]
+    },
+    {
+      "name": "death",
+      "seconds": 1.55,
+      "pivot": 0.5,
+      "frames": [
+        "thief-death-f00.png"
+      ]
+    },
+    {
+      "name": "win",
+      "seconds": 1.15,
+      "pivot": 0.5,
+      "frames": [
+        "thief-win-f00.png"
+      ]
+    },
+    {
+      "name": "snatch",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "thief.png",
+        "thief-stab-f01.png"
+      ]
+    },
+    {
+      "name": "flicker",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "thief.png",
+        "thief-stab-f01.png"
+      ]
+    }
+  ]
 }

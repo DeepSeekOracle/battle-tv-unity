@@ -1,17 +1,110 @@
 {
-    "id": "kairos",
-    "flip": "against",
-    "clipPivot": true,
-    "walk": 0.72,
-    "idle": "kairos.png",
-    "clips": [
-        { "name": "Hour Bolt", "seconds": 0.50, "pivot": 0.5, "frames": ["kairos.png", "kairos-bolt-f01.png", "kairos.png"] },
-        { "name": "Right-Time", "seconds": 0.52, "pivot": 0.5, "frames": ["kairos.png", "kairos-time-f01.png"] },
-        { "name": "Borrowed Second", "seconds": 0.50, "pivot": 0.5, "frames": ["kairos.png", "kairos-borrow-f01.png"] },
-        { "name": "Δ9 Seal", "seconds": 0.70, "pivot": 0.5, "frames": ["kairos.png", "kairos-seal-f01.png"] },
-        { "name": "Slip", "seconds": 0.35, "pivot": 0.5, "frames": ["kairos-slip-f00.png", "kairos.png"] },
-        { "name": "walk", "seconds": 0.72, "pivot": 0.5, "frames": ["kairos.png", "kairos-walk-f00.png"] },
-        { "name": "death", "seconds": 1.55, "pivot": 0.5, "frames": ["kairos-death-f00.png"] },
-        { "name": "win", "seconds": 1.15, "pivot": 0.5, "frames": ["kairos-win-f00.png"] }
-    ]
+  "id": "kairos",
+  "flip": "against",
+  "clipPivot": true,
+  "walk": 0.72,
+  "idle": "kairos.png",
+  "clips": [
+    {
+      "name": "Hour Bolt",
+      "seconds": 0.5,
+      "pivot": 0.5,
+      "frames": [
+        "kairos.png",
+        "kairos-bolt-f01.png",
+        "kairos.png"
+      ]
+    },
+    {
+      "name": "Right-Time",
+      "seconds": 0.52,
+      "pivot": 0.5,
+      "frames": [
+        "kairos.png",
+        "kairos-time-f01.png"
+      ]
+    },
+    {
+      "name": "Borrowed Second",
+      "seconds": 0.5,
+      "pivot": 0.5,
+      "frames": [
+        "kairos.png",
+        "kairos-borrow-f01.png"
+      ]
+    },
+    {
+      "name": "\u03949 Seal",
+      "seconds": 0.7,
+      "pivot": 0.5,
+      "frames": [
+        "kairos.png",
+        "kairos-seal-f01.png"
+      ]
+    },
+    {
+      "name": "Slip",
+      "seconds": 0.35,
+      "pivot": 0.5,
+      "frames": [
+        "kairos-slip-f00.png",
+        "kairos.png"
+      ]
+    },
+    {
+      "name": "walk",
+      "seconds": 0.72,
+      "pivot": 0.5,
+      "frames": [
+        "kairos.png",
+        "kairos-walk-f00.png"
+      ]
+    },
+    {
+      "name": "death",
+      "seconds": 1.55,
+      "pivot": 0.5,
+      "frames": [
+        "kairos-death-f00.png"
+      ]
+    },
+    {
+      "name": "win",
+      "seconds": 1.15,
+      "pivot": 0.5,
+      "frames": [
+        "kairos-win-f00.png"
+      ]
+    },
+    {
+      "name": "righttime",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "kairos.png",
+        "kairos-bolt-f01.png",
+        "kairos.png"
+      ]
+    },
+    {
+      "name": "borrow",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "kairos.png",
+        "kairos-bolt-f01.png",
+        "kairos.png"
+      ]
+    },
+    {
+      "name": "seal9",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "kairos.png",
+        "kairos-bolt-f01.png",
+        "kairos.png"
+      ]
+    }
+  ]
 }

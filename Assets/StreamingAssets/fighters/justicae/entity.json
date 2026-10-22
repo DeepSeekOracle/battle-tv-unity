@@ -1,18 +1,129 @@
 {
-    "id": "justicae",
-    "flip": "against",
-    "clipPivot": true,
-    "walk": 0.72,
-    "idle": "justicae.png",
-    "clips": [
-        { "name": "Accord Blade", "seconds": 0.48, "pivot": 0.5, "frames": ["justicae.png", "justicae-blade-f01.png", "justicae.png"] },
-        { "name": "Fair Plate", "seconds": 0.50, "pivot": 0.5, "frames": ["justicae.png", "justicae-plate-f01.png"] },
-        { "name": "Verdict", "seconds": 0.50, "pivot": 0.5, "frames": ["justicae.png", "justicae-verdict-f01.png"] },
-        { "name": "Bulwark", "seconds": 0.55, "pivot": 0.5, "frames": ["justicae.png", "justicae-bulwark-f01.png"] },
-        { "name": "Writ of Pursuit", "seconds": 0.40, "pivot": 0.5, "frames": ["justicae-writ-f00.png", "justicae.png"] },
-        { "name": "Close", "seconds": 0.35, "pivot": 0.5, "frames": ["justicae-close-f00.png", "justicae.png"] },
-        { "name": "walk", "seconds": 0.72, "pivot": 0.5, "frames": ["justicae.png", "justicae-walk-f00.png"] },
-        { "name": "death", "seconds": 1.55, "pivot": 0.5, "frames": ["justicae-death-f00.png"] },
-        { "name": "win", "seconds": 1.15, "pivot": 0.5, "frames": ["justicae-win-f00.png"] }
-    ]
+  "id": "justicae",
+  "flip": "against",
+  "clipPivot": true,
+  "walk": 0.72,
+  "idle": "justicae.png",
+  "clips": [
+    {
+      "name": "Accord Blade",
+      "seconds": 0.48,
+      "pivot": 0.5,
+      "frames": [
+        "justicae.png",
+        "justicae-blade-f01.png",
+        "justicae.png"
+      ]
+    },
+    {
+      "name": "Fair Plate",
+      "seconds": 0.5,
+      "pivot": 0.5,
+      "frames": [
+        "justicae.png",
+        "justicae-plate-f01.png"
+      ]
+    },
+    {
+      "name": "Verdict",
+      "seconds": 0.5,
+      "pivot": 0.5,
+      "frames": [
+        "justicae.png",
+        "justicae-verdict-f01.png"
+      ]
+    },
+    {
+      "name": "Bulwark",
+      "seconds": 0.55,
+      "pivot": 0.5,
+      "frames": [
+        "justicae.png",
+        "justicae-bulwark-f01.png"
+      ]
+    },
+    {
+      "name": "Writ of Pursuit",
+      "seconds": 0.4,
+      "pivot": 0.5,
+      "frames": [
+        "justicae-writ-f00.png",
+        "justicae.png"
+      ]
+    },
+    {
+      "name": "Close",
+      "seconds": 0.35,
+      "pivot": 0.5,
+      "frames": [
+        "justicae-close-f00.png",
+        "justicae.png"
+      ]
+    },
+    {
+      "name": "walk",
+      "seconds": 0.72,
+      "pivot": 0.5,
+      "frames": [
+        "justicae.png",
+        "justicae-walk-f00.png"
+      ]
+    },
+    {
+      "name": "death",
+      "seconds": 1.55,
+      "pivot": 0.5,
+      "frames": [
+        "justicae-death-f00.png"
+      ]
+    },
+    {
+      "name": "win",
+      "seconds": 1.15,
+      "pivot": 0.5,
+      "frames": [
+        "justicae-win-f00.png"
+      ]
+    },
+    {
+      "name": "fairplate",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "justicae.png",
+        "justicae-blade-f01.png",
+        "justicae.png"
+      ]
+    },
+    {
+      "name": "verdict",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "justicae.png",
+        "justicae-blade-f01.png",
+        "justicae.png"
+      ]
+    },
+    {
+      "name": "bulwark",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "justicae.png",
+        "justicae-blade-f01.png",
+        "justicae.png"
+      ]
+    },
+    {
+      "name": "writpursuit",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "justicae.png",
+        "justicae-blade-f01.png",
+        "justicae.png"
+      ]
+    }
+  ]
 }

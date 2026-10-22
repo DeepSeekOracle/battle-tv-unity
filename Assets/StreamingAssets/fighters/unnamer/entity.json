@@ -57,6 +57,42 @@
       "frames": [
         "unnamer-win-f00.png"
       ]
+    },
+    {
+      "name": "nameless",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "unnamer-bite-f00.png",
+        "unnamer-bite-f01.png"
+      ]
+    },
+    {
+      "name": "Nameless",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "unnamer-bite-f00.png",
+        "unnamer-bite-f01.png"
+      ]
+    },
+    {
+      "name": "unmake",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "unnamer-bite-f00.png",
+        "unnamer-bite-f01.png"
+      ]
+    },
+    {
+      "name": "Unmake",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "unnamer-bite-f00.png",
+        "unnamer-bite-f01.png"
+      ]
     }
   ]
 }

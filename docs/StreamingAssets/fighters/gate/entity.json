@@ -1,17 +1,115 @@
 {
-    "id": "gate",
-    "flip": "against",
-    "clipPivot": true,
-    "walk": 0.72,
-    "idle": "gate.png",
-    "clips": [
-        { "name": "Gate Slam", "seconds": 0.50, "pivot": 0.5, "frames": ["gate.png", "gate-slam-f01.png"] },
-        { "name": "Gate Ward", "seconds": 0.50, "pivot": 0.5, "frames": ["gate.png", "gate-ward-f01.png"] },
-        { "name": "Call the Wards", "seconds": 0.52, "pivot": 0.5, "frames": ["gate.png", "gate-wards-f01.png"] },
-        { "name": "Gate Haul", "seconds": 0.50, "pivot": 0.5, "frames": ["gate.png", "gate-haul-f01.png"] },
-        { "name": "Close", "seconds": 0.35, "pivot": 0.5, "frames": ["gate-close-f00.png", "gate.png"] },
-        { "name": "walk", "seconds": 0.72, "pivot": 0.5, "frames": ["gate.png", "gate-walk-f00.png"] },
-        { "name": "death", "seconds": 1.55, "pivot": 0.5, "frames": ["gate-death-f00.png"] },
-        { "name": "win", "seconds": 1.15, "pivot": 0.5, "frames": ["gate-win-f00.png"] }
-    ]
+  "id": "gate",
+  "flip": "against",
+  "clipPivot": true,
+  "walk": 0.72,
+  "idle": "gate.png",
+  "clips": [
+    {
+      "name": "Gate Slam",
+      "seconds": 0.5,
+      "pivot": 0.5,
+      "frames": [
+        "gate.png",
+        "gate-slam-f01.png"
+      ]
+    },
+    {
+      "name": "Gate Ward",
+      "seconds": 0.5,
+      "pivot": 0.5,
+      "frames": [
+        "gate.png",
+        "gate-ward-f01.png"
+      ]
+    },
+    {
+      "name": "Call the Wards",
+      "seconds": 0.52,
+      "pivot": 0.5,
+      "frames": [
+        "gate.png",
+        "gate-wards-f01.png"
+      ]
+    },
+    {
+      "name": "Gate Haul",
+      "seconds": 0.5,
+      "pivot": 0.5,
+      "frames": [
+        "gate.png",
+        "gate-haul-f01.png"
+      ]
+    },
+    {
+      "name": "Close",
+      "seconds": 0.35,
+      "pivot": 0.5,
+      "frames": [
+        "gate-close-f00.png",
+        "gate.png"
+      ]
+    },
+    {
+      "name": "walk",
+      "seconds": 0.72,
+      "pivot": 0.5,
+      "frames": [
+        "gate.png",
+        "gate-walk-f00.png"
+      ]
+    },
+    {
+      "name": "death",
+      "seconds": 1.55,
+      "pivot": 0.5,
+      "frames": [
+        "gate-death-f00.png"
+      ]
+    },
+    {
+      "name": "win",
+      "seconds": 1.15,
+      "pivot": 0.5,
+      "frames": [
+        "gate-win-f00.png"
+      ]
+    },
+    {
+      "name": "gateslam",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "gate.png",
+        "gate-slam-f01.png"
+      ]
+    },
+    {
+      "name": "gateward",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "gate.png",
+        "gate-slam-f01.png"
+      ]
+    },
+    {
+      "name": "callwards",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "gate.png",
+        "gate-slam-f01.png"
+      ]
+    },
+    {
+      "name": "gate_haul",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "gate.png",
+        "gate-slam-f01.png"
+      ]
+    }
+  ]
 }

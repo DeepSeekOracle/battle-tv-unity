@@ -57,6 +57,60 @@
       "frames": [
         "elephant-win-f00.png"
       ]
+    },
+    {
+      "name": "stomp",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "elephant-bite-f00.png",
+        "elephant-bite-f01.png"
+      ]
+    },
+    {
+      "name": "Stomp",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "elephant-bite-f00.png",
+        "elephant-bite-f01.png"
+      ]
+    },
+    {
+      "name": "pound",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "elephant-bite-f00.png",
+        "elephant-bite-f01.png"
+      ]
+    },
+    {
+      "name": "Ground Pound",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "elephant-bite-f00.png",
+        "elephant-bite-f01.png"
+      ]
+    },
+    {
+      "name": "tuskcharge",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "elephant-bite-f00.png",
+        "elephant-bite-f01.png"
+      ]
+    },
+    {
+      "name": "Tusk Charge",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "elephant-bite-f00.png",
+        "elephant-bite-f01.png"
+      ]
     }
   ]
 }

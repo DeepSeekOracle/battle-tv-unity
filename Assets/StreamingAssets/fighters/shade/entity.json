@@ -1,16 +1,88 @@
 {
-    "id": "shade",
-    "flip": "against",
-    "clipPivot": true,
-    "walk": 0.72,
-    "idle": "shade.png",
-    "clips": [
-        { "name": "Shade Claw", "seconds": 0.50, "pivot": 0.5, "frames": ["shade.png", "shade-claw-f01.png"] },
-        { "name": "Flicker", "seconds": 0.50, "pivot": 0.5, "frames": ["shade.png", "shade-flicker-f01.png"] },
-        { "name": "Snatch", "seconds": 0.52, "pivot": 0.5, "frames": ["shade.png", "shade-snatch-f01.png"] },
-        { "name": "Close", "seconds": 0.35, "pivot": 0.5, "frames": ["shade-close-f00.png", "shade.png"] },
-        { "name": "walk", "seconds": 0.72, "pivot": 0.5, "frames": ["shade.png", "shade-walk-f00.png"] },
-        { "name": "death", "seconds": 1.55, "pivot": 0.5, "frames": ["shade-death-f00.png"] },
-        { "name": "win", "seconds": 1.15, "pivot": 0.5, "frames": ["shade-win-f00.png"] }
-    ]
+  "id": "shade",
+  "flip": "against",
+  "clipPivot": true,
+  "walk": 0.72,
+  "idle": "shade.png",
+  "clips": [
+    {
+      "name": "Shade Claw",
+      "seconds": 0.5,
+      "pivot": 0.5,
+      "frames": [
+        "shade.png",
+        "shade-claw-f01.png"
+      ]
+    },
+    {
+      "name": "Flicker",
+      "seconds": 0.5,
+      "pivot": 0.5,
+      "frames": [
+        "shade.png",
+        "shade-flicker-f01.png"
+      ]
+    },
+    {
+      "name": "Snatch",
+      "seconds": 0.52,
+      "pivot": 0.5,
+      "frames": [
+        "shade.png",
+        "shade-snatch-f01.png"
+      ]
+    },
+    {
+      "name": "Close",
+      "seconds": 0.35,
+      "pivot": 0.5,
+      "frames": [
+        "shade-close-f00.png",
+        "shade.png"
+      ]
+    },
+    {
+      "name": "walk",
+      "seconds": 0.72,
+      "pivot": 0.5,
+      "frames": [
+        "shade.png",
+        "shade-walk-f00.png"
+      ]
+    },
+    {
+      "name": "death",
+      "seconds": 1.55,
+      "pivot": 0.5,
+      "frames": [
+        "shade-death-f00.png"
+      ]
+    },
+    {
+      "name": "win",
+      "seconds": 1.15,
+      "pivot": 0.5,
+      "frames": [
+        "shade-win-f00.png"
+      ]
+    },
+    {
+      "name": "flicker",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "shade.png",
+        "shade-claw-f01.png"
+      ]
+    },
+    {
+      "name": "snatch",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "shade.png",
+        "shade-claw-f01.png"
+      ]
+    }
+  ]
 }

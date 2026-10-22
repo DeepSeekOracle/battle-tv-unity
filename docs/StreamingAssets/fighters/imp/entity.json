@@ -1,16 +1,88 @@
 {
-    "id": "imp",
-    "flip": "against",
-    "clipPivot": true,
-    "walk": 0.72,
-    "idle": "imp.png",
-    "clips": [
-        { "name": "Ember Spit", "seconds": 0.50, "pivot": 0.5, "frames": ["imp.png", "imp-spit-f01.png"] },
-        { "name": "Imp Fire", "seconds": 0.52, "pivot": 0.5, "frames": ["imp.png", "imp-fire-f01.png"] },
-        { "name": "Flicker", "seconds": 0.50, "pivot": 0.5, "frames": ["imp.png", "imp-flicker-f01.png"] },
-        { "name": "Slip", "seconds": 0.35, "pivot": 0.5, "frames": ["imp-slip-f00.png", "imp.png"] },
-        { "name": "walk", "seconds": 0.72, "pivot": 0.5, "frames": ["imp.png", "imp-walk-f00.png"] },
-        { "name": "death", "seconds": 1.55, "pivot": 0.5, "frames": ["imp-death-f00.png"] },
-        { "name": "win", "seconds": 1.15, "pivot": 0.5, "frames": ["imp-win-f00.png"] }
-    ]
+  "id": "imp",
+  "flip": "against",
+  "clipPivot": true,
+  "walk": 0.72,
+  "idle": "imp.png",
+  "clips": [
+    {
+      "name": "Ember Spit",
+      "seconds": 0.5,
+      "pivot": 0.5,
+      "frames": [
+        "imp.png",
+        "imp-spit-f01.png"
+      ]
+    },
+    {
+      "name": "Imp Fire",
+      "seconds": 0.52,
+      "pivot": 0.5,
+      "frames": [
+        "imp.png",
+        "imp-fire-f01.png"
+      ]
+    },
+    {
+      "name": "Flicker",
+      "seconds": 0.5,
+      "pivot": 0.5,
+      "frames": [
+        "imp.png",
+        "imp-flicker-f01.png"
+      ]
+    },
+    {
+      "name": "Slip",
+      "seconds": 0.35,
+      "pivot": 0.5,
+      "frames": [
+        "imp-slip-f00.png",
+        "imp.png"
+      ]
+    },
+    {
+      "name": "walk",
+      "seconds": 0.72,
+      "pivot": 0.5,
+      "frames": [
+        "imp.png",
+        "imp-walk-f00.png"
+      ]
+    },
+    {
+      "name": "death",
+      "seconds": 1.55,
+      "pivot": 0.5,
+      "frames": [
+        "imp-death-f00.png"
+      ]
+    },
+    {
+      "name": "win",
+      "seconds": 1.15,
+      "pivot": 0.5,
+      "frames": [
+        "imp-win-f00.png"
+      ]
+    },
+    {
+      "name": "impfire",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "imp.png",
+        "imp-spit-f01.png"
+      ]
+    },
+    {
+      "name": "flicker",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "imp.png",
+        "imp-spit-f01.png"
+      ]
+    }
+  ]
 }

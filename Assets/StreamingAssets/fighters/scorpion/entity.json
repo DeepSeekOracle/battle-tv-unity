@@ -57,6 +57,42 @@
       "frames": [
         "scorpion-win-f00.png"
       ]
+    },
+    {
+      "name": "clamp",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "scorpion-bite-f00.png",
+        "scorpion-bite-f01.png"
+      ]
+    },
+    {
+      "name": "Glassbarb Clamp",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "scorpion-bite-f00.png",
+        "scorpion-bite-f01.png"
+      ]
+    },
+    {
+      "name": "flicker",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "scorpion-bite-f00.png",
+        "scorpion-bite-f01.png"
+      ]
+    },
+    {
+      "name": "Flicker",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "scorpion-bite-f00.png",
+        "scorpion-bite-f01.png"
+      ]
     }
   ]
 }

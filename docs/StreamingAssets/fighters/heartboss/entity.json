@@ -57,6 +57,60 @@
       "frames": [
         "heartboss-win-f00.png"
       ]
+    },
+    {
+      "name": "heartbeat",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "heartboss-bite-f00.png",
+        "heartboss-bite-f01.png"
+      ]
+    },
+    {
+      "name": "Heartbeat",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "heartboss-bite-f00.png",
+        "heartboss-bite-f01.png"
+      ]
+    },
+    {
+      "name": "cryptward",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "heartboss-bite-f00.png",
+        "heartboss-bite-f01.png"
+      ]
+    },
+    {
+      "name": "Crypt Ward",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "heartboss-bite-f00.png",
+        "heartboss-bite-f01.png"
+      ]
+    },
+    {
+      "name": "cryptsurge",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "heartboss-bite-f00.png",
+        "heartboss-bite-f01.png"
+      ]
+    },
+    {
+      "name": "Crypt Surge",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "heartboss-bite-f00.png",
+        "heartboss-bite-f01.png"
+      ]
     }
   ]
 }

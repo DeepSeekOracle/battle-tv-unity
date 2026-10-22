@@ -57,6 +57,60 @@
       "frames": [
         "bear-win-f00.png"
       ]
+    },
+    {
+      "name": "maul",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "bear-bite-f00.png",
+        "bear-bite-f01.png"
+      ]
+    },
+    {
+      "name": "Maul",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "bear-bite-f00.png",
+        "bear-bite-f01.png"
+      ]
+    },
+    {
+      "name": "wardfield",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "bear-bite-f00.png",
+        "bear-bite-f01.png"
+      ]
+    },
+    {
+      "name": "Ward Field",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "bear-bite-f00.png",
+        "bear-bite-f01.png"
+      ]
+    },
+    {
+      "name": "maulgrip",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "bear-bite-f00.png",
+        "bear-bite-f01.png"
+      ]
+    },
+    {
+      "name": "Maul Grip",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "bear-bite-f00.png",
+        "bear-bite-f01.png"
+      ]
     }
   ]
 }

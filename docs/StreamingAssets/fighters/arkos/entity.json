@@ -1,82 +1,112 @@
 {
-    "id":  "arkos",
-    "flip":  "against",
-    "clipPivot":  true,
-    "walk":  0.74,
-    "idle":  "arkos.png",
-    "clips":  [
-                  {
-                      "name":  "Lance Thrust",
-                      "seconds":  0.48,
-                      "pivot":  0.5,
-                      "frames":  [
-                                     "arkos.png",
-                                     "arkos-thrust-f01.png",
-                                     "arkos.png"
-                                 ]
-                  },
-                  {
-                      "name":  "Geodesic",
-                      "seconds":  0.52,
-                      "pivot":  0.5,
-                      "frames":  [
-                                     "arkos.png",
-                                     "arkos-geodesic-f01.png"
-                                 ]
-                  },
-                  {
-                      "name":  "True Line",
-                      "seconds":  0.52,
-                      "pivot":  0.5,
-                      "frames":  [
-                                     "arkos.png",
-                                     "arkos-line-f01.png"
-                                 ]
-                  },
-                  {
-                      "name":  "Dash",
-                      "seconds":  0.42,
-                      "pivot":  0.5,
-                      "frames":  [
-                                     "arkos-dash-f00.png",
-                                     "arkos.png"
-                                 ]
-                  },
-                  {
-                      "name":  "Close",
-                      "seconds":  0.35,
-                      "pivot":  0.5,
-                      "frames":  [
-                                     "arkos-close-f00.png",
-                                     "arkos.png"
-                                 ]
-                  },
-                  {
-                      "name":  "walk",
-                      "seconds":  0.74,
-                      "pivot":  0.5,
-                      "frames":  [
-                                     "arkos-walk-f00.png",
-                                     "arkos-walk-f01.png",
-                                     "arkos-walk-f02.png",
-                                     "arkos-walk-f03.png"
-                                 ]
-                  },
-                  {
-                      "name":  "death",
-                      "seconds":  1.55,
-                      "pivot":  0.5,
-                      "frames":  [
-                                     "arkos-death-f00.png"
-                                 ]
-                  },
-                  {
-                      "name":  "win",
-                      "seconds":  1.15,
-                      "pivot":  0.5,
-                      "frames":  [
-                                     "arkos-win-f00.png"
-                                 ]
-                  }
-              ]
+  "id": "arkos",
+  "flip": "against",
+  "clipPivot": true,
+  "walk": 0.74,
+  "idle": "arkos.png",
+  "clips": [
+    {
+      "name": "Lance Thrust",
+      "seconds": 0.48,
+      "pivot": 0.5,
+      "frames": [
+        "arkos.png",
+        "arkos-thrust-f01.png",
+        "arkos.png"
+      ]
+    },
+    {
+      "name": "Geodesic",
+      "seconds": 0.52,
+      "pivot": 0.5,
+      "frames": [
+        "arkos.png",
+        "arkos-geodesic-f01.png"
+      ]
+    },
+    {
+      "name": "True Line",
+      "seconds": 0.52,
+      "pivot": 0.5,
+      "frames": [
+        "arkos.png",
+        "arkos-line-f01.png"
+      ]
+    },
+    {
+      "name": "Dash",
+      "seconds": 0.42,
+      "pivot": 0.5,
+      "frames": [
+        "arkos-dash-f00.png",
+        "arkos.png"
+      ]
+    },
+    {
+      "name": "Close",
+      "seconds": 0.35,
+      "pivot": 0.5,
+      "frames": [
+        "arkos-close-f00.png",
+        "arkos.png"
+      ]
+    },
+    {
+      "name": "walk",
+      "seconds": 0.74,
+      "pivot": 0.5,
+      "frames": [
+        "arkos-walk-f00.png",
+        "arkos-walk-f01.png",
+        "arkos-walk-f02.png",
+        "arkos-walk-f03.png"
+      ]
+    },
+    {
+      "name": "death",
+      "seconds": 1.55,
+      "pivot": 0.5,
+      "frames": [
+        "arkos-death-f00.png"
+      ]
+    },
+    {
+      "name": "win",
+      "seconds": 1.15,
+      "pivot": 0.5,
+      "frames": [
+        "arkos-win-f00.png"
+      ]
+    },
+    {
+      "name": "geodesic",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "arkos.png",
+        "arkos-thrust-f01.png",
+        "arkos.png"
+      ]
+    },
+    {
+      "name": "trueline",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "arkos.png",
+        "arkos-thrust-f01.png",
+        "arkos.png"
+      ]
+    },
+    {
+      "name": "dash",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "arkos.png",
+        "arkos-thrust-f01.png",
+        "arkos.png"
+      ]
+    }
+  ]
 }

@@ -57,6 +57,33 @@
       "frames": [
         "lion-win-f00.png"
       ]
+    },
+    {
+      "name": "soljump",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "lion-bite-f00.png",
+        "lion-bite-f01.png"
+      ]
+    },
+    {
+      "name": "Solstride",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "lion-bite-f00.png",
+        "lion-bite-f01.png"
+      ]
+    },
+    {
+      "name": "roar",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "lion-bite-f00.png",
+        "lion-bite-f01.png"
+      ]
     }
   ]
 }

@@ -57,6 +57,42 @@
       "frames": [
         "levi-win-f00.png"
       ]
+    },
+    {
+      "name": "tidecrush",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "levi-bite-f00.png",
+        "levi-bite-f01.png"
+      ]
+    },
+    {
+      "name": "Tide Crush",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "levi-bite-f00.png",
+        "levi-bite-f01.png"
+      ]
+    },
+    {
+      "name": "undertow",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "levi-bite-f00.png",
+        "levi-bite-f01.png"
+      ]
+    },
+    {
+      "name": "Undertow",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "levi-bite-f00.png",
+        "levi-bite-f01.png"
+      ]
     }
   ]
 }

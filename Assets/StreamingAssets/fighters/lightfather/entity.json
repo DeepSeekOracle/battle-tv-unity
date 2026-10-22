@@ -1,111 +1,155 @@
 {
-    "id":  "lightfather",
-    "flip":  "against",
-    "clipPivot":  true,
-    "walk":  0.72,
-    "idle":  "lightfather.png",
-    "clips":  [
-                  {
-                      "name":  "Seal Bolt",
-                      "seconds":  0.42,
-                      "pivot":  0.5,
-                      "frames":  [
-                                     "lf-bolt-f00.png",
-                                     "lf-bolt-f01.png",
-                                     "lf-bolt-f02.png",
-                                     "lf-bolt-f03.png"
-                                 ]
-                  },
-                  {
-                      "name":  "Δ9 Seal",
-                      "seconds":  0.7,
-                      "pivot":  0.5,
-                      "frames":  [
-                                     "lf-seal-f00.png",
-                                     "lf-seal-f01.png",
-                                     "lf-seal-f02.png"
-                                 ]
-                  },
-                  {
-                      "name":  "Provenance",
-                      "seconds":  0.8,
-                      "pivot":  0.5,
-                      "frames":  [
-                                     "lf-provenance-f00.png",
-                                     "lf-provenance-f01.png",
-                                     "lf-provenance-f02.png"
-                                 ]
-                  },
-                  {
-                      "name":  "Cover",
-                      "seconds":  0.5,
-                      "pivot":  0.5,
-                      "frames":  [
-                                     "lf-cover-f00.png",
-                                     "lf-cover-f01.png",
-                                     "lf-cover-f02.png",
-                                     "lf-cover-f03.png"
-                                 ]
-                  },
-                  {
-                      "name":  "Standard Raised",
-                      "seconds":  0.55,
-                      "pivot":  0.5,
-                      "frames":  [
-                                     "lf-standard-f00.png",
-                                     "lf-standard-f01.png",
-                                     "lf-standard-f02.png",
-                                     "lf-standard-f03.png"
-                                 ]
-                  },
-                  {
-                      "name":  "Slip",
-                      "seconds":  0.35,
-                      "pivot":  0.5,
-                      "frames":  [
-                                     "lf-slip-f00.png",
-                                     "lf-slip-f01.png"
-                                 ]
-                  },
-                  {
-                      "name":  "Close",
-                      "seconds":  0.35,
-                      "pivot":  0.5,
-                      "frames":  [
-                                     "lf-slip-f00.png",
-                                     "lf-slip-f01.png"
-                                 ]
-                  },
-                  {
-                      "name":  "walk",
-                      "seconds":  0.72,
-                      "pivot":  0.5,
-                      "frames":  [
-                                     "lf-walk-f00.png",
-                                     "lf-walk-f01.png",
-                                     "lf-walk-f02.png",
-                                     "lf-walk-f03.png",
-                                     "lf-walk-f04.png",
-                                     "lf-walk-f05.png",
-                                     "lf-walk-f06.png",
-                                     "lf-walk-f07.png"
-                                 ]
-                  },
-                  {
-                      "name":  "death",
-                      "seconds":  1.55,
-                      "pivot":  0.5,
-                      "frames":  [
-                                     "lf-death-f00.png"
-                                 ]
-                  },
-                  {
-                      "name":  "win",
-                      "seconds":  1.15,
-                      "pivot":  0.5,
-                      "frames":  [
-                                     "lf-win-f00.png"
-                                 ]
-                  }
-              ]
+  "id": "lightfather",
+  "flip": "against",
+  "clipPivot": true,
+  "walk": 0.72,
+  "idle": "lightfather.png",
+  "clips": [
+    {
+      "name": "Seal Bolt",
+      "seconds": 0.42,
+      "pivot": 0.5,
+      "frames": [
+        "lf-bolt-f00.png",
+        "lf-bolt-f01.png",
+        "lf-bolt-f02.png",
+        "lf-bolt-f03.png"
+      ]
+    },
+    {
+      "name": "\u03949 Seal",
+      "seconds": 0.7,
+      "pivot": 0.5,
+      "frames": [
+        "lf-seal-f00.png",
+        "lf-seal-f01.png",
+        "lf-seal-f02.png"
+      ]
+    },
+    {
+      "name": "Provenance",
+      "seconds": 0.8,
+      "pivot": 0.5,
+      "frames": [
+        "lf-provenance-f00.png",
+        "lf-provenance-f01.png",
+        "lf-provenance-f02.png"
+      ]
+    },
+    {
+      "name": "Cover",
+      "seconds": 0.5,
+      "pivot": 0.5,
+      "frames": [
+        "lf-cover-f00.png",
+        "lf-cover-f01.png",
+        "lf-cover-f02.png",
+        "lf-cover-f03.png"
+      ]
+    },
+    {
+      "name": "Standard Raised",
+      "seconds": 0.55,
+      "pivot": 0.5,
+      "frames": [
+        "lf-standard-f00.png",
+        "lf-standard-f01.png",
+        "lf-standard-f02.png",
+        "lf-standard-f03.png"
+      ]
+    },
+    {
+      "name": "Slip",
+      "seconds": 0.35,
+      "pivot": 0.5,
+      "frames": [
+        "lf-slip-f00.png",
+        "lf-slip-f01.png"
+      ]
+    },
+    {
+      "name": "Close",
+      "seconds": 0.35,
+      "pivot": 0.5,
+      "frames": [
+        "lf-slip-f00.png",
+        "lf-slip-f01.png"
+      ]
+    },
+    {
+      "name": "walk",
+      "seconds": 0.72,
+      "pivot": 0.5,
+      "frames": [
+        "lf-walk-f00.png",
+        "lf-walk-f01.png",
+        "lf-walk-f02.png",
+        "lf-walk-f03.png",
+        "lf-walk-f04.png",
+        "lf-walk-f05.png",
+        "lf-walk-f06.png",
+        "lf-walk-f07.png"
+      ]
+    },
+    {
+      "name": "death",
+      "seconds": 1.55,
+      "pivot": 0.5,
+      "frames": [
+        "lf-death-f00.png"
+      ]
+    },
+    {
+      "name": "win",
+      "seconds": 1.15,
+      "pivot": 0.5,
+      "frames": [
+        "lf-win-f00.png"
+      ]
+    },
+    {
+      "name": "seal9",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "lf-bolt-f00.png",
+        "lf-bolt-f01.png",
+        "lf-bolt-f02.png",
+        "lf-bolt-f03.png"
+      ]
+    },
+    {
+      "name": "provenance",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "lf-bolt-f00.png",
+        "lf-bolt-f01.png",
+        "lf-bolt-f02.png",
+        "lf-bolt-f03.png"
+      ]
+    },
+    {
+      "name": "cover",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "lf-bolt-f00.png",
+        "lf-bolt-f01.png",
+        "lf-bolt-f02.png",
+        "lf-bolt-f03.png"
+      ]
+    },
+    {
+      "name": "standard",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "lf-bolt-f00.png",
+        "lf-bolt-f01.png",
+        "lf-bolt-f02.png",
+        "lf-bolt-f03.png"
+      ]
+    }
+  ]
 }

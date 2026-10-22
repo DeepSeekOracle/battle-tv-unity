@@ -1,17 +1,110 @@
 {
-    "id": "d9ra",
-    "flip": "against",
-    "clipPivot": true,
-    "walk": 0.48,
-    "idle": "d9ra.png",
-    "clips": [
-        { "name": "Wolf Fist", "seconds": 0.42, "pivot": 0.5, "frames": ["d9ra.png", "d9ra-fist-f01.png", "d9ra.png"] },
-        { "name": "Shockwave", "seconds": 0.52, "pivot": 0.5, "frames": ["d9ra.png", "d9ra-shock-f01.png"] },
-        { "name": "Wolf Fury", "seconds": 0.5, "pivot": 0.5, "frames": ["d9ra.png", "d9ra-fury-f01.png"] },
-        { "name": "Squire's Charge", "seconds": 0.4, "pivot": 0.5, "frames": ["d9ra.png", "d9ra-charge-f01.png"] },
-        { "name": "Close", "seconds": 0.35, "pivot": 0.5, "frames": ["d9ra-close-f00.png", "d9ra.png"] },
-        { "name": "walk", "seconds": 0.48, "pivot": 0.5, "frames": ["d9ra.png", "d9ra-walk-f00.png"] },
-        { "name": "death", "seconds": 1.55, "pivot": 0.5, "frames": ["d9ra-death-f00.png"] },
-        { "name": "win", "seconds": 1.15, "pivot": 0.5, "frames": ["d9ra-win-f00.png"] }
-    ]
+  "id": "d9ra",
+  "flip": "against",
+  "clipPivot": true,
+  "walk": 0.48,
+  "idle": "d9ra.png",
+  "clips": [
+    {
+      "name": "Wolf Fist",
+      "seconds": 0.42,
+      "pivot": 0.5,
+      "frames": [
+        "d9ra.png",
+        "d9ra-fist-f01.png",
+        "d9ra.png"
+      ]
+    },
+    {
+      "name": "Shockwave",
+      "seconds": 0.52,
+      "pivot": 0.5,
+      "frames": [
+        "d9ra.png",
+        "d9ra-shock-f01.png"
+      ]
+    },
+    {
+      "name": "Wolf Fury",
+      "seconds": 0.5,
+      "pivot": 0.5,
+      "frames": [
+        "d9ra.png",
+        "d9ra-fury-f01.png"
+      ]
+    },
+    {
+      "name": "Squire's Charge",
+      "seconds": 0.4,
+      "pivot": 0.5,
+      "frames": [
+        "d9ra.png",
+        "d9ra-charge-f01.png"
+      ]
+    },
+    {
+      "name": "Close",
+      "seconds": 0.35,
+      "pivot": 0.5,
+      "frames": [
+        "d9ra-close-f00.png",
+        "d9ra.png"
+      ]
+    },
+    {
+      "name": "walk",
+      "seconds": 0.48,
+      "pivot": 0.5,
+      "frames": [
+        "d9ra.png",
+        "d9ra-walk-f00.png"
+      ]
+    },
+    {
+      "name": "death",
+      "seconds": 1.55,
+      "pivot": 0.5,
+      "frames": [
+        "d9ra-death-f00.png"
+      ]
+    },
+    {
+      "name": "win",
+      "seconds": 1.15,
+      "pivot": 0.5,
+      "frames": [
+        "d9ra-win-f00.png"
+      ]
+    },
+    {
+      "name": "shockwave",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "d9ra.png",
+        "d9ra-fist-f01.png",
+        "d9ra.png"
+      ]
+    },
+    {
+      "name": "wolffury",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "d9ra.png",
+        "d9ra-fist-f01.png",
+        "d9ra.png"
+      ]
+    },
+    {
+      "name": "charge",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "d9ra.png",
+        "d9ra-fist-f01.png",
+        "d9ra.png"
+      ]
+    }
+  ]
 }
