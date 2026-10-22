@@ -79,5 +79,22 @@ namespace BattleTv.Menu.PlayTests
             Assert.IsNotNull(body.End(false), "wolf death clip missing");
             Assert.IsNotNull(body.End(true), "wolf win clip missing");
         }
+
+        [UnityTest]
+        public IEnumerator AllMissingRosterArtLoads()
+        {
+            SceneManager.LoadScene("Arena");
+            yield return null;
+            yield return new WaitForSeconds(1.5f);
+            var ids = new[] { "heartboss", "levi", "tithe", "unnamer", "lock", "lion", "bear", "elephant", "scorpion" };
+            yield return FighterBodies.Load(ids);
+            foreach (var id in ids)
+            {
+                var body = FighterBodies.Get(id);
+                Assert.IsNotNull(body, id + " body did not load");
+                Assert.IsNotNull(body.Idle, id + " idle missing");
+                Assert.IsNotNull(body.Find("walk"), id + " walk clip missing");
+            }
+        }
     }
 }

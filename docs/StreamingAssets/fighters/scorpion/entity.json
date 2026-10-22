@@ -1,0 +1,58 @@
+{
+  "id": "scorpion",
+  "flip": "against",
+  "clipPivot": true,
+  "walk": 0.72,
+  "idle": "scorpion.png",
+  "idlePivot": 0.5,
+  "clips": [
+    {
+      "name": "Tail Barb",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "scorpion.png"
+      ]
+    },
+    {
+      "name": "Bite",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "scorpion.png"
+      ]
+    },
+    {
+      "name": "Roar",
+      "seconds": 0.55,
+      "pivot": 0.5,
+      "frames": [
+        "scorpion.png"
+      ]
+    },
+    {
+      "name": "walk",
+      "seconds": 0.72,
+      "pivot": 0.5,
+      "frames": [
+        "scorpion.png"
+      ]
+    },
+    {
+      "name": "death",
+      "seconds": 1.55,
+      "pivot": 0.5,
+      "frames": [
+        "scorpion.png"
+      ]
+    },
+    {
+      "name": "win",
+      "seconds": 1.15,
+      "pivot": 0.5,
+      "frames": [
+        "scorpion.png"
+      ]
+    }
+  ]
+}

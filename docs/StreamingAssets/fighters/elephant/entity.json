@@ -1,0 +1,58 @@
+{
+  "id": "elephant",
+  "flip": "against",
+  "clipPivot": true,
+  "walk": 0.72,
+  "idle": "elephant.png",
+  "idlePivot": 0.5,
+  "clips": [
+    {
+      "name": "Tusk",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "elephant.png"
+      ]
+    },
+    {
+      "name": "Bite",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "elephant.png"
+      ]
+    },
+    {
+      "name": "Roar",
+      "seconds": 0.55,
+      "pivot": 0.5,
+      "frames": [
+        "elephant.png"
+      ]
+    },
+    {
+      "name": "walk",
+      "seconds": 0.72,
+      "pivot": 0.5,
+      "frames": [
+        "elephant.png"
+      ]
+    },
+    {
+      "name": "death",
+      "seconds": 1.55,
+      "pivot": 0.5,
+      "frames": [
+        "elephant.png"
+      ]
+    },
+    {
+      "name": "win",
+      "seconds": 1.15,
+      "pivot": 0.5,
+      "frames": [
+        "elephant.png"
+      ]
+    }
+  ]
+}

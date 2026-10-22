@@ -1,0 +1,58 @@
+{
+  "id": "heartboss",
+  "flip": "against",
+  "clipPivot": true,
+  "walk": 0.72,
+  "idle": "heartboss.png",
+  "idlePivot": 0.5,
+  "clips": [
+    {
+      "name": "Heart Strike",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "heartboss.png"
+      ]
+    },
+    {
+      "name": "Bite",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "heartboss.png"
+      ]
+    },
+    {
+      "name": "Roar",
+      "seconds": 0.55,
+      "pivot": 0.5,
+      "frames": [
+        "heartboss.png"
+      ]
+    },
+    {
+      "name": "walk",
+      "seconds": 0.72,
+      "pivot": 0.5,
+      "frames": [
+        "heartboss.png"
+      ]
+    },
+    {
+      "name": "death",
+      "seconds": 1.55,
+      "pivot": 0.5,
+      "frames": [
+        "heartboss.png"
+      ]
+    },
+    {
+      "name": "win",
+      "seconds": 1.15,
+      "pivot": 0.5,
+      "frames": [
+        "heartboss.png"
+      ]
+    }
+  ]
+}

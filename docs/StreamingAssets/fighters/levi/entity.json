@@ -1,0 +1,58 @@
+{
+  "id": "levi",
+  "flip": "against",
+  "clipPivot": true,
+  "walk": 0.72,
+  "idle": "levi.png",
+  "idlePivot": 0.5,
+  "clips": [
+    {
+      "name": "Deep Bolt",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "levi.png"
+      ]
+    },
+    {
+      "name": "Bite",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "levi.png"
+      ]
+    },
+    {
+      "name": "Roar",
+      "seconds": 0.55,
+      "pivot": 0.5,
+      "frames": [
+        "levi.png"
+      ]
+    },
+    {
+      "name": "walk",
+      "seconds": 0.72,
+      "pivot": 0.5,
+      "frames": [
+        "levi.png"
+      ]
+    },
+    {
+      "name": "death",
+      "seconds": 1.55,
+      "pivot": 0.5,
+      "frames": [
+        "levi.png"
+      ]
+    },
+    {
+      "name": "win",
+      "seconds": 1.15,
+      "pivot": 0.5,
+      "frames": [
+        "levi.png"
+      ]
+    }
+  ]
+}

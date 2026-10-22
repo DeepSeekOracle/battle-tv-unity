@@ -1,0 +1,58 @@
+{
+  "id": "tithe",
+  "flip": "against",
+  "clipPivot": true,
+  "walk": 0.72,
+  "idle": "tithe.png",
+  "idlePivot": 0.5,
+  "clips": [
+    {
+      "name": "Toll Claw",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "tithe.png"
+      ]
+    },
+    {
+      "name": "Bite",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "tithe.png"
+      ]
+    },
+    {
+      "name": "Roar",
+      "seconds": 0.55,
+      "pivot": 0.5,
+      "frames": [
+        "tithe.png"
+      ]
+    },
+    {
+      "name": "walk",
+      "seconds": 0.72,
+      "pivot": 0.5,
+      "frames": [
+        "tithe.png"
+      ]
+    },
+    {
+      "name": "death",
+      "seconds": 1.55,
+      "pivot": 0.5,
+      "frames": [
+        "tithe.png"
+      ]
+    },
+    {
+      "name": "win",
+      "seconds": 1.15,
+      "pivot": 0.5,
+      "frames": [
+        "tithe.png"
+      ]
+    }
+  ]
+}

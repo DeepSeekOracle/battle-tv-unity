@@ -1,0 +1,58 @@
+{
+  "id": "lock",
+  "flip": "against",
+  "clipPivot": true,
+  "walk": 0.72,
+  "idle": "lock.png",
+  "idlePivot": 0.5,
+  "clips": [
+    {
+      "name": "Lock Bolt",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "lock.png"
+      ]
+    },
+    {
+      "name": "Bite",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "lock.png"
+      ]
+    },
+    {
+      "name": "Roar",
+      "seconds": 0.55,
+      "pivot": 0.5,
+      "frames": [
+        "lock.png"
+      ]
+    },
+    {
+      "name": "walk",
+      "seconds": 0.72,
+      "pivot": 0.5,
+      "frames": [
+        "lock.png"
+      ]
+    },
+    {
+      "name": "death",
+      "seconds": 1.55,
+      "pivot": 0.5,
+      "frames": [
+        "lock.png"
+      ]
+    },
+    {
+      "name": "win",
+      "seconds": 1.15,
+      "pivot": 0.5,
+      "frames": [
+        "lock.png"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "id": "unnamer",
+  "flip": "against",
+  "clipPivot": true,
+  "walk": 0.72,
+  "idle": "unnamer.png",
+  "idlePivot": 0.5,
+  "clips": [
+    {
+      "name": "Unname",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "unnamer.png"
+      ]
+    },
+    {
+      "name": "Bite",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "unnamer.png"
+      ]
+    },
+    {
+      "name": "Roar",
+      "seconds": 0.55,
+      "pivot": 0.5,
+      "frames": [
+        "unnamer.png"
+      ]
+    },
+    {
+      "name": "walk",
+      "seconds": 0.72,
+      "pivot": 0.5,
+      "frames": [
+        "unnamer.png"
+      ]
+    },
+    {
+      "name": "death",
+      "seconds": 1.55,
+      "pivot": 0.5,
+      "frames": [
+        "unnamer.png"
+      ]
+    },
+    {
+      "name": "win",
+      "seconds": 1.15,
+      "pivot": 0.5,
+      "frames": [
+        "unnamer.png"
+      ]
+    }
+  ]
+}
