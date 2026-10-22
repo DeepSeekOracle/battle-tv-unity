@@ -336,11 +336,12 @@ namespace BattleTv.Menu.Tests
         }
 
         [Test]
-        public void UnpaintedKitIsSettledWithoutAFolder()
+        public void AllRosterKitsArePainted()
         {
-            Assert.IsTrue(LaneRoster.InLane("bear"));
-            Assert.IsFalse(LaneRoster.Painted("bear"));
-            Assert.IsTrue(FighterBodies.Settled("bear"));
+            Assert.AreEqual(33, LaneRoster.All.Length);
+            Assert.IsTrue(LaneRoster.Painted("bear"));
+            Assert.IsTrue(LaneRoster.Painted("heartboss"));
+            Assert.IsTrue(LaneRoster.Painted("scorpion"));
             Assert.IsTrue(LaneRoster.Painted("smith"));
             Assert.IsTrue(LaneRoster.Painted("wolf"));
         }
@@ -380,10 +381,10 @@ namespace BattleTv.Menu.Tests
         public void AutoShowRotatesPaintedCards()
         {
             var roster = LaneRoster.LaneIds();
-            Assert.AreEqual(24, roster.Length);
+            Assert.AreEqual(33, roster.Length);
             Assert.AreEqual("vale", roster[0]);
             Assert.AreEqual("brute", roster[1]);
-            Assert.AreEqual("wolf", roster[roster.Length - 1]);
+            Assert.AreEqual("scorpion", roster[roster.Length - 1]);
             Assert.IsTrue(LaneRoster.InLane("gate"));
             Assert.IsTrue(LaneRoster.Painted("gate"));
             Assert.IsTrue(LaneRoster.InLane("crown"));
@@ -426,7 +427,7 @@ namespace BattleTv.Menu.Tests
             seen.Add("vale");
             seen.Add("lightfather");
             var guard = 0;
-            while (seen.Count < roster.Length && guard < 30)
+            while (seen.Count < roster.Length && guard < 64)
             {
                 var champ = ShowPick.Yours[0];
                 ShowPick.RememberResult(champ);
@@ -963,7 +964,7 @@ namespace BattleTv.Menu.Tests
         public void PaintedRosterDashes()
         {
             var ids = LaneRoster.LaneIds();
-            Assert.AreEqual(24, ids.Length);
+            Assert.AreEqual(33, ids.Length);
             for (var i = 0; i < ids.Length; i++)
             {
                 Leap(ids[i], true, false);
