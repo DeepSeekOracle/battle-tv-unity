@@ -129,3 +129,13 @@ Production, QA and release tasks remain pending. No commit or publish.
 - Strict Forge Unity job `JOB-8A94E4C4`: **4/4 PlayMode tests, 0 failures**, agent `unity-test`, fallback `None`.
 - Forge routing guard added: Unity QA jobs cannot silently fall through to an LLM.
 - Wolf remains the only hand-composed/generated 8-clip character; the other nine are baseline animation.
+
+## Full animation/1v1 closure (2026-10-22)
+
+- All 33 entities audited: **0 missing idle/frame/clip references** (416 PNGs).
+- Every move ID and display callout has a clip alias across all 33 characters: **0 missing**.
+- `EveryCharacterWorksIn1v1` runs all 33 1v1 matches to completion: **pass**, 6.494s.
+- PlayMode: **5/5**, 0 failures.
+- EditMode: **22/22**, 0 failures.
+- Strict Forge job `JOB-A83581FC`: agent `unity-test`, fallback `None`, `UNITY_TEST_OK tests=5 failures=0`.
+- Wolf has full hand-composed/generated clips. Heart of the Crypt has hand-authored strike/roar. Remaining characters use baseline transform clips with full move-name alias coverage.
