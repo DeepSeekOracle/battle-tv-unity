@@ -863,6 +863,14 @@ namespace BattleTv.Menu.Tests
         }
 
         [Test]
+        public void ArenaOnboardingLineNamesBothControls()
+        {
+            StringAssert.Contains("CLOSE", ArenaView.OnboardingLine);
+            StringAssert.Contains("SLIP", ArenaView.OnboardingLine);
+            Assert.Greater(ArenaView.OnboardingLine.Length, 10);
+        }
+
+        [Test]
         public void ArenaFieldUsesTheBook()
         {
             ShowPick.Clear();

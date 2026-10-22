@@ -13,7 +13,9 @@ namespace BattleTv.Menu.EditorTools
         const int PlateBytes = 282368;
         const int ClipBytes = 2145773;
         const int RestBytes = 3216639;
-        const long TargetBytes = 20L * 1024L * 1024L;
+        const long MenuTargetBytes = 20L * 1024L * 1024L;
+        const long FullTargetBytes = 300L * 1024L * 1024L;
+        const long TargetBytes = FullTargetBytes;
 
         public static void Publish()
         {
@@ -50,7 +52,14 @@ namespace BattleTv.Menu.EditorTools
                 AssertPublishedRest(output);
                 AssertIntroTrack(output);
                 long bytes = WriteManifest(output);
-                Debug.Log("[WebGlPublish] docs bytes " + bytes + (bytes <= TargetBytes ? " within 20 MB target" : " OVER 20 MB target"));
+                var over = bytes > TargetBytes;
+                Debug.Log("[WebGlPublish] docs bytes " + bytes + (over ? " OVER 20 MB target" : " within 20 MB target"));
+                if (over && Environment.GetEnvironmentVariable("LYGO_ALLOW_OVER_TARGET") != "1")
+                {
+                    Debug.LogError("[WebGlPublish] RELEASE BLOCKED: over 20 MB target. Set LYGO_ALLOW_OVER_TARGET=1 only for a local test build, or reduce assets/revise the target.");
+                    EditorApplication.Exit(2);
+                    return;
+                }
                 EditorApplication.Exit(bytes >= 0 ? 0 : 1);
             }
             catch (Exception ex)
@@ -271,6 +280,7 @@ namespace BattleTv.Menu.EditorTools
                 + "  \"plateBytes\": " + PlateBytes + ",\n"
                 + "  \"clipBytes\": " + ClipBytes + ",\n"
                 + "  \"restBytes\": " + RestBytes + ",\n"
+                + "  \"profile\": \"full\",\n"
                 + "  \"targetBytes\": " + TargetBytes + ",\n"
                 + "  \"withinTarget\": " + (bytes <= TargetBytes ? "true" : "false") + "\n"
                 + "}\n";

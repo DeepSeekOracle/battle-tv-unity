@@ -21,6 +21,8 @@ namespace BattleTv.Fight
         const float StageWidth = 1920f;
         const float StageHeight = 1080f;
 
+        public const string OnboardingLine = "CLOSE TO DASH  ·  SLIP TO EVADE";
+
         static readonly Color Gold = new Color(0xf5 / 255f, 0x9e / 255f, 0x0b / 255f, 1f);
         static readonly Color Paper = new Color(0xf6 / 255f, 0xe7 / 255f, 0xc1 / 255f, 1f);
 
@@ -51,6 +53,7 @@ namespace BattleTv.Fight
         int _sigilN;
         Text _clock;
         Text _callout;
+        Text _hint;
         GameObject _board;
         Text _boardTitle;
         Text _boardDetail;
@@ -1373,6 +1376,17 @@ namespace BattleTv.Fight
             _callout.alignment = TextAnchor.MiddleCenter;
             _callout.fontSize = 16;
             _callout.color = Gold;
+            _hint = Words(transform, OnboardingLine);
+            var hint = _hint.rectTransform;
+            hint.anchorMin = new Vector2(0.22f, 0.800f);
+            hint.anchorMax = new Vector2(0.78f, 0.842f);
+            hint.offsetMin = hint.offsetMax = Vector2.zero;
+            _hint.alignment = TextAnchor.MiddleCenter;
+            _hint.fontSize = 14;
+            _hint.color = Paper;
+            var hintOutline = _hint.gameObject.AddComponent<Outline>();
+            hintOutline.effectColor = new Color(0.05f, 0.03f, 0.02f, 0.95f);
+            hintOutline.effectDistance = new Vector2(1.2f, -1.2f);
             var menu = Button(transform, "MENU", new Vector2(0.016f, 0.018f), new Vector2(0.12f, 0.072f));
             menu.onClick.AddListener(BackToMenu);
             _board = new GameObject("Scoreboard", typeof(RectTransform), typeof(Image));
