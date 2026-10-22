@@ -121,3 +121,11 @@ Production, QA and release tasks remain pending. No commit or publish.
 - Browser evidence: `Logs/webgl-wolf-team-1280x720.png`, `Logs/webgl-wolf-arena-1280x720.png`.
 - Forge exe rebuilt: 18,182,169 bytes; foundry-local linked/ready.
 - Remaining missing characters: heartboss, levi, tithe, unnamer, lock, lion, bear, elephant, scorpion (8).
+
+## Baseline animation pass (2026-10-22)
+
+- All nine new characters now have: walk 3 frames, attack 2 frames, roar, death, win.
+- These are deterministic transform frames from the validated canonical cutouts, not hand-authored pose sets.
+- Strict Forge Unity job `JOB-8A94E4C4`: **4/4 PlayMode tests, 0 failures**, agent `unity-test`, fallback `None`.
+- Forge routing guard added: Unity QA jobs cannot silently fall through to an LLM.
+- Wolf remains the only hand-composed/generated 8-clip character; the other nine are baseline animation.

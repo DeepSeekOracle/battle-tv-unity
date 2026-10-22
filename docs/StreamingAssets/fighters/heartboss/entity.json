@@ -11,7 +11,8 @@
       "seconds": 0.45,
       "pivot": 0.5,
       "frames": [
-        "heartboss.png"
+        "heartboss-bite-f00.png",
+        "heartboss-bite-f01.png"
       ]
     },
     {
@@ -19,7 +20,8 @@
       "seconds": 0.45,
       "pivot": 0.5,
       "frames": [
-        "heartboss.png"
+        "heartboss-bite-f00.png",
+        "heartboss-bite-f01.png"
       ]
     },
     {
@@ -27,7 +29,7 @@
       "seconds": 0.55,
       "pivot": 0.5,
       "frames": [
-        "heartboss.png"
+        "heartboss-roar-f00.png"
       ]
     },
     {
@@ -35,7 +37,9 @@
       "seconds": 0.72,
       "pivot": 0.5,
       "frames": [
-        "heartboss.png"
+        "heartboss-walk-f00.png",
+        "heartboss-walk-f01.png",
+        "heartboss-walk-f02.png"
       ]
     },
     {
@@ -43,7 +47,7 @@
       "seconds": 1.55,
       "pivot": 0.5,
       "frames": [
-        "heartboss.png"
+        "heartboss-death-f00.png"
       ]
     },
     {
@@ -51,7 +55,7 @@
       "seconds": 1.15,
       "pivot": 0.5,
       "frames": [
-        "heartboss.png"
+        "heartboss-win-f00.png"
       ]
     }
   ]

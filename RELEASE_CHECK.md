@@ -14,7 +14,7 @@
 | Onboarding visual | PASS | 1280x720 hint capture |
 | Performance | PARTIAL | 60.09 FPS SwiftShader + 60.2 FPS headed d3d11; physical mobile/native Unity still unmeasured |
 | Credits | PASS | `CREDITS.md`; footer matches |
-| Asset provenance | **FAIL / BLOCKED** | audit complete, but no per-asset source/licence metadata; redistribution not cleared |\n| Character completeness | **PARTIAL** | all 33 definitions now have art; wolf has 8 clips; the other nine new characters are static generic clips, not fully animated |
+| Asset provenance | **FAIL / BLOCKED** | audit complete, but no per-asset source/licence metadata; redistribution not cleared |\n| Character completeness | **PARTIAL** | all 33 definitions have art; wolf has 8 clips; all nine others have baseline transform clips; hand-authored animation and tuning remain |
 | Native/mobile/audio | NOT VERIFIED | no device or audio-mix pass |
 | Commit/publish | NOT PERFORMED | no release action |
 
@@ -23,6 +23,7 @@
 **Do not release.** The build is locally playable and content-complete, but provenance is partial and
 native/mobile performance is unmeasured. `RELEASE-03` stays open until those are resolved or explicitly
 accepted by the owner.
+
 
 
 

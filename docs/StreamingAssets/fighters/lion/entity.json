@@ -11,7 +11,8 @@
       "seconds": 0.45,
       "pivot": 0.5,
       "frames": [
-        "lion.png"
+        "lion-bite-f00.png",
+        "lion-bite-f01.png"
       ]
     },
     {
@@ -19,7 +20,8 @@
       "seconds": 0.45,
       "pivot": 0.5,
       "frames": [
-        "lion.png"
+        "lion-bite-f00.png",
+        "lion-bite-f01.png"
       ]
     },
     {
@@ -27,7 +29,7 @@
       "seconds": 0.55,
       "pivot": 0.5,
       "frames": [
-        "lion.png"
+        "lion-roar-f00.png"
       ]
     },
     {
@@ -35,7 +37,9 @@
       "seconds": 0.72,
       "pivot": 0.5,
       "frames": [
-        "lion.png"
+        "lion-walk-f00.png",
+        "lion-walk-f01.png",
+        "lion-walk-f02.png"
       ]
     },
     {
@@ -43,7 +47,7 @@
       "seconds": 1.55,
       "pivot": 0.5,
       "frames": [
-        "lion.png"
+        "lion-death-f00.png"
       ]
     },
     {
@@ -51,7 +55,7 @@
       "seconds": 1.15,
       "pivot": 0.5,
       "frames": [
-        "lion.png"
+        "lion-win-f00.png"
       ]
     }
   ]

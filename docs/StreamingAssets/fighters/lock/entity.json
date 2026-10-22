@@ -11,7 +11,8 @@
       "seconds": 0.45,
       "pivot": 0.5,
       "frames": [
-        "lock.png"
+        "lock-bite-f00.png",
+        "lock-bite-f01.png"
       ]
     },
     {
@@ -19,7 +20,8 @@
       "seconds": 0.45,
       "pivot": 0.5,
       "frames": [
-        "lock.png"
+        "lock-bite-f00.png",
+        "lock-bite-f01.png"
       ]
     },
     {
@@ -27,7 +29,7 @@
       "seconds": 0.55,
       "pivot": 0.5,
       "frames": [
-        "lock.png"
+        "lock-roar-f00.png"
       ]
     },
     {
@@ -35,7 +37,9 @@
       "seconds": 0.72,
       "pivot": 0.5,
       "frames": [
-        "lock.png"
+        "lock-walk-f00.png",
+        "lock-walk-f01.png",
+        "lock-walk-f02.png"
       ]
     },
     {
@@ -43,7 +47,7 @@
       "seconds": 1.55,
       "pivot": 0.5,
       "frames": [
-        "lock.png"
+        "lock-death-f00.png"
       ]
     },
     {
@@ -51,7 +55,7 @@
       "seconds": 1.15,
       "pivot": 0.5,
       "frames": [
-        "lock.png"
+        "lock-win-f00.png"
       ]
     }
   ]

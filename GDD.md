@@ -42,7 +42,7 @@ only pre-fight progression expression. `NEW TOONS` returns to selection.
 
 ## 7. Content and levels
 
-- **33 roster definitions** in `LaneRoster.All`.\n- **33 actual fighter asset directories** as of 2026-10-22.\n- **wolf** is a complete 8-clip character completed through Forge.\n- The other nine newly made characters have canonical art and static generic clips; full animation is still pending.
+- **33 roster definitions** in `LaneRoster.All`.\n- **33 actual fighter asset directories** as of 2026-10-22.\n- **wolf** is a complete 8-clip character completed through Forge.\n- The other nine newly made characters have canonical art and baseline transform clips (walk/attack/roar/death/win); hand-authored animation is still pending.
 - Five modes: 1v1, 2v2, 3v3, 5v5 and the Duel path.
 - Scenes: `Menu`, `GameMenu`, `TeamSelect`, `Duel`, `Arena`.
 
@@ -77,6 +77,7 @@ roster values are HP 805–1685 and mana 54–160. A full balance pass is not cl
 - PlayMode: 2/2, including full match and scoreboard activation.
 - Manual WebGL: start → 3v3 → team select → Arena → 0:28 result.
 - Visual: 1280×720 hint capture inspected.
+
 
 
 

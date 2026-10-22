@@ -11,7 +11,8 @@
       "seconds": 0.45,
       "pivot": 0.5,
       "frames": [
-        "bear.png"
+        "bear-bite-f00.png",
+        "bear-bite-f01.png"
       ]
     },
     {
@@ -19,7 +20,8 @@
       "seconds": 0.45,
       "pivot": 0.5,
       "frames": [
-        "bear.png"
+        "bear-bite-f00.png",
+        "bear-bite-f01.png"
       ]
     },
     {
@@ -27,7 +29,7 @@
       "seconds": 0.55,
       "pivot": 0.5,
       "frames": [
-        "bear.png"
+        "bear-roar-f00.png"
       ]
     },
     {
@@ -35,7 +37,9 @@
       "seconds": 0.72,
       "pivot": 0.5,
       "frames": [
-        "bear.png"
+        "bear-walk-f00.png",
+        "bear-walk-f01.png",
+        "bear-walk-f02.png"
       ]
     },
     {
@@ -43,7 +47,7 @@
       "seconds": 1.55,
       "pivot": 0.5,
       "frames": [
-        "bear.png"
+        "bear-death-f00.png"
       ]
     },
     {
@@ -51,7 +55,7 @@
       "seconds": 1.15,
       "pivot": 0.5,
       "frames": [
-        "bear.png"
+        "bear-win-f00.png"
       ]
     }
   ]

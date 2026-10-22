@@ -93,7 +93,15 @@ namespace BattleTv.Menu.PlayTests
                 var body = FighterBodies.Get(id);
                 Assert.IsNotNull(body, id + " body did not load");
                 Assert.IsNotNull(body.Idle, id + " idle missing");
-                Assert.IsNotNull(body.Find("walk"), id + " walk clip missing");
+                var walk = body.Find("walk");
+                Assert.IsNotNull(walk, id + " walk clip missing");
+                Assert.GreaterOrEqual(walk.Sprites.Length, 3, id + " walk needs 3 frames");
+                var bite = body.Find("Bite");
+                Assert.IsNotNull(bite, id + " attack clip missing");
+                Assert.GreaterOrEqual(bite.Sprites.Length, 2, id + " attack needs 2 frames");
+                Assert.IsNotNull(body.Find("Roar"), id + " roar clip missing");
+                Assert.IsNotNull(body.End(false), id + " death clip missing");
+                Assert.IsNotNull(body.End(true), id + " win clip missing");
             }
         }
     }
