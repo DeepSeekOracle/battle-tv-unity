@@ -1,0 +1,79 @@
+{
+  "id": "wolf",
+  "flip": "against",
+  "clipPivot": true,
+  "walk": 0.72,
+  "idle": "wolf.png",
+  "idlePivot": 0.5,
+  "clips": [
+    {
+      "name": "Pack Bite",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "wolf-bite-f00.png",
+        "wolf-bite-f01.png"
+      ]
+    },
+    {
+      "name": "Bite",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "wolf-bite-f00.png",
+        "wolf-bite-f01.png"
+      ]
+    },
+    {
+      "name": "bite",
+      "seconds": 0.45,
+      "pivot": 0.5,
+      "frames": [
+        "wolf-bite-f00.png",
+        "wolf-bite-f01.png"
+      ]
+    },
+    {
+      "name": "Roar",
+      "seconds": 0.55,
+      "pivot": 0.5,
+      "frames": [
+        "wolf-roar-f00.png"
+      ]
+    },
+    {
+      "name": "roar",
+      "seconds": 0.55,
+      "pivot": 0.5,
+      "frames": [
+        "wolf-roar-f00.png"
+      ]
+    },
+    {
+      "name": "walk",
+      "seconds": 0.72,
+      "pivot": 0.5,
+      "frames": [
+        "wolf-walk-f00.png",
+        "wolf-walk-f01.png",
+        "wolf-walk-f02.png"
+      ]
+    },
+    {
+      "name": "death",
+      "seconds": 1.55,
+      "pivot": 0.5,
+      "frames": [
+        "wolf-death-f00.png"
+      ]
+    },
+    {
+      "name": "win",
+      "seconds": 1.15,
+      "pivot": 0.5,
+      "frames": [
+        "wolf-win-f00.png"
+      ]
+    }
+  ]
+}
