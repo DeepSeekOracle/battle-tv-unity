@@ -20,6 +20,8 @@ namespace BattleTv.Fight
         public double Speed;
         public double Armor;
         public double Range;
+        public double HitRadius = 16;
+        public int Face = 1;
         public double AtkCd;
         public double Swing;
         public double Mana;

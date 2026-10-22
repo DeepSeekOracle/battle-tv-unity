@@ -120,6 +120,7 @@ namespace BattleTv.Menu.PlayTests
                 var id = ids[i];
                 var foe = id == "vale" ? "brute" : "vale";
                 ArenaMatch.Begin(new[] { id }, new[] { foe }, 1000 + i, true);
+                var hitsBefore = ArenaLogic.Hits;
                 var steps = 0;
                 while (!ArenaMatch.Over && steps < 20000)
                 {
@@ -129,6 +130,8 @@ namespace BattleTv.Menu.PlayTests
                         yield return null;
                 }
                 Assert.IsTrue(ArenaMatch.Over, id + " 1v1 did not finish");
+                Assert.Less(ArenaMatch.Time, SideDuel.HardStop, id + " 1v1 only ended on the hard stop");
+                Assert.Greater(ArenaLogic.Hits - hitsBefore, 0, id + " 1v1 landed no hits");
                 Assert.IsNotNull(FighterBodies.Get(id), id + " body missing in 1v1");
             }
         }

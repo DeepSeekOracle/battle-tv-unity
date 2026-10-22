@@ -17,6 +17,7 @@ namespace BattleTv.Fight
         const double GunPx = 110;
 
         public static int Casts;
+        public static int Hits;
         static Random _rng = new Random(1);
         static readonly List<Pending> _pending = new List<Pending>(8);
         static readonly Dictionary<string, MoveDef> _book = BuildBook();
@@ -67,6 +68,7 @@ namespace BattleTv.Fight
         public static void Reset(int seed)
         {
             Casts = 0;
+            Hits = 0;
             _pending.Clear();
             _rng = new Random(seed <= 0 ? 1 : seed);
         }
@@ -93,6 +95,7 @@ namespace BattleTv.Fight
             body.Speed = Math.Max(0.35, kit.Speed * (1 + spdMul));
             body.Armor = kit.Armor + armorAdd + (melee ? 1 : 0);
             body.Range = Math.Max(0.8, kit.Range);
+            body.HitRadius = melee ? 18 : 14;
             body.ManaMax = Math.Round(kit.Mana * (1 + manaMaxMul));
             body.Mana = body.ManaMax;
             body.ManaRegen = LaneRoster.ManaRegen(kit.Id) * (1 + manaMul);
@@ -191,6 +194,14 @@ namespace BattleTv.Fight
             double dmg, speed, range;
             Buff(e, out dmg, out speed, out range);
             var band = e.Gun ? Math.Max(range * 0.9, 58) : range;
+            if (e.Gun && dist < range * 0.55 && e.Root <= 0 && e.AtkCd > 0.05 && speed > 0)
+            {
+                var back = Math.Min(speed * dt, range * 0.55 - dist);
+                e.X -= dx / dist * back;
+                e.Y -= dy / dist * back;
+                ArenaMatch.Hold(e);
+                return;
+            }
             var standing = e.Gun ? dist <= band + 18 : dist <= range + 10;
             var walked = 0.0;
             if (!standing && e.Root <= 0 && speed > 0)
@@ -208,7 +219,9 @@ namespace BattleTv.Fight
                 if (dist < 0.001)
                     dist = 0.001;
             }
-            if (e.AtkCd <= 0 && e.Silence <= 0 && dist <= range + 16)
+            if (Math.Abs(dx) > 0.1)
+                e.Face = dx > 0 ? 1 : -1;
+            if (e.AtkCd <= 0 && e.Silence <= 0 && dist <= range + 16 + foe.HitRadius)
                 Attack(e, foe, dmg, dx, dy, walked > 10);
         }
 
@@ -255,6 +268,8 @@ namespace BattleTv.Fight
             if (e.Moves == null)
                 return false;
             var dist = Dist(e, foe);
+            var best = -1;
+            var bestScore = -1.0;
             for (var i = 0; i < e.Moves.Count; i++)
             {
                 var mv = e.Moves[i];
@@ -275,18 +290,101 @@ namespace BattleTv.Fight
                 else if (mv.Aim == "self" || mv.Shape == "aura" || mv.Shape == "self")
                 {
                     var span = Math.Max(reach, ring);
-                    // A self plate with no radius was waiting for an 8px overlap.
-                    // The lane casts those when the other fighter is within 3 tiles.
                     ready = span < 8 ? dist < 3 * ArenaMatch.Tile : dist < span + 8;
                     if (ready && mv.St != null && mv.St.Aegis > 0 && e.Shield > 0 && mv.Shape == "self")
                         ready = false;
                 }
                 else
                     ready = dist <= reach + 30 || mv.Range <= 0 && dist < ring + 8;
-                if (ready && Cast(e, mv, i, foe))
-                    return true;
+                if (!ready)
+                    continue;
+                var score = MoveScore(e, mv, foe, dist);
+                if (score > bestScore)
+                {
+                    bestScore = score;
+                    best = i;
+                }
             }
-            return false;
+            return best >= 0 && Cast(e, e.Moves[best], best, foe);
+        }
+
+        static double MoveScore(ArenaBody e, MoveDef mv, ArenaBody foe, double dist)
+        {
+            var score = 0.0;
+            if (mv.Dmg > 0)
+                score += 10 + mv.Dmg * 4;
+            if (mv.Aim == "allylow")
+            {
+                var low = Lowest(e);
+                if (low != null && low != e)
+                {
+                    var r = low.Hp / Math.Max(1, low.Max);
+                    score += r < 0.35 ? 42 : r < 0.6 ? 28 : 12;
+                }
+            }
+            if (mv.Aim == "deadally")
+                score += AnyDead(e.Team) ? 40 : 0;
+            if (mv.Aim == "allies")
+                score += e.Hp / Math.Max(1, e.Max) < 0.85 ? 18 : 5;
+            if (mv.Shape == "self" || mv.Shape == "aura")
+                score += 8;
+            if (mv.St != null)
+            {
+                score += mv.St.Stun * 8 + mv.St.Root * 7 + mv.St.Silence * 5;
+                score += mv.St.SlowD * 3 + mv.St.Heal * 0.06 + mv.St.Aegis * 4;
+                score += mv.St.Knock * 2 + mv.St.Pull * 2;
+            }
+            if (mv.Execute && foe != null && foe.Hp / Math.Max(1, foe.Max) < 0.35)
+                score += 18;
+            if (mv.Shape == "stride" && e.Gun && dist < 180)
+                score += 12;
+            if (e.Gun && mv.Range > 0)
+                score += 4;
+            if (mv.Shape == "melee" && e.Hp / Math.Max(1, e.Max) < 0.4)
+                score += 3;
+            // Role brains: the named supports protect, tanks set the line,
+            // assassins finish, artillery keeps range.
+            switch (e.Id)
+            {
+                case "sancora":
+                case "lyra":
+                case "orin":
+                    if (mv.Aim == "allylow" || mv.Aim == "allies") score += 12;
+                    break;
+                case "vale":
+                case "brute":
+                case "gate":
+                case "lock":
+                    if (mv.Shape == "self" || mv.Shape == "aura" || mv.Aim == "allies") score += 10;
+                    break;
+                case "d9ra":
+                case "kael":
+                case "nia":
+                case "scorpion":
+                    if (mv.Dmg > 0) score += 6;
+                    break;
+                case "lightfather":
+                case "kairos":
+                case "justicae":
+                    if (mv.St != null && (mv.St.Stun > 0 || mv.St.Silence > 0 || mv.St.Root > 0)) score += 10;
+                    break;
+            }
+            return score;
+        }
+
+        static bool InArc(ArenaBody e, ArenaBody o, ArenaBody face)
+        {
+            if (face == null || face == e)
+                return true;
+            var fx = face.X - e.X;
+            var fy = face.Y - e.Y;
+            var ox = o.X - e.X;
+            var oy = o.Y - e.Y;
+            var fl = Math.Sqrt(fx * fx + fy * fy);
+            var ol = Math.Sqrt(ox * ox + oy * oy);
+            if (fl < 0.001 || ol < 0.001)
+                return true;
+            return (fx * ox + fy * oy) / (fl * ol) >= 0.35;
         }
 
         const double PinBand = 22;
@@ -552,10 +650,13 @@ namespace BattleTv.Fight
         {
             var radius = Math.Max(8, mv.Range * ArenaMatch.Tile);
             var any = false;
+            var face = Target(e);
             for (var i = 0; i < ArenaMatch.Bodies.Count; i++)
             {
                 var o = ArenaMatch.Bodies[i];
-                if (!o.Alive || o.Team == e.Team || Dist(e, o) > radius)
+                if (!o.Alive || o.Team == e.Team || Dist(e, o) > radius + o.HitRadius)
+                    continue;
+                if (mv.Shape == "arc" && !InArc(e, o, face))
                     continue;
                 any = true;
                 var dealt = Hit(e, o, e.Dmg * mv.Dmg, true, mv.IgnoreArmor, false, mv.Name, opening, mv.Execute);
@@ -573,7 +674,7 @@ namespace BattleTv.Fight
             for (var i = 0; i < ArenaMatch.Bodies.Count; i++)
             {
                 var o = ArenaMatch.Bodies[i];
-                if (!o.Alive || o.Team == e.Team || Dist(e, o) > radius)
+                if (!o.Alive || o.Team == e.Team || Dist(e, o) > radius + o.HitRadius)
                     continue;
                 if (mv.Dmg > 0)
                     Hit(e, o, e.Dmg * mv.Dmg, true, mv.IgnoreArmor, false, mv.Name, opening, false);
@@ -601,7 +702,7 @@ namespace BattleTv.Fight
                 var along = dx * cos + dy * sin;
                 if (along < 0 || along > len)
                     continue;
-                if (Math.Abs(-dx * sin + dy * cos) > 14)
+                if (Math.Abs(-dx * sin + dy * cos) > 14 + o.HitRadius)
                     continue;
                 Hit(e, o, e.Dmg * mv.Dmg, false, mv.IgnoreArmor, false, mv.Name, opening, false);
                 Apply(o, mv.St, e, true);
@@ -755,6 +856,7 @@ namespace BattleTv.Fight
                     ManaRegen = 4,
                     Gun = true,
                     Token = true,
+                    HitRadius = 16,
                     Ttl = 22,
                     CdMul = 1,
                     Crit = 0.1,
@@ -812,6 +914,7 @@ namespace BattleTv.Fight
             dmg = Math.Round(dmg);
             if (dmg <= 0)
                 return 0;
+            Hits++;
             if (!tgt.UsedLastStand && tgt.LastStand && tgt.Hp - dmg > 0 && (tgt.Hp - dmg) / tgt.Max < 0.3 && tgt.Hp / tgt.Max >= 0.3)
             {
                 tgt.UsedLastStand = true;
@@ -861,7 +964,7 @@ namespace BattleTv.Fight
                     continue;
                 var dx = o.X - x;
                 var dy = o.Y - y;
-                if (dx * dx + dy * dy > radius * radius)
+                if (dx * dx + dy * dy > (radius + o.HitRadius) * (radius + o.HitRadius))
                     continue;
                 if (strips)
                     o.Shield = 0;
@@ -920,7 +1023,7 @@ namespace BattleTv.Fight
                         continue;
                     var dx = o.X - bolt.X;
                     var dy = o.Y - bolt.Y;
-                    if (dx * dx + dy * dy < 22 * 22)
+                    if (dx * dx + dy * dy < (22 + o.HitRadius) * (22 + o.HitRadius))
                     {
                         Hit(bolt.Src, o, bolt.Dmg, false, bolt.IgnoreArmor, false, bolt.Name, bolt.Opening, false);
                         Apply(o, bolt.St, bolt.Src, true);
