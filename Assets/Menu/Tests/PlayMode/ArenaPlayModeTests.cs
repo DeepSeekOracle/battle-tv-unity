@@ -121,6 +121,7 @@ namespace BattleTv.Menu.PlayTests
                 var foe = id == "vale" ? "brute" : "vale";
                 ArenaMatch.Begin(new[] { id }, new[] { foe }, 1000 + i, true);
                 var hitsBefore = ArenaLogic.Hits;
+                var castsBefore = ArenaLogic.Casts;
                 var steps = 0;
                 while (!ArenaMatch.Over && steps < 20000)
                 {
@@ -132,6 +133,7 @@ namespace BattleTv.Menu.PlayTests
                 Assert.IsTrue(ArenaMatch.Over, id + " 1v1 did not finish");
                 Assert.Less(ArenaMatch.Time, SideDuel.HardStop, id + " 1v1 only ended on the hard stop");
                 Assert.Greater(ArenaLogic.Hits - hitsBefore, 0, id + " 1v1 landed no hits");
+                Assert.Greater(ArenaLogic.Casts - castsBefore, 0, id + " 1v1 never used a move");
                 Assert.IsNotNull(FighterBodies.Get(id), id + " body missing in 1v1");
             }
         }
@@ -170,5 +172,25 @@ namespace BattleTv.Menu.PlayTests
             }
             Assert.Greater(min, 28, "5v5 bodies collapsed into one stack");
         }
+
+        [UnityTest]
+        public IEnumerator PinnedFighterEscapesCorner()
+        {
+            SceneManager.LoadScene("Arena");
+            yield return null;
+            yield return new WaitForSeconds(1.5f);
+            ArenaMatch.Begin(new[] { "vale" }, new[] { "brute" }, 99, true);
+            var vale = ArenaMatch.Bodies[0];
+            var brute = ArenaMatch.Bodies[1];
+            vale.X = ArenaMatch.Inset + 2;
+            vale.Y = ArenaMatch.WorldH * 0.5;
+            brute.X = vale.X + 90;
+            brute.Y = vale.Y;
+            var before = vale.X;
+            ArenaMatch.Step(0.05);
+            Assert.Greater(vale.X, before, "pinned Vale did not dash inward");
+            Assert.Greater(ArenaLogic.Dashes + ArenaLogic.EscapeDashes, 0, "no corner dash was counted");
+        }
+
     }
 }

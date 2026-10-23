@@ -18,6 +18,8 @@ namespace BattleTv.Fight
 
         public static int Casts;
         public static int Hits;
+        public static int Dashes;
+        public static int EscapeDashes;
         static Random _rng = new Random(1);
         static readonly List<Pending> _pending = new List<Pending>(8);
         static readonly Dictionary<string, MoveDef> _book = BuildBook();
@@ -69,6 +71,8 @@ namespace BattleTv.Fight
         {
             Casts = 0;
             Hits = 0;
+            Dashes = 0;
+            EscapeDashes = 0;
             _pending.Clear();
             _rng = new Random(seed <= 0 ? 1 : seed);
         }
@@ -95,7 +99,7 @@ namespace BattleTv.Fight
             body.Speed = Math.Max(0.35, kit.Speed * (1 + spdMul));
             body.Armor = kit.Armor + armorAdd + (melee ? 1 : 0);
             body.Range = Math.Max(0.8, kit.Range);
-            body.HitRadius = melee ? 36 : 26;
+            body.HitRadius = melee ? 52 : 40;
             body.ManaMax = Math.Round(kit.Mana * (1 + manaMaxMul));
             body.Mana = body.ManaMax;
             body.ManaRegen = LaneRoster.ManaRegen(kit.Id) * (1 + manaMul);
@@ -177,6 +181,8 @@ namespace BattleTv.Fight
             // Same rule as the side lane: pinned, with someone in their face,
             // the stride goes through them. It does not wait on the gun step.
             if (TryCornerLeap(e))
+                return;
+            if (TryCornerEscape(e, foe, dt))
                 return;
             if (e.Hp / e.Max < 0.5 && TrySelfHeal(e))
                 return;
@@ -389,6 +395,29 @@ namespace BattleTv.Fight
 
         const double PinBand = 22;
 
+        static bool TryCornerEscape(ArenaBody e, ArenaBody foe, double dt)
+        {
+            if (e.Root > 0 || e.Silence > 0 || !AgainstStone(e))
+                return false;
+            if (Dist(e, foe) > 4 * ArenaMatch.Tile)
+                return false;
+            var cx = ArenaMatch.WorldW * 0.5 - e.X;
+            var cy = ArenaMatch.WorldH * 0.5 - e.Y;
+            var len = Math.Sqrt(cx * cx + cy * cy);
+            if (len < 0.001)
+                return false;
+            var step = Math.Min(e.Speed * ArenaMatch.Tile * dt * 1.35, 28);
+            if (step <= 0.01)
+                return false;
+            e.X += cx / len * step;
+            e.Y += cy / len * step;
+            e.Face = cx >= 0 ? 1 : -1;
+            ArenaMatch.Hold(e);
+            EscapeDashes++;
+            e.Callout = "Corner Escape";
+            return true;
+        }
+
         static bool TryCornerLeap(ArenaBody e)
         {
             if (e.Root > 0 || e.Silence > 0 || !AgainstStone(e))
@@ -433,6 +462,7 @@ namespace BattleTv.Fight
             e.Callout = mv.Name;
             e.Swing = 0.4;
             Casts++;
+            Dashes++;
             return true;
         }
 
@@ -566,6 +596,8 @@ namespace BattleTv.Fight
             if (mv.Shape == "revive" && !AnyDead(e.Team))
                 return false;
             e.Mana -= Cost(mv);
+            if (mv.Shape == "stride")
+                Dashes++;
             e.Cds[idx] = mv.Shape == "stride" ? mv.Cd : mv.Cd * e.CdMul;
             e.StrideCd = StrideLeft(e);
             e.Callout = mv.Name;
@@ -856,7 +888,7 @@ namespace BattleTv.Fight
                     ManaRegen = 4,
                     Gun = true,
                     Token = true,
-                    HitRadius = 28,
+                    HitRadius = 34,
                     Ttl = 22,
                     CdMul = 1,
                     Crit = 0.1,
