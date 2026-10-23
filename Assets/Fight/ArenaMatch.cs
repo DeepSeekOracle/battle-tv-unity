@@ -166,7 +166,7 @@ namespace BattleTv.Fight
                 dt = 0.05;
             Time += dt;
             ArenaLogic.Advance(dt);
-            for (var n = 0; n < 3; n++)
+            for (var n = 0; n < 8; n++)
                 Ease();
             if (Lane)
             {
@@ -237,9 +237,10 @@ namespace BattleTv.Fight
                     var dx = b.X - a.X;
                     var dy = Lane ? 0 : b.Y - a.Y;
                     var dist = Math.Sqrt(dx * dx + dy * dy);
-                    if (dist >= Sep || dist < 0.001)
+                    var sep = Math.Max(Sep, a.HitRadius + b.HitRadius + 8);
+                    if (dist >= sep || dist < 0.001)
                         continue;
-                    var push = (Sep - dist) * 0.5;
+                    var push = (sep - dist) * 0.55;
                     a.X -= dx / dist * push;
                     a.Y -= dy / dist * push;
                     b.X += dx / dist * push;

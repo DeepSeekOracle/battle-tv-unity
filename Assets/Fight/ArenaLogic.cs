@@ -95,7 +95,7 @@ namespace BattleTv.Fight
             body.Speed = Math.Max(0.35, kit.Speed * (1 + spdMul));
             body.Armor = kit.Armor + armorAdd + (melee ? 1 : 0);
             body.Range = Math.Max(0.8, kit.Range);
-            body.HitRadius = melee ? 18 : 14;
+            body.HitRadius = melee ? 36 : 26;
             body.ManaMax = Math.Round(kit.Mana * (1 + manaMaxMul));
             body.Mana = body.ManaMax;
             body.ManaRegen = LaneRoster.ManaRegen(kit.Id) * (1 + manaMul);
@@ -856,7 +856,7 @@ namespace BattleTv.Fight
                     ManaRegen = 4,
                     Gun = true,
                     Token = true,
-                    HitRadius = 16,
+                    HitRadius = 28,
                     Ttl = 22,
                     CdMul = 1,
                     Crit = 0.1,

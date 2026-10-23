@@ -135,5 +135,40 @@ namespace BattleTv.Menu.PlayTests
                 Assert.IsNotNull(FighterBodies.Get(id), id + " body missing in 1v1");
             }
         }
+
+        [UnityTest]
+        public IEnumerator FiveVersusFiveBodiesStaySeparated()
+        {
+            SceneManager.LoadScene("Arena");
+            yield return null;
+            yield return new WaitForSeconds(1.5f);
+            ArenaMatch.Begin(
+                new[] { "vale", "kael", "orin", "nia", "lyra" },
+                new[] { "brute", "gate", "crown", "smith", "drain" },
+                77, false);
+            for (var i = 0; i < 120; i++)
+            {
+                ArenaMatch.Step(0.05);
+                if (i % 20 == 0)
+                    yield return null;
+            }
+            var min = double.MaxValue;
+            for (var i = 0; i < ArenaMatch.Bodies.Count; i++)
+            {
+                if (!ArenaMatch.Bodies[i].Alive)
+                    continue;
+                for (var j = i + 1; j < ArenaMatch.Bodies.Count; j++)
+                {
+                    if (!ArenaMatch.Bodies[j].Alive)
+                        continue;
+                    var dx = ArenaMatch.Bodies[i].X - ArenaMatch.Bodies[j].X;
+                    var dy = ArenaMatch.Bodies[i].Y - ArenaMatch.Bodies[j].Y;
+                    var d = System.Math.Sqrt(dx * dx + dy * dy);
+                    if (d < min)
+                        min = d;
+                }
+            }
+            Assert.Greater(min, 28, "5v5 bodies collapsed into one stack");
+        }
     }
 }
