@@ -170,6 +170,54 @@
     font: 600 14px/1.6 "Segoe UI", Tahoma, sans-serif;
   }
   #bt-noscript a { color: #f59e0b; }
+
+  /* the canvas fills the viewport exactly: no scrollbars, no offset.
+     The Unity template centres a 960x600 container while the canvas is
+     sized in vw/vh, which clips the scene and adds both scrollbars. */
+  html, body { height: 100%; overflow: hidden; background: #080604; }
+  #unity-container,
+  #unity-container.unity-desktop,
+  #unity-container.unity-mobile {
+    position: fixed !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    transform: none !important;
+  }
+  #unity-canvas {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+  }
+  #bt-credit {
+    display: block;
+    margin-top: 8px;
+    font-size: 9px;
+    line-height: 1.5;
+    letter-spacing: 0.06em;
+    color: rgba(246, 231, 193, 0.6);
+    text-transform: none;
+  }
+
+  /* The build never calls battleTvSetScreen(), so the chrome must not wait for
+     it: the controls are available on every screen. The intro credit moves to
+     the top edge so nothing sits on the game's own title plate. */
+  #battle-tv-chrome .edge[data-for~="menu"] { display: flex; }
+  #battle-tv-chrome .edge.bottom[data-for~="intro"] { display: none; }
+  #battle-tv-chrome #bt-options { display: block; }
+  #battle-tv-chrome .edge.bottom {
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 0 10px 6px;
+    height: auto;
+  }
+  #battle-tv-chrome .edge.bottom > a:first-child { margin-right: auto; }
+  #battle-tv-chrome .edge.top .bt-credit-top {
+    margin-left: auto;
+    letter-spacing: 0.14em;
+    opacity: 0.72;
+  }
   #battle-tv-chrome[data-screen="menu"] #bt-options { display: block; }
   #bt-options-panel {
     display: none;
@@ -201,16 +249,13 @@
   #bt-links { display: flex; gap: 6px; }
 </style>
 <div id="battle-tv-chrome" data-screen="intro">
-  <div class="edge top" data-for="intro"><span>Battle TV</span><span>·</span><span>LYGO Arena</span></div>
-  <div class="edge bottom" data-for="intro">
-    <span>Created by Justin Helmer</span>
-    <span>© <span id="bt-year"></span> Justin Helmer · Excavationpro · Eternal Haven · All rights reserved</span>
-  </div>
+  <div class="edge top" data-for="intro"><span>Battle TV</span><span>·</span><span>LYGO Arena</span><span class="bt-credit-top">Created by Justin Helmer</span></div>
   <div id="bt-options">
     <button type="button" id="bt-options-btn">Options</button>
     <div id="bt-options-panel">
       <button type="button" id="bt-music">Music on</button>
       <button type="button" id="bt-full">Full screen</button>
+      <small id="bt-credit">© <span id="bt-year"></span> Justin Helmer · Excavationpro · Eternal Haven · All rights reserved</small>
     </div>
   </div>
   <div class="edge bottom" data-for="menu">
