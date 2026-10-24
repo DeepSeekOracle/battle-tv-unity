@@ -38,6 +38,12 @@
     <link rel="stylesheet" href="TemplateData/style.css">
   </head>
   <body>
+<noscript>
+  <div id="bt-noscript">
+    <strong>This broadcast needs WebGL and JavaScript.</strong>
+    <span>Enable JavaScript, or watch the HTML5 version instead: <a href="https://chatagent.ca/games/lattice-arena/">LYGO Arena</a>.</span>
+  </div>
+</noscript>
 <style>
   #unity-footer { display: none !important; }
   #battle-tv-chrome {
@@ -97,6 +103,73 @@
   #battle-tv-chrome a:hover,
   #battle-tv-chrome button:hover { background: #f59e0b; color: #1a1206; }
   #bt-options { position: absolute; top: 10px; left: 12px; display: none; }
+  /* shell: visible failures, honest loading, no dead screen */
+  #unity-warning {
+    z-index: 60;
+    top: 44px;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: min(560px, 92vw);
+    background: rgba(12, 9, 6, 0.96);
+    border: 1px solid rgba(245, 158, 11, 0.9);
+    color: #f6e7c1;
+    font: 600 12px/1.55 "Segoe UI", Tahoma, sans-serif;
+    padding: 10px 12px;
+    box-sizing: border-box;
+    text-shadow: none;
+  }
+  #unity-warning .bt-warn-title {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #f59e0b;
+  }
+  #unity-warning .bt-warn-line { padding: 4px 0; }
+  #unity-warning .bt-warn-actions { margin-top: 9px; display: flex; gap: 8px; align-items: center; }
+  #unity-warning button,
+  #unity-warning a {
+    pointer-events: auto;
+    cursor: pointer;
+    font: inherit;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 6px 10px;
+    color: #f6e7c1;
+    background: rgba(12, 9, 6, 0.9);
+    border: 1px solid rgba(245, 158, 11, 0.9);
+    border-radius: 2px;
+    text-decoration: none;
+  }
+  #unity-warning button:hover,
+  #unity-warning a:hover { background: #f59e0b; color: #1a1206; }
+  #bt-loading-note {
+    margin-top: 10px;
+    text-align: center;
+    font: 700 10px/1.4 "Segoe UI", Tahoma, sans-serif;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #f6e7c1;
+    opacity: 0.85;
+  }
+  #bt-noscript {
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 24px;
+    text-align: center;
+    background: #080604;
+    color: #f6e7c1;
+    font: 600 14px/1.6 "Segoe UI", Tahoma, sans-serif;
+  }
+  #bt-noscript a { color: #f59e0b; }
   #battle-tv-chrome[data-screen="menu"] #bt-options { display: block; }
   #bt-options-panel {
     display: none;
@@ -324,29 +397,59 @@
     <script>
       var canvas = document.querySelector("#unity-canvas");
 
-      // Shows a temporary message banner/ribbon for a few seconds, or
-      // a permanent error message on top of the canvas if type=='error'.
-      // If type=='warning', a yellow highlight color is used.
-      // Modify or remove this function to customize the visually presented
-      // way that non-critical warnings and error messages are presented to the
-      // user.
+      var warnBox = document.querySelector("#unity-warning");
+
+      // One place that turns a failure into something a player can read, with
+      // a way out. No alert(): some in-app browsers block it and it leaves the
+      // page looking dead behind the dialog.
+      function btBanner(title, detail, withWayOut) {
+        warnBox.innerHTML = "";
+        var t = document.createElement("span");
+        t.className = "bt-warn-title";
+        t.textContent = title;
+        warnBox.appendChild(t);
+        var d = document.createElement("span");
+        d.textContent = detail || "";
+        warnBox.appendChild(d);
+        if (withWayOut) {
+          var row = document.createElement("div");
+          row.className = "bt-warn-actions";
+          var again = document.createElement("button");
+          again.type = "button";
+          again.textContent = "Reload";
+          again.onclick = function () { location.reload(); };
+          row.appendChild(again);
+          var alt = document.createElement("a");
+          alt.href = "https://chatagent.ca/games/lattice-arena/";
+          alt.textContent = "HTML5 version";
+          row.appendChild(alt);
+          warnBox.appendChild(row);
+        }
+        warnBox.style.display = "block";
+      }
+
       function unityShowBanner(msg, type) {
-        var warningBanner = document.querySelector("#unity-warning");
-        function updateBannerVisibility() {
-          warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
+        if (type === "error") {
+          btBanner("THE BROADCAST STOPPED", String(msg || "").replace(/<[^>]+>/g, " ").trim(), true);
+          return;
         }
-        var div = document.createElement('div');
+        var div = document.createElement("div");
+        div.className = "bt-warn-line";
         div.innerHTML = msg;
-        warningBanner.appendChild(div);
-        if (type == 'error') div.style = 'background: red; padding: 10px;';
-        else {
-          if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
-          setTimeout(function() {
-            warningBanner.removeChild(div);
-            updateBannerVisibility();
-          }, 5000);
-        }
-        updateBannerVisibility();
+        warnBox.appendChild(div);
+        warnBox.style.display = "block";
+        setTimeout(function () {
+          if (div.parentNode) div.parentNode.removeChild(div);
+          if (!warnBox.children.length) warnBox.style.display = "none";
+        }, 5000);
+      }
+
+      function btHasWebgl() {
+        try {
+          var probe = document.createElement("canvas");
+          return !!(probe.getContext("webgl2") || probe.getContext("webgl") ||
+            probe.getContext("experimental-webgl"));
+        } catch (e) { return false; }
       }
 
       var buildUrl = "Build";
@@ -407,7 +510,23 @@
         canvas.style.height = "100vh";
       }
 
-      document.querySelector("#unity-loading-bar").style.display = "block";
+      canvas.setAttribute("role", "application");
+      canvas.setAttribute("aria-label",
+        "Battle TV: the side-view LYGO Arena fight. Automatic battle, no direct control.");
+
+      var btWebglOk = btHasWebgl();
+      if (!btWebglOk) {
+        btBanner("THIS BROWSER CANNOT RUN THE BROADCAST",
+          "WebGL is unavailable or blocked. Turn on hardware acceleration, or watch the HTML5 version of LYGO Arena.",
+          true);
+      }
+
+      var loadNote = document.createElement("div");
+      loadNote.id = "bt-loading-note";
+      loadNote.textContent = "LOADING THE BROADCAST · 0%";
+      document.querySelector("#unity-loading-bar").appendChild(loadNote);
+
+      if (btWebglOk) document.querySelector("#unity-loading-bar").style.display = "block";
 
       var script = document.createElement("script");
       script.src = loaderUrl;
@@ -428,10 +547,21 @@
         });
       }
 
+      script.onerror = function () {
+        btBanner("THE BROADCAST DID NOT LOAD",
+          "The engine file did not arrive. Check the connection, then reload.", true);
+      };
+
       script.onload = () => {
         battleTvFreshCache().then(function () {
         createUnityInstance(canvas, config, (progress) => {
+        if (typeof createUnityInstance !== "function") {
+          btBanner("THE BROADCAST DID NOT LOAD",
+            "The engine arrived but did not start. Reload, or watch the HTML5 version.", true);
+          return;
+        }
           document.querySelector("#unity-progress-bar-full").style.width = 100 * progress + "%";
+          loadNote.textContent = "LOADING THE BROADCAST · " + Math.round(progress * 100) + "%";
               }).then((unityInstance) => {
                 document.querySelector("#unity-loading-bar").style.display = "none";
                 if (window.battleTvStartIntro) window.battleTvStartIntro();
@@ -440,12 +570,13 @@
                 };
 
               }).catch((message) => {
-                alert(message);
+                btBanner("THE BROADCAST STOPPED",
+                  String(message || "The engine reported an error."), true);
               });
         });
             };
 
-      document.body.appendChild(script);
+      if (btWebglOk) document.body.appendChild(script);
 
     </script>
   </body>

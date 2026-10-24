@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Battle TV Unity — 1v1 & Arena modes | LYGO Arena</title>
+    <meta name="description" content="Battle TV Unity is the Unity broadcast of LYGO Arena: a side-view 1v1 lane, plus 2v2, 3v3, and 5v5 overhead sand battles. Pick a team, then watch the AI fight. Free in the browser. Created by Justin Helmer.">
+    <meta name="keywords" content="Battle TV Unity, LYGO Arena, side-view fighter, 1v1, Vale, Brute, free browser game, Excavationpro, Justin Helmer, Eternal Haven">
+    <meta name="author" content="Justin Helmer / Excavationpro / Lightfather">
+    <meta name="theme-color" content="#080604">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta name="googlebot" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <link rel="canonical" href="https://deepseekoracle.github.io/battle-tv-unity/">
+    <link rel="sitemap" type="application/xml" title="Sitemap" href="https://deepseekoracle.github.io/battle-tv-unity/sitemap.xml">
+    <link rel="image_src" href="https://deepseekoracle.github.io/battle-tv-unity/og.jpg">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Eternal Haven">
+    <meta property="og:locale" content="en_CA">
+    <meta property="og:url" content="https://deepseekoracle.github.io/battle-tv-unity/">
+    <meta property="og:title" content="Battle TV Unity — 1v1 & Arena modes">
+    <meta property="og:description" content="Side-view 1v1 or 2v2, 3v3, and 5v5 overhead sand. Pick a team, then watch the AI fight. The Unity broadcast of LYGO Arena, free in the browser.">
+    <meta property="og:image" content="https://deepseekoracle.github.io/battle-tv-unity/og.jpg">
+    <meta property="og:image:secure_url" content="https://deepseekoracle.github.io/battle-tv-unity/og.jpg">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Vale and Brute face each other in a torchlit crypt on the Battle TV Unity lane">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@Excavationpro">
+    <meta name="twitter:creator" content="@Excavationpro">
+    <meta name="twitter:title" content="Battle TV Unity — 1v1 & Arena modes">
+    <meta name="twitter:description" content="Side-view 1v1 or 2v2, 3v3, and 5v5 overhead sand. The Unity broadcast of LYGO Arena. Free in the browser.">
+    <meta name="twitter:image" content="https://deepseekoracle.github.io/battle-tv-unity/og.jpg">
+    <meta name="twitter:image:alt" content="Vale and Brute face each other in a torchlit crypt on the Battle TV Unity lane">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"VideoGame","name":"Battle TV Unity","url":"https://deepseekoracle.github.io/battle-tv-unity/","description":"Side-view 1v1 or 2v2, 3v3, and 5v5 overhead sand. The Unity broadcast of LYGO Arena. Free in the browser.","image":"https://deepseekoracle.github.io/battle-tv-unity/og.jpg","author":{"@type":"Person","name":"Justin Helmer","alternateName":"Excavationpro"},"publisher":{"@type":"Organization","name":"Eternal Haven","url":"https://eternalhaven.ca/"},"genre":["Fighting","Arena","Battler"],"gamePlatform":"Web browser","applicationCategory":"Game","operatingSystem":"Any","playMode":"SinglePlayer","offers":{"@type":"Offer","price":"0","priceCurrency":"CAD"},"isPartOf":{"@type":"VideoGame","name":"LYGO Arena","url":"https://chatagent.ca/games/lattice-arena/"}}</script>
+    <link rel="shortcut icon" href="TemplateData/favicon.ico">
+    <link rel="stylesheet" href="TemplateData/style.css">
+  </head>
+  <body>
+<noscript>
+  <div id="bt-noscript">
+    <strong>This broadcast needs WebGL and JavaScript.</strong>
+    <span>Enable JavaScript, or watch the HTML5 version instead: <a href="https://chatagent.ca/games/lattice-arena/">LYGO Arena</a>.</span>
+  </div>
+</noscript>
+<style>
+  #unity-footer { display: none !important; }
+  #battle-tv-chrome {
+    position: fixed;
+    inset: 0;
+    z-index: 30;
+    pointer-events: none;
+    font-family: "Segoe UI", Tahoma, sans-serif;
+    color: #f6e7c1;
+  }
+  #battle-tv-chrome .edge {
+    position: absolute;
+    left: 0;
+    right: 0;
+    display: none;
+    align-items: center;
+    gap: 10px;
+    box-sizing: border-box;
+    padding: 0 14px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-size: 11px;
+    font-weight: 700;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+  }
+  #battle-tv-chrome[data-screen="intro"] .edge[data-for~="intro"],
+  #battle-tv-chrome[data-screen="menu"] .edge[data-for~="menu"] { display: flex; }
+  #battle-tv-chrome .edge.top {
+    top: 0;
+    height: 36px;
+    justify-content: center;
+    background: linear-gradient(to bottom, rgba(8, 6, 4, 0.78), rgba(8, 6, 4, 0));
+  }
+  #battle-tv-chrome .edge.bottom {
+    bottom: 0;
+    height: 42px;
+    justify-content: space-between;
+    background: linear-gradient(to top, rgba(8, 6, 4, 0.82), rgba(8, 6, 4, 0));
+  }
+  #battle-tv-chrome a,
+  #battle-tv-chrome button {
+    pointer-events: auto;
+    color: #f6e7c1;
+    background: rgba(12, 9, 6, 0.62);
+    border: 1px solid rgba(245, 158, 11, 0.9);
+    border-radius: 2px;
+    font: inherit;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1;
+    padding: 5px 8px;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  #battle-tv-chrome a:hover,
+  #battle-tv-chrome button:hover { background: #f59e0b; color: #1a1206; }
+  #bt-options { position: absolute; top: 10px; left: 12px; display: none; }
+  /* shell: visible failures, honest loading, no dead screen */
+  #unity-warning {
+    z-index: 60;
+    top: 44px;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: min(560px, 92vw);
+    background: rgba(12, 9, 6, 0.96);
+    border: 1px solid rgba(245, 158, 11, 0.9);
+    color: #f6e7c1;
+    font: 600 12px/1.55 "Segoe UI", Tahoma, sans-serif;
+    padding: 10px 12px;
+    box-sizing: border-box;
+    text-shadow: none;
+  }
+  #unity-warning .bt-warn-title {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #f59e0b;
+  }
+  #unity-warning .bt-warn-line { padding: 4px 0; }
+  #unity-warning .bt-warn-actions { margin-top: 9px; display: flex; gap: 8px; align-items: center; }
+  #unity-warning button,
+  #unity-warning a {
+    pointer-events: auto;
+    cursor: pointer;
+    font: inherit;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 6px 10px;
+    color: #f6e7c1;
+    background: rgba(12, 9, 6, 0.9);
+    border: 1px solid rgba(245, 158, 11, 0.9);
+    border-radius: 2px;
+    text-decoration: none;
+  }
+  #unity-warning button:hover,
+  #unity-warning a:hover { background: #f59e0b; color: #1a1206; }
+  #bt-loading-note {
+    margin-top: 10px;
+    text-align: center;
+    font: 700 10px/1.4 "Segoe UI", Tahoma, sans-serif;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #f6e7c1;
+    opacity: 0.85;
+  }
+  #bt-noscript {
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 24px;
+    text-align: center;
+    background: #080604;
+    color: #f6e7c1;
+    font: 600 14px/1.6 "Segoe UI", Tahoma, sans-serif;
+  }
+  #bt-noscript a { color: #f59e0b; }
+  #battle-tv-chrome[data-screen="menu"] #bt-options { display: block; }
+  #bt-options-panel {
+    display: none;
+    margin-top: 6px;
+    padding: 8px;
+    background: rgba(12, 9, 6, 0.9);
+    border: 1px solid rgba(245, 158, 11, 0.9);
+  }
+  #bt-options.open #bt-options-panel { display: block; }
+  #bt-options-panel button { display: block; width: 100%; margin-top: 6px; }
+  #bt-options-panel button:first-child { margin-top: 0; }
+  #bt-radio {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+  }
+  #bt-radio-title {
+    max-width: 26vw;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    letter-spacing: 0.04em;
+    text-transform: none;
+    font-weight: 600;
+    font-size: 11px;
+  }
+  #bt-radio-vol { pointer-events: auto; width: 68px; accent-color: #f59e0b; }
+  #bt-links { display: flex; gap: 6px; }
+</style>
+<div id="battle-tv-chrome" data-screen="intro">
+  <div class="edge top" data-for="intro"><span>Battle TV</span><span>·</span><span>LYGO Arena</span></div>
+  <div class="edge bottom" data-for="intro">
+    <span>Created by Justin Helmer</span>
+    <span>© <span id="bt-year"></span> Justin Helmer · Excavationpro · Eternal Haven · All rights reserved</span>
+  </div>
+  <div id="bt-options">
+    <button type="button" id="bt-options-btn">Options</button>
+    <div id="bt-options-panel">
+      <button type="button" id="bt-music">Music on</button>
+      <button type="button" id="bt-full">Full screen</button>
+    </div>
+  </div>
+  <div class="edge bottom" data-for="menu">
+    <a href="https://chatagent.ca/games/lattice-arena/">Lattice Arena</a>
+    <span id="bt-radio">
+      <button type="button" id="bt-radio-play">Play</button>
+      <button type="button" id="bt-radio-next">Next</button>
+      <button type="button" id="bt-radio-mute">Mute</button>
+      <input id="bt-radio-vol" type="range" min="0" max="100" value="55" aria-label="Radio volume">
+      <span id="bt-radio-title">Radio</span>
+    </span>
+    <span id="bt-links">
+      <a href="https://www.paypal.com/paypalme/ExcavationPro" target="_blank" rel="noopener">PayPal</a>
+      <a href="https://www.patreon.com/Excavationpro/posts/chatagent-ca-api-170485961" target="_blank" rel="noopener">Patreon</a>
+    </span>
+  </div>
+</div>
+<audio id="bt-radio-el" preload="none"></audio>
+<script>
+(function () {
+  var year = document.getElementById("bt-year");
+  if (year) year.textContent = String(new Date().getFullYear());
+  window.battleTvSetScreen = function (mode) {
+    var root = document.getElementById("battle-tv-chrome");
+    if (root) root.setAttribute("data-screen", mode || "intro");
+  };
+  var musicOff = false;
+  function bed() { return document.getElementById("intro-bed"); }
+  function applyBed() {
+    var node = bed();
+    if (!node) return;
+    var radioOn = window.battleTvRadioPlaying && window.battleTvRadioPlaying();
+    node.muted = musicOff || radioOn;
+    if (!node.muted && window.battleTvStartIntro) window.battleTvStartIntro();
+  }
+  var opt = document.getElementById("bt-options");
+  var optBtn = document.getElementById("bt-options-btn");
+  if (optBtn) optBtn.addEventListener("click", function () { opt.classList.toggle("open"); });
+  var musicBtn = document.getElementById("bt-music");
+  if (musicBtn) musicBtn.addEventListener("click", function () {
+    musicOff = !musicOff;
+    musicBtn.textContent = musicOff ? "Music off" : "Music on";
+    applyBed();
+  });
+  var full = document.getElementById("bt-full");
+  if (full) full.addEventListener("click", function () {
+    var native = document.getElementById("unity-fullscreen-button");
+    if (native) native.click();
+  });
+  var tracks = [];
+  var bag = [];
+  var index = 0;
+  var playing = false;
+  var muted = false;
+  var vol = 0.55;
+  try {
+    var saved = JSON.parse(localStorage.getItem("lygo_lattice_arena_radio") || "{}");
+    if (typeof saved.vol === "number") vol = Math.max(0, Math.min(1, saved.vol));
+    if (saved.muted) muted = true;
+  } catch (e) {}
+  function saveRadio() {
+    try { localStorage.setItem("lygo_lattice_arena_radio", JSON.stringify({ vol: vol, muted: muted })); } catch (e) {}
+  }
+  var audio = document.getElementById("bt-radio-el");
+  var title = document.getElementById("bt-radio-title");
+  var playBtn = document.getElementById("bt-radio-play");
+  var volInput = document.getElementById("bt-radio-vol");
+  function paint() {
+    var track = tracks[index];
+    if (title) title.textContent = track ? track.title : "Radio";
+    if (playBtn) playBtn.textContent = playing ? "Pause" : "Play";
+    var muteBtn = document.getElementById("bt-radio-mute");
+    if (muteBtn) muteBtn.textContent = muted ? "Unmute" : "Mute";
+    if (audio) { audio.volume = vol; audio.muted = muted; }
+    if (volInput && document.activeElement !== volInput) volInput.value = String(Math.round(vol * 100));
+  }
+  function refill() {
+    bag = tracks.map(function (_, i) { return i; });
+    for (var i = bag.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var swap = bag[i]; bag[i] = bag[j]; bag[j] = swap;
+    }
+  }
+  function loadAt(i) {
+    if (!tracks.length || !audio) return;
+    index = ((i % tracks.length) + tracks.length) % tracks.length;
+    audio.src = tracks[index].url;
+    paint();
+  }
+  var hopping = false;
+  function next() {
+    if (hopping) return;
+    hopping = true;
+    if (!bag.length) refill();
+    var i = bag.pop();
+    loadAt(i == null ? 0 : i);
+    hopping = false;
+    if (playing && audio && audio.src) audio.play().catch(function () {});
+  }
+  window.battleTvRadioPlaying = function () { return playing && !muted; };
+  if (playBtn) playBtn.addEventListener("click", function () {
+    if (!tracks.length) return;
+    if (playing) { audio.pause(); playing = false; paint(); applyBed(); return; }
+    playing = true;
+    if (!audio.src) next();
+    applyBed();
+    audio.play().catch(function () { next(); });
+    paint();
+  });
+  var nextBtn = document.getElementById("bt-radio-next");
+  if (nextBtn) nextBtn.addEventListener("click", function () { playing = true; applyBed(); next(); });
+  var muteBtn = document.getElementById("bt-radio-mute");
+  if (muteBtn) muteBtn.addEventListener("click", function () {
+    muted = !muted; saveRadio(); paint(); applyBed();
+  });
+  if (volInput) volInput.addEventListener("input", function () {
+    vol = Number(volInput.value) / 100;
+    if (vol > 0 && muted) muted = false;
+    saveRadio(); paint(); applyBed();
+  });
+  if (audio) {
+    audio.addEventListener("ended", function () { playing = true; next(); });
+    audio.addEventListener("error", function () { if (playing && !hopping) next(); });
+  }
+  fetch("StreamingAssets/menu/radio.json").then(function (r) { return r.json(); }).then(function (data) {
+    var raw = data.tracks || data;
+    tracks = raw.filter(function (t) { return t && (t.url || t.stream_url); }).map(function (t) {
+      return { title: t.title || t.name || "Untitled", url: t.url || t.stream_url };
+    });
+    refill();
+    paint();
+  }).catch(function () { if (title) title.textContent = "Radio offline"; });
+  paint();
+  function holdRest() {
+    if (document.visibilityState !== "visible") return;
+    var nodes = document.getElementsByTagName("video");
+    for (var i = 0; i < nodes.length; i++) {
+      var v = nodes[i];
+      var src = v.currentSrc || v.src || "";
+      if (src.indexOf("Vale-vs-Brute-push") !== -1) continue;
+      if (src.indexOf("Vale-vs-Brute-rest") === -1 && !v.loop) continue;
+      v.loop = true;
+      if (v.ended) v.currentTime = 0;
+      if (v.paused || v.ended) {
+        var attempt = v.play();
+        if (attempt && attempt.catch) attempt.catch(function () {});
+      }
+    }
+  }
+  document.addEventListener("visibilitychange", holdRest);
+  setInterval(holdRest, 1500);
+})();
+</script>
+
+    <audio id="intro-bed" src="StreamingAssets/menu/Apex_Vanguard.mp3" loop autoplay preload="auto"></audio>
+    <script>
+      window.battleTvStartIntro = function () {
+        var bed = document.getElementById("intro-bed");
+        if (!bed) return;
+        bed.volume = 0.25;
+        bed.loop = true;
+        var play = bed.play();
+        if (play && play.catch) play.catch(function () {});
+      };
+      window.battleTvStartIntro();
+      document.addEventListener("pointerdown", window.battleTvStartIntro, true);
+      document.addEventListener("keydown", window.battleTvStartIntro, true);
+    </script>
+    <div id="unity-container" class="unity-desktop">
+      <canvas id="unity-canvas" width=960 height=600 tabindex="-1"></canvas>
+      <div id="unity-loading-bar">
+        <div id="unity-logo"></div>
+        <div id="unity-progress-bar-empty">
+          <div id="unity-progress-bar-full"></div>
+        </div>
+      </div>
+      <div id="unity-warning"> </div>
+      <div id="unity-footer">
+        <div id="unity-logo-title-footer"></div>
+        <div id="unity-fullscreen-button"></div>
+        <div id="unity-build-title">Battle TV</div>
+      </div>
+    </div>
+    <script>
+      var canvas = document.querySelector("#unity-canvas");
+
+      var warnBox = document.querySelector("#unity-warning");
+
+      // One place that turns a failure into something a player can read, with
+      // a way out. No alert(): some in-app browsers block it and it leaves the
+      // page looking dead behind the dialog.
+      function btBanner(title, detail, withWayOut) {
+        warnBox.innerHTML = "";
+        var t = document.createElement("span");
+        t.className = "bt-warn-title";
+        t.textContent = title;
+        warnBox.appendChild(t);
+        var d = document.createElement("span");
+        d.textContent = detail || "";
+        warnBox.appendChild(d);
+        if (withWayOut) {
+          var row = document.createElement("div");
+          row.className = "bt-warn-actions";
+          var again = document.createElement("button");
+          again.type = "button";
+          again.textContent = "Reload";
+          again.onclick = function () { location.reload(); };
+          row.appendChild(again);
+          var alt = document.createElement("a");
+          alt.href = "https://chatagent.ca/games/lattice-arena/";
+          alt.textContent = "HTML5 version";
+          row.appendChild(alt);
+          warnBox.appendChild(row);
+        }
+        warnBox.style.display = "block";
+      }
+
+      function unityShowBanner(msg, type) {
+        if (type === "error") {
+          btBanner("THE BROADCAST STOPPED", String(msg || "").replace(/<[^>]+>/g, " ").trim(), true);
+          return;
+        }
+        var div = document.createElement("div");
+        div.className = "bt-warn-line";
+        div.innerHTML = msg;
+        warnBox.appendChild(div);
+        warnBox.style.display = "block";
+        setTimeout(function () {
+          if (div.parentNode) div.parentNode.removeChild(div);
+          if (!warnBox.children.length) warnBox.style.display = "none";
+        }, 5000);
+      }
+
+      function btHasWebgl() {
+        try {
+          var probe = document.createElement("canvas");
+          return !!(probe.getContext("webgl2") || probe.getContext("webgl") ||
+            probe.getContext("experimental-webgl"));
+        } catch (e) { return false; }
+      }
+
+      var buildUrl = "Build";
+      var buildStamp = "29215981-73362-4025285-19be8707";
+      var loaderUrl = buildUrl + "/docs.loader.js?v=" + buildStamp;
+      var config = {
+        arguments: [],
+        dataUrl: buildUrl + "/docs.data.unityweb?v=" + buildStamp,
+        frameworkUrl: buildUrl + "/docs.framework.js.unityweb?v=" + buildStamp,
+        codeUrl: buildUrl + "/docs.wasm.unityweb?v=" + buildStamp,
+        streamingAssetsUrl: "StreamingAssets",
+        companyName: "DeepSeekOracle",
+        productName: "Battle TV",
+        productVersion: "1.0",
+        showBanner: unityShowBanner,
+        // errorHandler: function(err, url, line) {
+        //    alert("error " + err + " occurred at line " + line);
+        //    // Return 'true' if you handled this error and don't want Unity
+        //    // to process it further, 'false' otherwise.
+        //    return true;
+        // },
+      };
+
+      // By default, Unity keeps WebGL canvas render target size matched with
+      // the DOM size of the canvas element (scaled by window.devicePixelRatio)
+      // Set this to false if you want to decouple this synchronization from
+      // happening inside the engine, and you would instead like to size up
+      // the canvas DOM size and WebGL render target sizes yourself.
+      // config.matchWebGLToCanvasSize = false;
+
+      // If you would like all file writes inside Unity Application.persistentDataPath
+      // directory to automatically persist so that the contents are remembered when
+      // the user revisits the site the next time, uncomment the following line:
+      // config.autoSyncPersistentDataPath = true;
+      // This autosyncing is currently not the default behavior to avoid regressing
+      // existing user projects that might rely on the earlier manual
+      // JS_FileSystem_Sync() behavior, but in future Unity version, this will be
+      // expected to change.
+
+      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+        // Mobile device style: fill the whole browser client area with the game canvas:
+
+        var meta = document.createElement('meta');
+        meta.name = 'viewport';
+        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
+        document.getElementsByTagName('head')[0].appendChild(meta);
+        document.querySelector("#unity-container").className = "unity-mobile";
+        canvas.className = "unity-mobile";
+
+        // To lower canvas resolution on mobile devices to gain some
+        // performance, uncomment the following line:
+        // config.devicePixelRatio = 1;
+
+
+      } else {
+        // Desktop style: Render the game canvas in a window that can be maximized to fullscreen:
+        canvas.style.width = "100vw";
+        canvas.style.height = "100vh";
+      }
+
+      canvas.setAttribute("role", "application");
+      canvas.setAttribute("aria-label",
+        "Battle TV: the side-view LYGO Arena fight. Automatic battle, no direct control.");
+
+      var btWebglOk = btHasWebgl();
+      if (!btWebglOk) {
+        btBanner("THIS BROWSER CANNOT RUN THE BROADCAST",
+          "WebGL is unavailable or blocked. Turn on hardware acceleration, or watch the HTML5 version of LYGO Arena.",
+          true);
+      }
+
+      var loadNote = document.createElement("div");
+      loadNote.id = "bt-loading-note";
+      loadNote.textContent = "LOADING THE BROADCAST · 0%";
+      document.querySelector("#unity-loading-bar").appendChild(loadNote);
+
+      if (btWebglOk) document.querySelector("#unity-loading-bar").style.display = "block";
+
+      var script = document.createElement("script");
+      script.src = loaderUrl;
+      function battleTvFreshCache() {
+        var key = "battleTvBuild";
+        var same = false;
+        try { same = localStorage.getItem(key) === buildStamp; } catch (e) {}
+        if (same) return Promise.resolve();
+        try { localStorage.setItem(key, buildStamp); } catch (e) {}
+        return new Promise(function (resolve) {
+          var done = false;
+          function finish() { if (!done) { done = true; resolve(); } }
+          setTimeout(finish, 1200);
+          try {
+            var req = indexedDB.deleteDatabase("UnityCache");
+            req.onsuccess = req.onerror = req.onblocked = finish;
+          } catch (e) { finish(); }
+        });
+      }
+
+      script.onerror = function () {
+        btBanner("THE BROADCAST DID NOT LOAD",
+          "The engine file did not arrive. Check the connection, then reload.", true);
+      };
+
+      script.onload = () => {
+        battleTvFreshCache().then(function () {
+        createUnityInstance(canvas, config, (progress) => {
+        if (typeof createUnityInstance !== "function") {
+          btBanner("THE BROADCAST DID NOT LOAD",
+            "The engine arrived but did not start. Reload, or watch the HTML5 version.", true);
+          return;
+        }
+          document.querySelector("#unity-progress-bar-full").style.width = 100 * progress + "%";
+          loadNote.textContent = "LOADING THE BROADCAST · " + Math.round(progress * 100) + "%";
+              }).then((unityInstance) => {
+                document.querySelector("#unity-loading-bar").style.display = "none";
+                if (window.battleTvStartIntro) window.battleTvStartIntro();
+                document.querySelector("#unity-fullscreen-button").onclick = () => {
+                  unityInstance.SetFullscreen(1);
+                };
+
+              }).catch((message) => {
+                btBanner("THE BROADCAST STOPPED",
+                  String(message || "The engine reported an error."), true);
+              });
+        });
+            };
+
+      if (btWebglOk) document.body.appendChild(script);
+
+    </script>
+  </body>
+</html>
