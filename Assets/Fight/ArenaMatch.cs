@@ -209,7 +209,11 @@ namespace BattleTv.Fight
                 if (kit.Id == null)
                     continue;
                 var slot = slots[i];
-                var x = (team == 0 ? 3 : MapW - 4) * Tile;
+                // Lane 1v1 shares SideDuel's sand-ring marks (31% / 69% of the plate).
+                // Overhead sand uses inward columns so feet sit inside the white oval.
+                var x = Lane
+                    ? (team == 0 ? SideDuel.StationLeft : SideDuel.StationRight) / SideDuel.Lane * WorldW
+                    : (team == 0 ? 8 : MapW - 9) * Tile;
                 var y = Lane ? WorldH * 0.5 : (3 + slot * 4) * Tile;
                 var body = new ArenaBody
                 {

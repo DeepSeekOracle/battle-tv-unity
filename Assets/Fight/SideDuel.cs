@@ -73,6 +73,10 @@ namespace BattleTv.Fight
         // The foot point sits in from the plate edge so the painted body
         // stays on the sand, against the side stones.
         public const double Wall = 2.8;
+        // FFT stations: feet on the painted sand ring, not the side stones.
+        // 5.6 / 12.4 is 31% / 69% of the plate — overlay-checked on stage.jpg.
+        public const double StationLeft = 5.6;
+        public const double StationRight = 12.4;
         public const double CloseCd = 30;
         public const double CloseCost = 8;
         public const double ValeCharge = 1.15;
@@ -114,7 +118,7 @@ namespace BattleTv.Fight
         public static Body Vale()
         {
             var body = Make("Vale", "Door Flesh · Bumper Thorn · Fair Plate",
-                895, 26, 0.72, 3.3, 8, 1.6, 0.15, 0.82, 0, 0, 3, 0.22, 0.30, 2.4);
+                895, 26, 0.72, 3.3, 8, 1.6, 0.15, 0.82, 0, 0, 3, 0.22, 0.30, StationLeft);
             body.Wall = true;
             body.ManaMax = body.Mana = 60;
             body.ManaRegen = 4;
@@ -124,7 +128,7 @@ namespace BattleTv.Fight
         public static Body Brute()
         {
             var body = Make("Brute", "Fair Plate · Deeper Well · Bumper Thorn",
-                760, 34, 0.66, 2.0, 5, 1.5, 0.08, 0.92, 0.40, -0.12, 3, 0, 0.30, 15.6);
+                760, 34, 0.66, 2.0, 5, 1.5, 0.08, 0.92, 0.40, -0.12, 3, 0, 0.30, StationRight);
             body.Pound = true;
             body.Ward = true;
             body.ManaMax = body.Mana = 40;

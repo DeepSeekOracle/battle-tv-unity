@@ -981,6 +981,47 @@ namespace BattleTv.Menu.Tests
         }
 
         [Test]
+        public void StationsStandOnThePaintedSand()
+        {
+            var vale = SideDuel.Vale();
+            var brute = SideDuel.Brute();
+            Assert.AreEqual(SideDuel.StationLeft, vale.HomeX, 0.01);
+            Assert.AreEqual(SideDuel.StationRight, brute.HomeX, 0.01);
+            Assert.Greater(vale.HomeX, SideDuel.Wall + 2.0);
+            Assert.Less(brute.HomeX, SideDuel.Lane - SideDuel.Wall - 2.0);
+            Assert.Greater(vale.HomeX / SideDuel.Lane, 0.28);
+            Assert.Less(vale.HomeX / SideDuel.Lane, 0.36);
+            Assert.Greater(brute.HomeX / SideDuel.Lane, 0.64);
+            Assert.Less(brute.HomeX / SideDuel.Lane, 0.72);
+
+            ArenaMatch.Begin(new[] { "vale" }, new[] { "brute" }, 1, true);
+            var left = ArenaMatch.Bodies[0];
+            var right = ArenaMatch.Bodies[1];
+            Assert.AreEqual(0, left.Team);
+            Assert.AreEqual(1, right.Team);
+            Assert.AreEqual(SideDuel.StationLeft / SideDuel.Lane * ArenaMatch.WorldW, left.HomeX, 0.5);
+            Assert.AreEqual(SideDuel.StationRight / SideDuel.Lane * ArenaMatch.WorldW, right.HomeX, 0.5);
+
+            ArenaMatch.Begin(new[] { "vale", "kael" }, new[] { "brute", "gate" }, 4, false);
+            Assert.AreEqual(4, ArenaMatch.Bodies.Count);
+            for (var i = 0; i < ArenaMatch.Bodies.Count; i++)
+            {
+                var body = ArenaMatch.Bodies[i];
+                var u = body.HomeX / ArenaMatch.WorldW;
+                if (body.Team == 0)
+                {
+                    Assert.Greater(u, 0.20, body.Id);
+                    Assert.Less(u, 0.28, body.Id);
+                }
+                else
+                {
+                    Assert.Greater(u, 0.70, body.Id);
+                    Assert.Less(u, 0.78, body.Id);
+                }
+            }
+        }
+
+        [Test]
         public void PaintedRosterStaysHome()
         {
             var ids = LaneRoster.LaneIds();
