@@ -22,6 +22,8 @@ namespace BattleTv.Fight
         public double Range;
         public double HitRadius = 16;
         public int Face = 1;
+        public double HomeX;
+        public double HomeY;
         public double AtkCd;
         public double Swing;
         public double Mana;
@@ -136,6 +138,11 @@ namespace BattleTv.Fight
         public const double WorldH = MapH * Tile;
         public const double Inset = Tile * 1.15;
         public const double Sep = 40;
+        /// <summary>
+        /// Final Fantasy station fight: bodies keep their spawn marks.
+        /// Animations and sigils carry the blows. Fight numbers stay booked.
+        /// </summary>
+        public const bool Stationed = true;
         public static readonly List<ArenaBody> Bodies = new List<ArenaBody>(10);
         public static readonly List<ArenaBolt> Bolts = new List<ArenaBolt>(16);
         public static double Time;
@@ -166,12 +173,20 @@ namespace BattleTv.Fight
                 dt = 0.05;
             Time += dt;
             ArenaLogic.Advance(dt);
-            for (var n = 0; n < 8; n++)
-                Ease();
-            if (Lane)
+            if (Stationed)
             {
                 for (var i = 0; i < Bodies.Count; i++)
-                    Hold(Bodies[i]);
+                    Park(Bodies[i]);
+            }
+            else
+            {
+                for (var n = 0; n < 8; n++)
+                    Ease();
+                if (Lane)
+                {
+                    for (var i = 0; i < Bodies.Count; i++)
+                        Hold(Bodies[i]);
+                }
             }
             if (Time >= SideDuel.HardStop)
                 Close("Neither side fell.", "The sand is a draw.");
@@ -194,6 +209,8 @@ namespace BattleTv.Fight
                 if (kit.Id == null)
                     continue;
                 var slot = slots[i];
+                var x = (team == 0 ? 3 : MapW - 4) * Tile;
+                var y = Lane ? WorldH * 0.5 : (3 + slot * 4) * Tile;
                 var body = new ArenaBody
                 {
                     Id = kit.Id,
@@ -201,8 +218,11 @@ namespace BattleTv.Fight
                     Atk = string.IsNullOrEmpty(kit.Atk) ? "Strike" : kit.Atk,
                     Team = team,
                     Slot = slot,
-                    X = (team == 0 ? 3 : MapW - 4) * Tile,
-                    Y = Lane ? WorldH * 0.5 : (3 + slot * 4) * Tile
+                    X = x,
+                    Y = y,
+                    HomeX = x,
+                    HomeY = y,
+                    Face = team == 0 ? 1 : -1
                 };
                 ArenaLogic.Dress(body, kit);
                 Bodies.Add(body);
@@ -249,6 +269,22 @@ namespace BattleTv.Fight
                     Hold(b);
                 }
             }
+        }
+
+        public static bool FacesRight(ArenaBody body)
+        {
+            return body != null && body.Team == 0;
+        }
+
+        public static void Park(ArenaBody body)
+        {
+            if (body == null)
+                return;
+            if (Lane)
+                body.HomeY = WorldH * 0.5;
+            body.X = body.HomeX;
+            body.Y = body.HomeY;
+            body.Face = body.Team == 0 ? 1 : -1;
         }
 
         public static void Hold(ArenaBody body)

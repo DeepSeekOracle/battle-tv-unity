@@ -424,13 +424,14 @@ namespace BattleTv.Fight
             Place(_vale, valeBody);
             Place(_brute, bruteBody);
             // A fallen body is wide. Shoving it by the nose stands the corpse back up.
-            if (!_over)
+            if (!_over && !ArenaMatch.Stationed)
                 KeepShouldersApart();
             if (dt > 0f)
                 ReleaseBlows(dt);
             if (!_over)
             {
-                ApplyWeight();
+                if (!ArenaMatch.Stationed)
+                    ApplyWeight();
                 CloseThePunch();
             }
             KeepOnStage();
@@ -480,6 +481,12 @@ namespace BattleTv.Fight
 
         static void StepWalk(ref float clock, Body body, ref double foot, bool clip, float dt)
         {
+            if (ArenaMatch.Stationed)
+            {
+                clock = -1f;
+                foot = body != null ? body.X : foot;
+                return;
+            }
             bool moved = false;
             if (!double.IsNaN(foot))
             {
@@ -584,9 +591,9 @@ namespace BattleTv.Fight
             // toward the other fighter. The mirror keeps the kite on that painted arm.
             float face = 1f;
             if (body.Name == "Vale" && _brute != null)
-                face = body.X <= _brute.X ? 1f : -1f;
+                face = body.HomeX <= _brute.HomeX ? 1f : -1f;
             else if (body.Name == "Brute" && _vale != null)
-                face = body.X >= _vale.X ? 1f : -1f;
+                face = body.HomeX >= _vale.HomeX ? 1f : -1f;
             rect.localScale = new Vector3(face * (1f + give), 1f - give, 1f);
         }
 
@@ -629,6 +636,8 @@ namespace BattleTv.Fight
 
         void CloseThePunch()
         {
+            if (ArenaMatch.Stationed)
+                return;
             if (valeBody == null || bruteBody == null || _vale == null)
                 return;
             if (_sparkLife <= 0.01f || _sparkOn != "Brute")

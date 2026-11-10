@@ -177,35 +177,43 @@ namespace BattleTv.Menu.Tests
             wall.Range = 8;
             fresh.X = 1;
             wall.X = 9;
-            Assert.IsTrue(SideDuel.TryClose(fresh, wall));
-            Assert.AreEqual(30, fresh.StrideCd);
-            Assert.AreEqual(52, fresh.Mana);
+            Assert.IsFalse(SideDuel.TryClose(fresh, wall));
+            Assert.AreEqual(0, fresh.StrideCd);
+            Assert.AreEqual(60, fresh.Mana);
 
             var bruteHome = SideDuel.Brute();
             var valeFar = SideDuel.Vale();
             bruteHome.X = 8;
             valeFar.X = 12;
-            Assert.IsTrue(SideDuel.TryClose(bruteHome, valeFar));
-            Assert.AreEqual(30, bruteHome.StrideCd);
-            Assert.AreEqual(32, bruteHome.Mana);
+            Assert.IsFalse(SideDuel.TryClose(bruteHome, valeFar));
+            Assert.AreEqual(0, bruteHome.StrideCd);
+            Assert.AreEqual(40, bruteHome.Mana);
 
             var pinned = SideDuel.Brute();
             var corner = SideDuel.Vale();
             pinned.X = SideDuel.Wall;
             corner.X = 4.2;
-            Assert.IsTrue(SideDuel.TryClose(pinned, corner));
-            Assert.Greater(pinned.X, corner.X);
-            Assert.AreEqual(30, pinned.StrideCd);
-            Assert.AreEqual(32, pinned.Mana);
+            Assert.IsFalse(SideDuel.TryClose(pinned, corner));
+            Assert.AreEqual(SideDuel.Wall, pinned.X, 0.01);
 
             var valePin = SideDuel.Vale();
             var onHer = SideDuel.Brute();
             valePin.X = SideDuel.Wall;
             onHer.X = 4.2;
-            Assert.IsTrue(SideDuel.TryClose(valePin, onHer));
-            Assert.Greater(valePin.X, onHer.X);
-            Assert.AreEqual(30, valePin.StrideCd);
-            Assert.AreEqual(52, valePin.Mana);
+            Assert.IsFalse(SideDuel.TryClose(valePin, onHer));
+            Assert.AreEqual(SideDuel.Wall, valePin.X, 0.01);
+
+            SideDuel.ResetLane();
+            var valeStay = SideDuel.Vale();
+            var bruteStay = SideDuel.Brute();
+            var valeMark = valeStay.HomeX;
+            var bruteMark = bruteStay.HomeX;
+            var rng = new System.Random(1);
+            for (int i = 0; i < 90; i++)
+                SideDuel.Step(valeStay, bruteStay, 1.0 / 30.0, rng, i / 30.0);
+            Assert.AreEqual(valeMark, valeStay.X, 0.01);
+            Assert.AreEqual(bruteMark, bruteStay.X, 0.01);
+            Assert.Less(valeStay.Hp + bruteStay.Hp, valeStay.Max + bruteStay.Max);
         }
 
         [Test]
@@ -225,6 +233,8 @@ namespace BattleTv.Menu.Tests
                 while (t < SideDuel.HardStop && vale.Alive && brute.Alive)
                 {
                     SideDuel.Step(vale, brute, 1.0 / 30.0, rng, t);
+                    Assert.AreEqual(vale.HomeX, vale.X, 0.01);
+                    Assert.AreEqual(brute.HomeX, brute.X, 0.01);
                     t += 1.0 / 30.0;
                 }
                 if (t > longest)
@@ -238,8 +248,7 @@ namespace BattleTv.Menu.Tests
             }
             Assert.AreEqual(0, draws);
             Assert.Less(longest, 280);
-            Assert.Greater(valeWins, 0);
-            Assert.Greater(bruteWins, 0);
+            Assert.AreEqual(12, valeWins + bruteWins);
         }
 
         [Test]
@@ -928,26 +937,36 @@ namespace BattleTv.Menu.Tests
         }
 
         [Test]
-        public void CorneredFighterLeapsPast()
+        public void StationedFightersKeepTheirMarks()
         {
             ArenaMatch.Begin(new[] { "vale" }, new[] { "brute" }, 1);
             var vale = ArenaMatch.Bodies[0];
             var brute = ArenaMatch.Bodies[1];
+            var valeHomeX = vale.HomeX;
+            var valeHomeY = vale.HomeY;
+            var bruteHomeX = brute.HomeX;
+            var bruteHomeY = brute.HomeY;
             vale.X = ArenaMatch.Inset;
             vale.Y = ArenaMatch.WorldH * 0.5;
             brute.X = vale.X + 70;
             brute.Y = vale.Y;
             vale.Mana = vale.ManaMax;
             brute.Mana = 0;
+            var casts = ArenaLogic.Casts;
             ArenaMatch.Step(0.05);
-            Assert.Greater(vale.X, brute.X);
-            Assert.AreEqual(30, vale.StrideCd, 0.01);
-            Assert.AreEqual("Close", vale.Callout);
-            Assert.AreEqual(vale.ManaMax - 8, vale.Mana, 0.01);
+            Assert.AreEqual(valeHomeX, vale.X, 0.01);
+            Assert.AreEqual(valeHomeY, vale.Y, 0.01);
+            Assert.AreEqual(bruteHomeX, brute.X, 0.01);
+            Assert.AreEqual(bruteHomeY, brute.Y, 0.01);
+            Assert.AreEqual(1, vale.Face);
+            Assert.AreEqual(-1, brute.Face);
+            Assert.Greater(ArenaLogic.Casts, casts);
 
             ArenaMatch.Begin(new[] { "brute" }, new[] { "vale" }, 1);
             brute = ArenaMatch.Bodies[0];
             vale = ArenaMatch.Bodies[1];
+            var bruteMark = brute.HomeX;
+            var valeMark = vale.HomeX;
             brute.X = ArenaMatch.WorldW - ArenaMatch.Inset;
             brute.Y = ArenaMatch.WorldH * 0.5;
             vale.X = brute.X - 70;
@@ -955,24 +974,25 @@ namespace BattleTv.Menu.Tests
             brute.Mana = brute.ManaMax;
             vale.Mana = 0;
             ArenaMatch.Step(0.05);
-            Assert.Less(brute.X, vale.X);
-            Assert.AreEqual(30, brute.StrideCd, 0.01);
-            Assert.AreEqual("Close", brute.Callout);
+            Assert.AreEqual(bruteMark, brute.X, 0.01);
+            Assert.AreEqual(valeMark, vale.X, 0.01);
+            Assert.AreEqual(1, brute.Face);
+            Assert.AreEqual(-1, vale.Face);
         }
 
         [Test]
-        public void PaintedRosterDashes()
+        public void PaintedRosterStaysHome()
         {
             var ids = LaneRoster.LaneIds();
             Assert.AreEqual(33, ids.Length);
             for (var i = 0; i < ids.Length; i++)
             {
-                Leap(ids[i], true, false);
-                Leap(ids[i], false, false);
-                Leap(ids[i], true, true);
-                Leap(ids[i], false, true);
-                LeapVertical(ids[i], true);
-                LeapVertical(ids[i], false);
+                StayHome(ids[i], true, false);
+                StayHome(ids[i], false, false);
+                StayHome(ids[i], true, true);
+                StayHome(ids[i], false, true);
+                StayHomeVertical(ids[i], true);
+                StayHomeVertical(ids[i], false);
             }
             Sprint("nia");
             Sprint("arkos");
@@ -983,12 +1003,16 @@ namespace BattleTv.Menu.Tests
             Assert.IsTrue(vale.Contains("vale-bash-f00.png"));
         }
 
-        static void Leap(string id, bool leftWall, bool lane)
+        static void StayHome(string id, bool leftWall, bool lane)
         {
             var foeId = id == "vale" ? "brute" : "vale";
             ArenaMatch.Begin(new[] { id }, new[] { foeId }, 4, lane);
             var e = ArenaMatch.Bodies[0];
             var foe = ArenaMatch.Bodies[1];
+            var homeX = e.HomeX;
+            var homeY = e.HomeY;
+            var foeX = foe.HomeX;
+            var foeY = foe.HomeY;
             var y = ArenaMatch.WorldH * 0.5;
             e.X = leftWall ? ArenaMatch.Inset : ArenaMatch.WorldW - ArenaMatch.Inset;
             e.Y = y;
@@ -996,28 +1020,28 @@ namespace BattleTv.Menu.Tests
             foe.Y = y;
             e.Mana = e.ManaMax;
             foe.Mana = 0;
-            var expect = e.Gun ? "Slip" : "Close";
+            var casts = ArenaLogic.Casts;
             ArenaMatch.Step(0.05);
             var where = id + (leftWall ? " left " : " right ") + (lane ? "lane" : "sand");
-            if (leftWall)
-                Assert.Greater(e.X, foe.X, where);
-            else
-                Assert.Less(e.X, foe.X, where);
-            Assert.AreEqual(expect, e.Callout, where);
-            Assert.AreEqual(30, e.StrideCd, 0.01, where);
-            Assert.AreEqual(e.ManaMax - 8, e.Mana, 0.01, where);
-            if (lane)
-                Assert.AreEqual(y, e.Y, 0.01, where);
+            Assert.AreEqual(homeX, e.X, 0.01, where);
+            Assert.AreEqual(homeY, e.Y, 0.01, where);
+            Assert.AreEqual(foeX, foe.X, 0.01, where);
+            Assert.AreEqual(foeY, foe.Y, 0.01, where);
+            Assert.AreEqual(e.Team == 0 ? 1 : -1, e.Face, where);
+            Assert.Greater(ArenaLogic.Casts, casts, where);
             ArenaMatch.Step(0.05);
-            Assert.Greater(e.StrideCd, 20, where);
+            Assert.AreEqual(homeX, e.X, 0.01, where);
+            Assert.AreEqual(homeY, e.Y, 0.01, where);
         }
 
-        static void LeapVertical(string id, bool top)
+        static void StayHomeVertical(string id, bool top)
         {
             var foeId = id == "vale" ? "brute" : "vale";
             ArenaMatch.Begin(new[] { id }, new[] { foeId }, 4, false);
             var e = ArenaMatch.Bodies[0];
             var foe = ArenaMatch.Bodies[1];
+            var homeX = e.HomeX;
+            var homeY = e.HomeY;
             var x = ArenaMatch.WorldW * 0.5;
             e.X = x;
             e.Y = top ? ArenaMatch.Inset : ArenaMatch.WorldH - ArenaMatch.Inset;
@@ -1027,12 +1051,9 @@ namespace BattleTv.Menu.Tests
             foe.Mana = 0;
             ArenaMatch.Step(0.05);
             var where = id + (top ? " top" : " bottom");
-            if (top)
-                Assert.Greater(e.Y, foe.Y, where);
-            else
-                Assert.Less(e.Y, foe.Y, where);
-            Assert.AreEqual(e.Gun ? "Slip" : "Close", e.Callout, where);
-            Assert.AreEqual(30, e.StrideCd, 0.01, where);
+            Assert.AreEqual(homeX, e.X, 0.01, where);
+            Assert.AreEqual(homeY, e.Y, 0.01, where);
+            Assert.AreEqual(e.Team == 0 ? 1 : -1, e.Face, where);
         }
 
         static void Sprint(string id)
@@ -1056,12 +1077,11 @@ namespace BattleTv.Menu.Tests
                     e.Cds[i] = 99;
             }
             Assert.IsTrue(found, id);
-            var before = e.X;
             ArenaMatch.Step(0.05);
             Assert.AreEqual("Dash", e.Callout, id);
             Assert.Greater(e.SwiftT, 2, id);
-            Assert.AreEqual(before, e.X, 0.01, id);
-            Assert.AreEqual(y, e.Y, 0.01, id);
+            Assert.AreEqual(e.HomeX, e.X, 0.01, id);
+            Assert.AreEqual(e.HomeY, e.Y, 0.01, id);
             Assert.AreEqual(e.ManaMax - System.Math.Min(6 * 1.1, 40), e.Mana, 0.01, id);
         }
 

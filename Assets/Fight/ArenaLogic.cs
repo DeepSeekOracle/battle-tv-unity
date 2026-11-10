@@ -173,22 +173,24 @@ namespace BattleTv.Fight
             Tick(e, dt);
             e.Mana = Math.Min(e.ManaMax, e.Mana + e.ManaRegen * dt);
             e.StrideCd = StrideLeft(e);
+            e.Face = e.Team == 0 ? 1 : -1;
             if (e.Stun > 0)
                 return;
             var foe = Target(e);
             if (foe == null)
                 return;
-            // Same rule as the side lane: pinned, with someone in their face,
-            // the stride goes through them. It does not wait on the gun step.
-            if (TryCornerLeap(e))
-                return;
-            if (TryCornerEscape(e, foe, dt))
-                return;
+            if (!ArenaMatch.Stationed)
+            {
+                if (TryCornerLeap(e))
+                    return;
+                if (TryCornerEscape(e, foe, dt))
+                    return;
+            }
             if (e.Hp / e.Max < 0.5 && TrySelfHeal(e))
                 return;
             if (TryStopRush(e))
                 return;
-            if (TryStride(e, foe))
+            if (!ArenaMatch.Stationed && TryStride(e, foe))
                 return;
             if (TryKit(e, foe))
                 return;
@@ -199,6 +201,12 @@ namespace BattleTv.Fight
                 dist = 0.001;
             double dmg, speed, range;
             Buff(e, out dmg, out speed, out range);
+            if (ArenaMatch.Stationed)
+            {
+                if (e.AtkCd <= 0 && e.Silence <= 0)
+                    Attack(e, foe, dmg, dx, dy, false);
+                return;
+            }
             var band = e.Gun ? Math.Max(range * 0.9, 58) : range;
             if (e.Gun && dist < range * 0.55 && e.Root <= 0 && e.AtkCd > 0.05 && speed > 0)
             {
@@ -229,6 +237,15 @@ namespace BattleTv.Fight
                 e.Face = dx > 0 ? 1 : -1;
             if (e.AtkCd <= 0 && e.Silence <= 0 && dist <= range + 16 + foe.HitRadius)
                 Attack(e, foe, dmg, dx, dy, walked > 10);
+        }
+
+        static bool HitsFoe(ArenaBody e, ArenaBody o, double need)
+        {
+            if (o == null || !o.Alive || o.Team == e.Team)
+                return false;
+            if (ArenaMatch.Stationed)
+                return true;
+            return Dist(e, o) <= need;
         }
 
         static void Attack(ArenaBody e, ArenaBody foe, double dmg, double dx, double dy, bool bash)
@@ -296,12 +313,12 @@ namespace BattleTv.Fight
                 else if (mv.Aim == "self" || mv.Shape == "aura" || mv.Shape == "self")
                 {
                     var span = Math.Max(reach, ring);
-                    ready = span < 8 ? dist < 3 * ArenaMatch.Tile : dist < span + 8;
+                    ready = ArenaMatch.Stationed || (span < 8 ? dist < 3 * ArenaMatch.Tile : dist < span + 8);
                     if (ready && mv.St != null && mv.St.Aegis > 0 && e.Shield > 0 && mv.Shape == "self")
                         ready = false;
                 }
                 else
-                    ready = dist <= reach + 30 || mv.Range <= 0 && dist < ring + 8;
+                    ready = ArenaMatch.Stationed || dist <= reach + 30 || mv.Range <= 0 && dist < ring + 8;
                 if (!ready)
                     continue;
                 var score = MoveScore(e, mv, foe, dist);
@@ -656,7 +673,7 @@ namespace BattleTv.Fight
                     for (var i = 0; i < ArenaMatch.Bodies.Count; i++)
                     {
                         var o = ArenaMatch.Bodies[i];
-                        if (o.Alive && o.Team == e.Team && Dist(e, o) <= radius)
+                        if (o.Alive && o.Team == e.Team && (ArenaMatch.Stationed || Dist(e, o) <= radius))
                             Apply(o, mv.St, e, false);
                     }
                     break;
@@ -664,9 +681,12 @@ namespace BattleTv.Fight
                     Blink(e, tgt, mv, opening);
                     break;
                 case "stride":
-                    e.X = land.X;
-                    e.Y = land.Y;
-                    ArenaMatch.Hold(e);
+                    if (!ArenaMatch.Stationed && land != null)
+                    {
+                        e.X = land.X;
+                        e.Y = land.Y;
+                        ArenaMatch.Hold(e);
+                    }
                     break;
                 case "revive":
                     Revive(e, mv);
@@ -686,7 +706,7 @@ namespace BattleTv.Fight
             for (var i = 0; i < ArenaMatch.Bodies.Count; i++)
             {
                 var o = ArenaMatch.Bodies[i];
-                if (!o.Alive || o.Team == e.Team || Dist(e, o) > radius + o.HitRadius)
+                if (!HitsFoe(e, o, radius + o.HitRadius))
                     continue;
                 if (mv.Shape == "arc" && !InArc(e, o, face))
                     continue;
@@ -706,7 +726,7 @@ namespace BattleTv.Fight
             for (var i = 0; i < ArenaMatch.Bodies.Count; i++)
             {
                 var o = ArenaMatch.Bodies[i];
-                if (!o.Alive || o.Team == e.Team || Dist(e, o) > radius + o.HitRadius)
+                if (!HitsFoe(e, o, radius + o.HitRadius))
                     continue;
                 if (mv.Dmg > 0)
                     Hit(e, o, e.Dmg * mv.Dmg, true, mv.IgnoreArmor, false, mv.Name, opening, false);
@@ -720,6 +740,20 @@ namespace BattleTv.Fight
 
         static void Beam(ArenaBody e, ArenaBody tgt, MoveDef mv, bool opening)
         {
+            if (ArenaMatch.Stationed)
+            {
+                for (var i = 0; i < ArenaMatch.Bodies.Count; i++)
+                {
+                    var o = ArenaMatch.Bodies[i];
+                    if (!HitsFoe(e, o, 1))
+                        continue;
+                    if (tgt != null && Math.Abs(o.Y - tgt.Y) > 56 && o != tgt)
+                        continue;
+                    Hit(e, o, e.Dmg * mv.Dmg, false, mv.IgnoreArmor, false, mv.Name, opening, false);
+                    Apply(o, mv.St, e, true);
+                }
+                return;
+            }
             var ang = Math.Atan2(tgt.Y - e.Y, tgt.X - e.X);
             var len = mv.Range * ArenaMatch.Tile;
             var cos = Math.Cos(ang);
@@ -781,10 +815,13 @@ namespace BattleTv.Fight
                 tgt = Pick(e, "weakest");
             if (tgt == null)
                 return;
-            var ang = Math.Atan2(e.Y - tgt.Y, e.X - tgt.X);
-            e.X = tgt.X + Math.Cos(ang) * 26;
-            e.Y = tgt.Y + Math.Sin(ang) * 26;
-            ArenaMatch.Hold(e);
+            if (!ArenaMatch.Stationed)
+            {
+                var ang = Math.Atan2(e.Y - tgt.Y, e.X - tgt.X);
+                e.X = tgt.X + Math.Cos(ang) * 26;
+                e.Y = tgt.Y + Math.Sin(ang) * 26;
+                ArenaMatch.Hold(e);
+            }
             if (mv.Dmg > 0)
             {
                 var dealt = Hit(e, tgt, e.Dmg * mv.Dmg, true, false, false, mv.Name, opening, mv.Execute);
@@ -896,6 +933,8 @@ namespace BattleTv.Fight
                     Alive = true
                 };
                 ArenaMatch.Hold(ward);
+                ward.HomeX = ward.X;
+                ward.HomeY = ward.Y;
                 ArenaMatch.Bodies.Add(ward);
             }
         }
@@ -1171,6 +1210,8 @@ namespace BattleTv.Fight
 
         static void Shove(ArenaBody e, ArenaBody from, double px, bool pull)
         {
+            if (ArenaMatch.Stationed)
+                return;
             if (ArenaMatch.Lane)
             {
                 var dir = Math.Sign(pull ? from.X - e.X : e.X - from.X);

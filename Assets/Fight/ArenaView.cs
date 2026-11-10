@@ -203,13 +203,8 @@ namespace BattleTv.Fight
                 actor.Rect.anchorMin = actor.Rect.anchorMax = new Vector2(0.5f, 0.5f);
                 actor.Rect.sizeDelta = new Vector2(spriteH * aspect, spriteH);
                 actor.Rect.anchoredPosition = point;
-                var foe = NearestX(body);
                 var paintedBody = FighterBodies.Get(body.Id);
-                var face = 1f;
-                if (paintedBody != null && paintedBody.FlipWithFoe)
-                    face = foe >= body.X ? -1f : 1f;
-                else
-                    face = foe >= body.X ? 1f : -1f;
+                var face = FaceScale(body, paintedBody);
                 if (body.Alive)
                     actor.Rect.localScale = new Vector3(face, 1f, 1f);
                 if (body.Swing > 0.22 && actor.Heard < 0.05)
@@ -331,6 +326,7 @@ namespace BattleTv.Fight
             {
                 if (foe != null)
                 {
+                    Push(4, body.X, body.Y, foe.X, foe.Y, 0.28f, 16f, color);
                     Push(5, foe.X, foe.Y, foe.X, foe.Y, 0.22f, 36f, color);
                     if (body.Id == "justicae" && mv != null && mv.Id == "verdict")
                         Push(1, foe.X, foe.Y, foe.X, foe.Y, 0.28f, 70f, color);
@@ -1134,23 +1130,12 @@ namespace BattleTv.Fight
             return 0.5f;
         }
 
-        static double NearestX(ArenaBody body)
+        static float FaceScale(ArenaBody body, FighterBodies.Body painted)
         {
-            var best = body.Team == 0 ? body.X + 10 : body.X - 10;
-            var bestD = double.MaxValue;
-            for (var i = 0; i < ArenaMatch.Bodies.Count; i++)
-            {
-                var other = ArenaMatch.Bodies[i];
-                if (!other.Alive || other.Team == body.Team)
-                    continue;
-                var d = (other.X - body.X) * (other.X - body.X) + (other.Y - body.Y) * (other.Y - body.Y);
-                if (d < bestD)
-                {
-                    bestD = d;
-                    best = other.X;
-                }
-            }
-            return best;
+            var toward = ArenaMatch.FacesRight(body);
+            if (painted != null && painted.FlipWithFoe)
+                return toward ? -1f : 1f;
+            return toward ? 1f : -1f;
         }
 
         static Sprite Still(string id)
@@ -1307,6 +1292,14 @@ namespace BattleTv.Fight
             var body = actor.Body;
             if (body == null)
                 return;
+            if (ArenaMatch.Stationed)
+            {
+                actor.WalkT = -1f;
+                actor.HasFoot = true;
+                actor.FootX = body.X;
+                actor.FootY = body.Y;
+                return;
+            }
             var moved = false;
             if (actor.HasFoot && body.Alive)
             {

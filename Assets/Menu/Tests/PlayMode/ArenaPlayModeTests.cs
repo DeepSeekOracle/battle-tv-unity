@@ -174,7 +174,7 @@ namespace BattleTv.Menu.PlayTests
         }
 
         [UnityTest]
-        public IEnumerator PinnedFighterEscapesCorner()
+        public IEnumerator PinnedFighterStaysOnMark()
         {
             SceneManager.LoadScene("Arena");
             yield return null;
@@ -182,14 +182,17 @@ namespace BattleTv.Menu.PlayTests
             ArenaMatch.Begin(new[] { "vale" }, new[] { "brute" }, 99, true);
             var vale = ArenaMatch.Bodies[0];
             var brute = ArenaMatch.Bodies[1];
+            var homeX = vale.HomeX;
+            var homeY = vale.HomeY;
             vale.X = ArenaMatch.Inset + 2;
             vale.Y = ArenaMatch.WorldH * 0.5;
             brute.X = vale.X + 90;
             brute.Y = vale.Y;
-            var before = vale.X;
+            var dashes = ArenaLogic.Dashes + ArenaLogic.EscapeDashes;
             ArenaMatch.Step(0.05);
-            Assert.Greater(vale.X, before, "pinned Vale did not dash inward");
-            Assert.Greater(ArenaLogic.Dashes + ArenaLogic.EscapeDashes, 0, "no corner dash was counted");
+            Assert.AreEqual(homeX, vale.X, 0.01, "pinned Vale left her station");
+            Assert.AreEqual(homeY, vale.Y, 0.01, "pinned Vale left her station height");
+            Assert.AreEqual(dashes, ArenaLogic.Dashes + ArenaLogic.EscapeDashes, "a corner dash was counted");
         }
 
     }

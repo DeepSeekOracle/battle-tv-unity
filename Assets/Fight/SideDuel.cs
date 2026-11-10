@@ -31,6 +31,7 @@ namespace BattleTv.Fight
         public double ManaMax;
         public double ManaRegen;
         public double X;
+        public double HomeX;
         public double AtkCd;
         public double WallCd;
         public double PoundCd;
@@ -148,14 +149,13 @@ namespace BattleTv.Fight
         }
 
         /// <summary>
-        /// Close is a thirty-second step. Vale uses it only onto a gun that is
-        /// still outside her swing. Brute uses it onto whoever is in front of
-        /// him. Either fighter, pinned on the side stones with the other in
-        /// their face, leaps past them. That way out does not wait on the gun
-        /// rule. The clock ignores cdMul. It does not cross the planted kite.
+        /// Close is a thirty-second step on the walking ring. Station combat
+        /// keeps both bodies on their marks, so Close does not fire.
         /// </summary>
         public static bool TryClose(Body self, Body other)
         {
+            if (ArenaMatch.Stationed)
+                return false;
             if (self == null || other == null || !self.Alive || !other.Alive)
                 return false;
             if (self.StrideCd > 0 || self.Mana < CloseCost)
@@ -312,8 +312,16 @@ namespace BattleTv.Fight
             Tick(b, dt);
             Act(a, b, dt, rng, time);
             Act(b, a, dt, rng, time);
-            a.X = Clamp(StopCrossing(ax, a.X));
-            b.X = Clamp(StopCrossing(bx, b.X));
+            if (ArenaMatch.Stationed)
+            {
+                a.X = a.HomeX;
+                b.X = b.HomeX;
+            }
+            else
+            {
+                a.X = Clamp(StopCrossing(ax, a.X));
+                b.X = Clamp(StopCrossing(bx, b.X));
+            }
         }
 
         static void Tick(Body body, double dt)
@@ -341,17 +349,20 @@ namespace BattleTv.Fight
 
             bool stepped = TryClose(self, other);
             double dist = Math.Abs(self.X - other.X);
-            bool close = dist < CastBand;
+            bool close = ArenaMatch.Stationed || dist < CastBand;
             if (!stepped && self.Pound && self.PoundCd <= 0 && close && self.Mana >= PoundCost && !DoorBlocks(self.X, other.X))
             {
                 self.Mana -= PoundCost;
                 bool crit = rng.NextDouble() < self.Crit;
                 Hit(self, other, self.Dmg * 1.15 * LanePace, true, crit, false, time);
                 other.Stun = Math.Max(other.Stun, 0.5);
-                double dir = Math.Sign(other.X - self.X);
-                if (dir == 0)
-                    dir = 1;
-                other.X += dir * 2;
+                if (!ArenaMatch.Stationed)
+                {
+                    double dir = Math.Sign(other.X - self.X);
+                    if (dir == 0)
+                        dir = 1;
+                    other.X += dir * 2;
+                }
                 self.PoundCd = 10 * self.CdMul;
                 self.Callout = "Brute Pound";
                 self.Swing = 0.7;
@@ -381,8 +392,8 @@ namespace BattleTv.Fight
             dist = Math.Abs(self.X - other.X);
             if (DoorBlocks(self.X, other.X))
             {
-                // The planted kite is solid. She steps off it. He does not swing through it.
-                if (self.Name == "Vale")
+                // The planted kite is solid. Station combat does not step off it.
+                if (!ArenaMatch.Stationed && self.Name == "Vale")
                 {
                     double away = Math.Sign(self.X - other.X);
                     if (away == 0)
@@ -397,15 +408,16 @@ namespace BattleTv.Fight
                 return;
             }
             double reach = self.Range + ReachPad;
-            if (self.Name == "Vale" && dist <= reach + ValeCharge)
+            bool inSwing = ArenaMatch.Stationed || dist <= reach + (self.Name == "Vale" ? ValeCharge : 0);
+            if (self.Name == "Vale" && inSwing)
             {
                 if (self.AtkCd > 0)
                 {
-                    if (dist > reach)
+                    if (!ArenaMatch.Stationed && dist > reach)
                         self.X += Math.Sign(other.X - self.X) * Pace(self) * dt;
                     return;
                 }
-                bool bash = dist > reach;
+                bool bash = !ArenaMatch.Stationed && dist > reach;
                 if (bash)
                 {
                     double dir = Math.Sign(other.X - self.X);
@@ -414,7 +426,7 @@ namespace BattleTv.Fight
                     self.X += dir * Math.Min(ValeCharge, dist - reach + 0.08);
                     dist = Math.Abs(self.X - other.X);
                 }
-                if (dist <= reach + 0.12)
+                if (ArenaMatch.Stationed || dist <= reach + 0.12)
                 {
                     bool crit = rng.NextDouble() < self.Crit;
                     Hit(self, other, self.Dmg * LanePace, true, crit, false, time);
@@ -424,7 +436,7 @@ namespace BattleTv.Fight
                 self.Swing = bash ? 0.36 : 0.24;
                 return;
             }
-            if (self.Name != "Vale" && !stepped && dist <= reach)
+            if (self.Name != "Vale" && !stepped && inSwing)
             {
                 if (self.AtkCd > 0)
                     return;
@@ -436,6 +448,8 @@ namespace BattleTv.Fight
                 return;
             }
 
+            if (ArenaMatch.Stationed)
+                return;
             double step = Math.Sign(other.X - self.X) * Pace(self) * dt;
             self.X += step;
         }
@@ -473,7 +487,7 @@ namespace BattleTv.Fight
                 self.Swing = 0.42;
                 return true;
             }
-            if (self.WallCd <= 0 && DoorT <= 0 && self.Mana >= WallCost && dist < 2.8)
+            if (self.WallCd <= 0 && DoorT <= 0 && self.Mana >= WallCost && (ArenaMatch.Stationed ? self.Hp / self.Max < 0.75 : dist < 2.8))
             {
                 self.Mana -= WallCost;
                 if (!(self.Shield > 0))
@@ -501,7 +515,7 @@ namespace BattleTv.Fight
         {
             if (self.Name != "Brute" || self.GripCd > 0 || self.Mana < GripCost)
                 return false;
-            if (dist < 0.4 || dist > self.Range + 3.2)
+            if (!ArenaMatch.Stationed && (dist < 0.4 || dist > self.Range + 3.2))
                 return false;
             if (DoorBlocks(self.X, other.X))
                 return false;
@@ -560,6 +574,8 @@ namespace BattleTv.Fight
 
         static void NudgeOffDoor(Body body)
         {
+            if (ArenaMatch.Stationed)
+                return;
             double gap = body.X - DoorX;
             if (Math.Abs(gap) >= DoorHalf + 0.08)
                 return;
@@ -597,6 +613,7 @@ namespace BattleTv.Fight
                 Bulwark = bulwark,
                 Thorns = thorns,
                 X = x,
+                HomeX = x,
                 AtkCd = 0.35
             };
         }
